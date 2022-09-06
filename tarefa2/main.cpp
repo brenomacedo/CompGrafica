@@ -12,8 +12,8 @@ void renderSphere (SDL_Renderer* renderer) {
 
     // ========================== sphere data ========================
 
-    double wJanela = 100.0;
-    double hJanela = 100.0;
+    double wJanela = 50.0;
+    double hJanela = 50.0;
     double dJanela = 50.0;
 
     double windowCenter[3] = { 0.0, 0.0, -dJanela };
@@ -34,6 +34,16 @@ void renderSphere (SDL_Renderer* renderer) {
         eyeCenter[0] - centroEsfera[0],
         eyeCenter[1] - centroEsfera[1],
         eyeCenter[2] - centroEsfera[2]
+    };
+
+    double fAmbiente[3] = {
+        0.05, 0.05, 0.05
+    };
+
+    double iAmbiente [3] = {
+        reflectivity[0] * fAmbiente[0],                
+        reflectivity[1] * fAmbiente[1],                
+        reflectivity[2] * fAmbiente[2]                
     };
 
     // ===============================================================
@@ -64,9 +74,7 @@ void renderSphere (SDL_Renderer* renderer) {
             if (delta >= 0) {
                 // paintPixel (renderer, c, l);
 
-                // double t1 = (-bx + sqrt(delta)) / 2*ax;
-                // double t2 = (-bx - sqrt(delta)) / 2*ax;
-                double t = (-bx + sqrt(delta)) / (2*ax);
+                double t = (-bx - sqrt(delta)) / (2*ax);
 
                 // pi
                 double intersectionPoint[3] = {
@@ -143,16 +151,16 @@ void renderSphere (SDL_Renderer* renderer) {
                 };
 
                 double colorRGBToPaint[3] = {
-                    iDifusa[0] + iEspeculada[0],
-                    iDifusa[1] + iEspeculada[1],
-                    iDifusa[2] + iEspeculada[2]
+                    iDifusa[0] + iEspeculada[0] + iAmbiente[0],
+                    iDifusa[1] + iEspeculada[1] + iAmbiente[1],
+                    iDifusa[2] + iEspeculada[2] + iAmbiente[2]
                 };
 
                 setPaintColor (
                     renderer,
-                    colorRGBToPaint[0],
-                    colorRGBToPaint[1],
-                    colorRGBToPaint[2],
+                    min  (colorRGBToPaint[0], 255),
+                    min  (colorRGBToPaint[1], 255),
+                    min  (colorRGBToPaint[2], 255),
                     255
                 );
 
