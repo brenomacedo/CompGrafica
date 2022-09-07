@@ -10,9 +10,22 @@ using std::string;
 
 int main () {
 
-    Sp<Scene> scene = new Scene();
+    Sphere* sphere = new Sphere (
+        20.0,
+        new Vector (0.7, 0.7, 0.7),
+        new Vector (0, 0, -80.0)
+    );
+
+    Sp<Scene> scene = new Scene (
+        new Vector (0, 0, 0),
+        100.0, 100.0,
+        500, 500,
+        50,
+        new Color (0, 0, 0, 255)
+    );
+
+    scene->addObject(sphere);
 
     scene->render();
-
     return 0;
 }

@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cmath>
+#include <vector>
+#include "../include/utils.impl.h"
 #include "../include/CG.h"
 #include "../include/pixels.h"
 
@@ -63,19 +65,63 @@ double Scene::getWindowDistance () {
     return this->windowDistance;
 }
 
+void Scene::raycast () {
+    const double nLin = this->getCanvasHeight ();
+    const double nCol = this->getCanvasWidth ();
+
+    const double hJanela = this->getWindowHeight ();
+    const double wJanela = this->getWindowWidth ();
+
+    const double dx = wJanela / nCol;
+    const double dy = hJanela / nLin;
+
+    int numberOfObjects = this->objects.size();
+
+    const double z = -this->getWindowDistance();
+
+    for (int l = 0; l < nLin; l++) {
+        const double y = hJanela / 2.0 - dy / 2.0 - l * dy;
+
+        for (int c = 0; c < nCol; c++) {
+            const double x = -wJanela / 2.0 + dx / 2.0 + c * dx;
+
+            Vector* P0 = new Vector (*this->getEyeCenter());
+            Vector* direction = new Vector (x, y, z);
+            Sp<Line> line = new Line (P0, direction);
+
+            Sp<IntersectionResult> result = new IntersectionResult();
+
+            for (int i = 0; i < numberOfObjects; i++) {
+                IntersectionResult* result = this->objects[i]->getIntersectionResult (line.pointer);
+
+
+            }
+
+        }
+    }
+
+}
+
 void Scene::render () {
     SDL_Renderer* renderer = nullptr;
     SDL_Window* window = nullptr;
 
     initializeSDLAndWindow (&window, &renderer, this->getCanvasHeight(), this->getCanvasWidth());
     // SDL_RenderSetScale(renderer, 4, 4);
+
+    if (this->backgroundColor == nullptr) {
+        std::cout << "backgroundColor não iniciado" << std::endl;
+    }
+
+    setWindowBackground (
+        renderer,
+        this->backgroundColor->r,
+        this->backgroundColor->g,
+        this->backgroundColor->b,
+        this->backgroundColor->a
+    );
     
-    setWindowBackground (renderer, 100, 100, 100, 255);
-    // update (renderer);
-
-    // SDL_Delay (1000);
-
-    setPaintColor (renderer, 255, 0, 0, 255);
+    this->raycast();
 
     update (renderer);
     listenEventQuit (window);
@@ -139,6 +185,12 @@ Vector::Vector (double x, double y, double z) {
     this->positions[0] = x;
     this->positions[1] = y;
     this->positions[2] = z;
+}
+
+Vector::Vector (const Vector& vector) {
+    for (int i = 0; i < 3; i++) {
+        this->positions[i] = vector.positions[i];
+    }
 }
 
 double& Vector::operator [] (int idx) {
@@ -441,5 +493,5 @@ IntersectionResult* Sphere::getIntersectionResult (Line* line) {
 }
 
 Color* Sphere::getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray) {
-
+    return new Color(0, 0, 0, 255);
 }

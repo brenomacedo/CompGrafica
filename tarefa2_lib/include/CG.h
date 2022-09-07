@@ -32,6 +32,7 @@ class Vector {
         
         Vector ();
         Vector (double x, double y, double z);
+        Vector (const Vector& vector);
 };
 
 // returns the scalar product of two vectors
@@ -222,8 +223,13 @@ class Scene {
         // background color of the scene
         // if the raycasting do not intercept any
         // object, the pixel will be painted with
-        // this color (defaults to Color (0, 0, 0, 255))
+        // this color (defaults to nullptr)
         Color* backgroundColor = nullptr;
+
+        // throw rays for each pixel of canvas
+        // and verify if it has intersection with
+        // an object and paint the pixel with the result color
+        void raycast();
 
     public:
         // setters and getters
