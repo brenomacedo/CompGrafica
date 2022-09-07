@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <SDL2/SDL.h>
 
 enum class ObjectType { SHPERE, PLAN, CYLINDER };
 
@@ -282,6 +283,9 @@ class Scene {
         // returns a copy of the vector
         // with the POINTERS to objects
         ObjectsArray getObjects ();
+
+        // open window and render the scene
+        void render ();
 
         Scene ();
 

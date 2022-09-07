@@ -2,11 +2,12 @@ COMPILER=g++
 LIB=$(wildcard ./lib/*.cpp)
 INCLUDE=$(wildcard ./include/*.h)
 ELF=$(patsubst ./lib/%.cpp, ./build/%.o, $(LIB))
+FLAGS=`sdl2-config --cflags --libs`
 
 ALL: main
 
 main: build/main.o $(ELF)
-	$(COMPILER) $^ -o $@
+	$(COMPILER) $^ $(FLAGS) -o $@
 
 build/main.o: main.cpp $(INCLUDE)
 	$(COMPILER) -c $< -o $@

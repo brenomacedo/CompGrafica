@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include "../include/CG.h"
+#include "../include/pixels.h"
 
 void Scene::setEyeCenter (Vector* eyeCenter) {
     this->eyeCenter = eyeCenter;
@@ -60,6 +61,10 @@ double Scene::getCanvasHeight () {
 
 double Scene::getWindowDistance () {
     return this->windowDistance;
+}
+
+void Scene::render () {
+    
 }
 
 LightsArray Scene::getLights () {
