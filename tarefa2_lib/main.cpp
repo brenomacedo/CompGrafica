@@ -11,8 +11,9 @@ int main () {
 
     Vector estranho (1, 2, 3);
     Vector estranhoSoma (1, 2, 3);
-    Vector estranho2 = estranho * estranhoSoma;
-    std::cout << estranho2[1] << std::endl;
+    Vector estranho2;
+    estranho2 = estranhoSoma;
+    std::cout << estranho2[0] << std::endl;
 
     return 0;
 }

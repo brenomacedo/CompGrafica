@@ -4,10 +4,19 @@
 
 enum class ObjectType { SHPERE, PLAN, CYLINDER };
 
+class Object;
+class Light;
+using ObjectsArray = std::vector<Object*>;
+using LightsArray = std::vector<Light*>;
+
 // vector of 3 positions (x, y, z)
 class Vector {
-    public:
+    private:
         double positions[3];
+
+    public:
+        // get the magnitude of vector: || vector ||
+        double getMagnitude ();
 
         double& operator [] (int index);
         Vector operator + (const Vector& operand);
@@ -20,7 +29,27 @@ class Vector {
         Vector operator / (const double& operand);
         Vector operator = (const Vector& operand);
         
+        Vector ();
         Vector (double x, double y, double z);
+};
+
+// returns the scalar product of two vectors
+double scalarProduct (Vector a, Vector b);
+// returns the scalar product of two vectors
+double scalarProduct (Vector *a, Vector *b);
+
+class Color {
+    public:
+        // value of R (red) color (max to 255)
+        int r;
+        // value of G (green) color (max to 255)
+        int g;
+        // value of B (blue) color (max to 255)
+        int b;
+        // value of A (opacity) color (max to 255)
+        int a;
+
+        Color (int r, int g, int b, int a);
 };
 
 class Light {
@@ -90,45 +119,75 @@ class IntersectionResult {
 
 };
 
+class Line {
+    public:
+        // initial point of the line
+        Vector* P0;
+
+        // direction of the line
+        Vector* dir;
+
+        Line (Vector* P0, Vector* dir);
+        ~Line();
+        
+};
+
 class Object {
     protected:
         ObjectType type;
         
     public:
         virtual ObjectType getObjectType () = 0;
-        virtual IntersectionResult* getIntersectionResult (Line line) = 0;
-        virtual Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray);
+        virtual IntersectionResult* getIntersectionResult (Line* line) = 0;
+        virtual Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray) = 0;
 };
 
-class Line {
+class Sphere : public Object {
+    private:
+        ObjectType type = ObjectType::SHPERE;
+
+        // radius of the sphere
+        double radius;
+
+        // reflectivity of the sphere material
+        Vector* reflectivity;
+
+        // center of the sphere
+        Vector* center;
+
     public:
-        // initial point of the line
-        double P0;
+        // return the type of sphere
+        ObjectType getObjectType ();
 
-        // direction of the line
-        Vector* dir;
+        // set the sphere radius
+        void setRadius (double radius);
 
-        Line (double P0, Vector* dir);
-        ~Line();
+        // get the sphere radius
+        double getRadius ();
+
+        // set the sphere reflectivity
+        void setReflectivity (Vector* reflectivity);
+
+        // get the sphere reflectivity
+        Vector* getReflectivity ();
+
+        // set the sphere center
+        void setCenter (Vector* center);
+
+        // get the sphere center
+        Vector* getCenter ();
+
+        // get intersection of sphere and a line
+        IntersectionResult* getIntersectionResult (Line* line);
+
+        // get color to be painted
+        Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray);
+
+        Sphere ();
+        Sphere (double radius, Vector* reflectivity, Vector* center);
+        ~Sphere ();
         
 };
-
-class Color {
-    public:
-        // value of R (red) color (max to 255)
-        int r;
-        // value of G (green) color (max to 255)
-        int g;
-        // value of B (blue) color (max to 255)
-        int b;
-        // value of A (opacity) color (max to 255)
-        int a;
-
-        Color (int r, int g, int b, int a);
-};
-
-using ObjectsArray = std::vector<Object*>;
-using LightsArray = std::vector<Light*>;
 
 class Scene {
     private:

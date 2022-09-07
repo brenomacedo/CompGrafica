@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include "../include/CG.h"
 
 void Scene::setEyeCenter (Vector* eyeCenter) {
@@ -113,6 +114,8 @@ Color::Color (int r, int g, int b, int a) {
     this->a = a > 255 ? 255 : a; // min (a, 255);
 }
 
+Vector::Vector () {}
+
 Vector::Vector (double x, double y, double z) {
     this->positions[0] = x;
     this->positions[1] = y;
@@ -203,6 +206,46 @@ Vector Vector::operator / (const double& operand) {
     return result;
 }
 
+Vector Vector::operator = (const Vector& operand) {
+
+    for (int i = 0; i < 3; i++) {
+        this->positions[i] = operand.positions[i];
+    }
+
+    return *this;
+
+}
+
+double Vector::getMagnitude () {
+    double result = 0;
+
+    for (int i = 0; i < 3; i++) {
+        result += pow (this->positions[i], 2.0);
+    }
+
+    return sqrt (result);
+}
+
+double scalarProduct (Vector a, Vector b)  {
+    double result = 0;
+
+    for (int i = 0; i < 3; i++) {
+        result += a[i] * b[i];
+    }
+
+    return result;
+}
+
+double scalarProduct (Vector *a, Vector *b)  {
+    double result = 0;
+
+    for (int i = 0; i < 3; i++) {
+        result += (*a)[i] * (*b)[i];
+    }
+
+    return result;
+}
+
 void Light::setIntensity (Vector* intensity) {
     this->intensity = intensity;
 }
@@ -231,12 +274,13 @@ Light::~Light () {
     delete this->intensity;
 }
 
-Line::Line (double P0, Vector* dir) {
+Line::Line (Vector* P0, Vector* dir) {
     this->P0 = P0;
     this->dir = dir;
 }
 
 Line::~Line () {
+    delete this->P0;
     delete this->dir;
 }
 
@@ -273,4 +317,110 @@ IntersectionResult::IntersectionResult (bool hasIntersection, Vector* intersecti
 
 IntersectionResult::~IntersectionResult () {
     delete this->intersectionPoint;
+}
+
+ObjectType Sphere::getObjectType () {
+    return this->type;
+}
+
+void Sphere::setRadius (double radius) {
+    this->radius = radius;
+}
+
+double Sphere::getRadius () {
+    return this->radius;
+}
+
+void Sphere::setReflectivity (Vector* reflectivity) {
+    this->reflectivity = reflectivity;
+}
+
+Vector* Sphere::getReflectivity () {
+    return this->reflectivity;
+}
+
+void Sphere::setCenter (Vector* center) {
+    this->center = center;
+}
+
+Vector* Sphere::getCenter () {
+    return this->center;
+}
+
+Sphere::Sphere () {}
+
+Sphere::Sphere (double radius, Vector* reflectivity, Vector* center) {
+    this->setRadius (radius);
+    this->setReflectivity (reflectivity);
+    this->setCenter (center);
+}
+
+Sphere::~Sphere () {
+    delete this->reflectivity;
+    delete this->center;
+}
+
+IntersectionResult* Sphere::getIntersectionResult (Line* line) {
+
+    Vector w = *(line->P0) - *(this->center);
+
+    double a = scalarProduct (line->dir, line->dir);
+    double b = 2 * scalarProduct (w, *(line->dir));
+    double c = scalarProduct (w, w) - pow (this->radius, 2.0);
+
+    double discriminant = (pow (b, 2.0) - 4 * a * c);
+
+    double t;
+    IntersectionResult* result = new IntersectionResult ();
+
+    if (discriminant == 0) {
+        result->setHasIntersection (true);
+        t = (-b + sqrt(discriminant)) / (2 * a);
+
+        Vector* intersectionPoint = new Vector();
+        *intersectionPoint = (*line->P0) + (*line->dir) * t;
+        result->setIntersectionPoint (intersectionPoint);
+
+        Vector distanceFromP0Vector = (*line->P0) - (*intersectionPoint);
+        double distanceBetweenP0AndIntersection = distanceFromP0Vector.getMagnitude();
+        result->setDistanceFromP0 (distanceBetweenP0AndIntersection);
+
+    } else if (discriminant > 0) {
+        result->setHasIntersection (true);
+
+        double t1 = (-b + sqrt(discriminant)) / (2 * a);
+        double t2 = (-b - sqrt(discriminant)) / (2 * a);
+
+        Vector intersectionPoint1 = (*line->P0) + (*line->dir) * t1;
+        Vector intersectionPoint2 = (*line->P0) + (*line->dir) * t2;
+
+        double distanceP0toT1 = intersectionPoint1.getMagnitude ();
+        double distanceP0toT2 = intersectionPoint2.getMagnitude ();
+
+        Vector* intersectionPoint = new Vector ();
+
+        if (distanceP0toT1 < distanceP0toT2) {
+
+            *intersectionPoint = intersectionPoint1;
+            result->setDistanceFromP0 (distanceP0toT1);
+
+        } else {
+
+            *intersectionPoint = intersectionPoint2;
+            result->setDistanceFromP0 (distanceP0toT2);
+
+        }
+
+        result->setIntersectionPoint (intersectionPoint);
+
+    } else {
+        result->setHasIntersection (false);
+    }
+
+    return result;
+
+}
+
+Color* Sphere::getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray) {
+
 }
