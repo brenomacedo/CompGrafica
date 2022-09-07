@@ -16,6 +16,12 @@ int main () {
         new Vector (0, 0, -80.0)
     );
 
+    Sphere* sphere2 = new Sphere (
+        20.0,
+        new Vector (0.7, 0.7, 0.7),
+        new Vector (0, 20, -80.0)
+    );
+
     Sp<Scene> scene = new Scene (
         new Vector (0, 0, 0),
         100.0, 100.0,
@@ -25,6 +31,7 @@ int main () {
     );
 
     scene->addObject(sphere);
+    scene->addObject(sphere2);
 
     scene->render();
 
