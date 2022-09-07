@@ -64,7 +64,21 @@ double Scene::getWindowDistance () {
 }
 
 void Scene::render () {
+    SDL_Renderer* renderer = nullptr;
+    SDL_Window* window = nullptr;
+
+    initializeSDLAndWindow (&window, &renderer, this->getCanvasHeight(), this->getCanvasWidth());
+    // SDL_RenderSetScale(renderer, 4, 4);
     
+    setWindowBackground (renderer, 100, 100, 100, 255);
+    // update (renderer);
+
+    // SDL_Delay (1000);
+
+    setPaintColor (renderer, 255, 0, 0, 255);
+
+    update (renderer);
+    listenEventQuit (window);
 }
 
 LightsArray Scene::getLights () {

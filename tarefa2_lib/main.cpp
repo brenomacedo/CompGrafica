@@ -10,5 +10,9 @@ using std::string;
 
 int main () {
 
+    Sp<Scene> scene = new Scene();
+
+    scene->render();
+
     return 0;
 }
