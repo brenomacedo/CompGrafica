@@ -27,5 +27,6 @@ int main () {
     scene->addObject(sphere);
 
     scene->render();
+
     return 0;
 }

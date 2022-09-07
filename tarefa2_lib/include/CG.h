@@ -115,9 +115,12 @@ class IntersectionResult {
         // returns the distance between the p0 and the intersection point
         double getDistanceFromP0 ();
 
+        IntersectionResult operator = (const IntersectionResult& result);
+
         IntersectionResult ();
-        IntersectionResult (bool hasIntersection, Vector* intersectionPoint);
+        IntersectionResult (bool hasIntersection, Vector* intersectionPoint, double distanceFromP0);
         ~IntersectionResult ();
+        IntersectionResult (const IntersectionResult& result);
 
 };
 
@@ -140,7 +143,7 @@ class Object {
         
     public:
         virtual ObjectType getObjectType () = 0;
-        virtual IntersectionResult* getIntersectionResult (Line* line) = 0;
+        virtual IntersectionResult getIntersectionResult (Line* line) = 0;
         virtual Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray) = 0;
 };
 
@@ -180,7 +183,7 @@ class Sphere : public Object {
         Vector* getCenter ();
 
         // get intersection of sphere and a line
-        IntersectionResult* getIntersectionResult (Line* line);
+        IntersectionResult getIntersectionResult (Line* line);
 
         // get color to be painted
         Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray);
@@ -229,7 +232,7 @@ class Scene {
         // throw rays for each pixel of canvas
         // and verify if it has intersection with
         // an object and paint the pixel with the result color
-        void raycast();
+        void raycast(SDL_Renderer* renderer);
 
     public:
         // setters and getters
