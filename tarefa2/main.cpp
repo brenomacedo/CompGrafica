@@ -4,8 +4,8 @@
 #include "pixels.h"
 #include "matrix.h"
 
-#define nCol 800.0
-#define nLin 800.0
+#define nCol 1000.0
+#define nLin 1000.0
 
 
 void renderSphere (SDL_Renderer* renderer) {
