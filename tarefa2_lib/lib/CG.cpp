@@ -113,7 +113,7 @@ void Scene::raycast (SDL_Renderer* renderer) {
                 Sp<IntersectionResult> result = this->objects[i]->getIntersectionResult (line.pointer);
                 
                 if (result->getHasIntersection() &&
-                (!nearestResult->getHasIntersection() || result->getDistanceFromP0() > nearestResult->getDistanceFromP0())) {
+                (!nearestResult->getHasIntersection() || result->getDistanceFromP0() < nearestResult->getDistanceFromP0())) {
                     delete nearestResult.pointer;
                     nearestResult.pointer = result.pointer;
                     result.pointer = nullptr;

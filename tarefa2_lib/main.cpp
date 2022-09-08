@@ -12,8 +12,26 @@ int main () {
 
     Sphere* sphere = new Sphere (
         20.0,
-        new Vector (1, 0, 0),
+        new Vector (1, 1, 1),
         new Vector (0, 0, -80.0)
+    );
+
+    Sphere* sphere2 = new Sphere (
+        15.0,
+        new Vector (1, 1, 1),
+        new Vector (0, 30, -80)
+    );
+
+    Sphere* eye1 = new Sphere (
+        2.0,
+        new Vector (0, 0, 0),
+        new Vector (5, 30, -60)
+    );
+
+    Sphere* eye2 = new Sphere (
+        2.0,
+        new Vector (0, 0, 0),
+        new Vector (-5, 30, -60)
     );
 
     Light* light = new Light (
@@ -31,6 +49,9 @@ int main () {
 
     scene->addLightSource(light);
     scene->addObject(sphere);
+    scene->addObject(sphere2);
+    scene->addObject(eye1);
+    scene->addObject(eye2);
 
     scene->render();
 
