@@ -5,6 +5,22 @@
 #include "../include/CG.h"
 #include "../include/pixels.h"
 
+double min (double a, double b) {
+    if (a < b) {
+        return a;
+    }
+
+    return b;
+}
+
+double max (double a, double b) {
+    if (a > b) {
+        return a;
+    }
+
+    return b;
+}
+
 void Scene::setEyeCenter (Vector* eyeCenter) {
     this->eyeCenter = eyeCenter;
 }
@@ -90,23 +106,25 @@ void Scene::raycast (SDL_Renderer* renderer) {
             Sp<Line> line = new Line (P0, direction);
 
             int nearestObjectIndex = 0;
-            IntersectionResult nearestResult (false, nullptr, 0);
+            Sp<IntersectionResult> nearestResult = new IntersectionResult (false, nullptr, 0);
 
             for (int i = 0; i < numberOfObjects; i++) {
 
-                IntersectionResult result = this->objects[i]->getIntersectionResult (line.pointer);
-
-                if (result.getHasIntersection() &&
-                (!nearestResult.getHasIntersection() || result.getDistanceFromP0() > nearestResult.getDistanceFromP0())) {
-                    nearestResult = result;
+                Sp<IntersectionResult> result = this->objects[i]->getIntersectionResult (line.pointer);
+                
+                if (result->getHasIntersection() &&
+                (!nearestResult->getHasIntersection() || result->getDistanceFromP0() > nearestResult->getDistanceFromP0())) {
+                    delete nearestResult.pointer;
+                    nearestResult.pointer = result.pointer;
+                    result.pointer = nullptr;
 
                     nearestObjectIndex = i;
                 }
 
             }
 
-            if (nearestResult.getHasIntersection()) {
-                Sp<Color> colorToPaint = this->objects[nearestObjectIndex]->getColorToBePainted (&nearestResult, this->lights);
+            if (nearestResult->getHasIntersection()) {
+                Sp<Color> colorToPaint = this->objects[nearestObjectIndex]->getColorToBePainted (nearestResult.pointer, this->lights, line.pointer);
 
                 setPaintColor (renderer, colorToPaint->r, colorToPaint->g, colorToPaint->b, colorToPaint->a);
                 paintPixel (renderer, c, l);
@@ -467,7 +485,7 @@ Sphere::~Sphere () {
     delete this->center;
 }
 
-IntersectionResult Sphere::getIntersectionResult (Line* line) {
+IntersectionResult* Sphere::getIntersectionResult (Line* line) {
 
     Vector w = *(line->P0) - *(this->center);
 
@@ -478,22 +496,22 @@ IntersectionResult Sphere::getIntersectionResult (Line* line) {
     double discriminant = (pow (b, 2.0) - 4 * a * c);
 
     double t;
-    IntersectionResult result;
+    IntersectionResult* result = new IntersectionResult ();
 
     if (discriminant == 0) {
-        result.setHasIntersection (true);
+        result->setHasIntersection (true);
         t = (-b + sqrt(discriminant)) / (2 * a);
 
         Vector* intersectionPoint = new Vector();
         *intersectionPoint = (*line->P0) + (*line->dir) * t;
-        result.setIntersectionPoint (intersectionPoint);
+        result->setIntersectionPoint (intersectionPoint);
 
         Vector distanceFromP0Vector = (*line->P0) - (*intersectionPoint);
         double distanceBetweenP0AndIntersection = distanceFromP0Vector.getMagnitude();
-        result.setDistanceFromP0 (distanceBetweenP0AndIntersection);
+        result->setDistanceFromP0 (distanceBetweenP0AndIntersection);
 
     } else if (discriminant > 0) {
-        result.setHasIntersection (true);
+        result->setHasIntersection (true);
 
         double t1 = (-b + sqrt(discriminant)) / (2 * a);
         double t2 = (-b - sqrt(discriminant)) / (2 * a);
@@ -509,25 +527,71 @@ IntersectionResult Sphere::getIntersectionResult (Line* line) {
         if (distanceP0toT1 < distanceP0toT2) {
 
             *intersectionPoint = intersectionPoint1;
-            result.setDistanceFromP0 (distanceP0toT1);
+            result->setDistanceFromP0 (distanceP0toT1);
 
         } else {
 
             *intersectionPoint = intersectionPoint2;
-            result.setDistanceFromP0 (distanceP0toT2);
+            result->setDistanceFromP0 (distanceP0toT2);
 
         }
 
-        result.setIntersectionPoint (intersectionPoint);
+        result->setIntersectionPoint (intersectionPoint);
 
     } else {
-        result.setHasIntersection (false);
+        result->setHasIntersection (false);
     }
 
     return result;
 
 }
 
-Color* Sphere::getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray) {
-    return new Color(255, 0, 0, 255);
+Color* Sphere::getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, Line* line) {
+    
+    Vector resultColorRate (0, 0, 0);
+
+    for (auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
+
+        Vector sourceMinusIntersection = *((*i)->getPosition()) - *intersectionResult->getIntersectionPoint();
+
+        double sourceMinusIntersectionMagnitude = sourceMinusIntersection.getMagnitude();
+
+        Vector l = sourceMinusIntersection / sourceMinusIntersectionMagnitude;
+
+        Vector n = (*intersectionResult->getIntersectionPoint() - *this->center) / this->radius;
+
+        Vector v = ((*line->dir) * (-1)) / line->dir->getMagnitude();
+
+        double lScalarProductN = scalarProduct (l, n);
+
+        Vector r = n * (2 * lScalarProductN) - l;
+
+        double fDifusa = max (
+            0.0,
+            scalarProduct (l, n)
+        );
+
+        double fEspeculada = max (
+            0.0,
+            scalarProduct (r, v)
+        );
+
+        Vector iDifusa = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fDifusa;
+
+        Vector iEspeculada = (*(*i)->getIntensity()) * (*this->getReflectivity()) * iEspeculada;
+
+        resultColorRate = resultColorRate + iDifusa + iEspeculada;
+    }
+
+
+    return new Color (
+        resultColorRate[0] * 255,
+        resultColorRate[1] * 255,
+        resultColorRate[2] * 255,
+        255
+    );
+
+
 }
+
+// ADICIONAR ILUMINAÇÃO AMBIENTE!!!

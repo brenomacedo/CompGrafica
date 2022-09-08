@@ -13,6 +13,8 @@ class SmartPtr {
         T& operator * ();
         T* operator -> ();
 
+        SmartPtr<T> operator = (SmartPtr<T>& ptr);
+
         // the destructor is necessary for free the pointer's
         // memory when the function scope ends
         ~SmartPtr ();

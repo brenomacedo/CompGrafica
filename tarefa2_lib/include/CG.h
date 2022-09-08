@@ -3,6 +3,12 @@
 #include <vector>
 #include <SDL2/SDL.h>
 
+// return the max of a and b
+double min (double a, double b);
+
+// return the min of a and b
+double max (double a, double b);
+
 enum class ObjectType { SHPERE, PLAN, CYLINDER };
 
 class Object;
@@ -143,8 +149,8 @@ class Object {
         
     public:
         virtual ObjectType getObjectType () = 0;
-        virtual IntersectionResult getIntersectionResult (Line* line) = 0;
-        virtual Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray) = 0;
+        virtual IntersectionResult* getIntersectionResult (Line* line) = 0;
+        virtual Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, Line* line) = 0;
 };
 
 class Sphere : public Object {
@@ -183,10 +189,10 @@ class Sphere : public Object {
         Vector* getCenter ();
 
         // get intersection of sphere and a line
-        IntersectionResult getIntersectionResult (Line* line);
+        IntersectionResult* getIntersectionResult (Line* line);
 
         // get color to be painted
-        Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray);
+        Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, Line* line);
 
         Sphere ();
         Sphere (double radius, Vector* reflectivity, Vector* center);
