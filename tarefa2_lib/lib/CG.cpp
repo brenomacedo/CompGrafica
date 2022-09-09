@@ -505,6 +505,12 @@ IntersectionResult* Sphere::getIntersectionResult (Line* line) {
         result->setHasIntersection (true);
         t = (-b + sqrt(discriminant)) / (2 * a);
 
+        // verify if dir is forward (to remove, just remove this condition)
+        if (t < 0) {
+            result->setHasIntersection (false);
+            return result;
+        }
+
         Vector* intersectionPoint = new Vector();
         *intersectionPoint = (*line->P0) + (*line->dir) * t;
         result->setIntersectionPoint (intersectionPoint);
@@ -517,6 +523,13 @@ IntersectionResult* Sphere::getIntersectionResult (Line* line) {
         result->setHasIntersection (true);
 
         double t1 = (-b + sqrt(discriminant)) / (2 * a);
+
+        // verify if dir is forward (to remove, just remove this condition)
+        if (t1 < 0) {
+            result->setHasIntersection (false);
+            return result;
+        }
+
         double t2 = (-b - sqrt(discriminant)) / (2 * a);
 
         Vector intersectionPoint1 = (*line->P0) + (*line->dir) * t1;
@@ -553,43 +566,65 @@ Color* Sphere::getColorToBePainted (IntersectionResult* intersectionResult, Ligh
     
     Vector resultColorRate (0, 0, 0);
 
-    Vector n = (*intersectionResult->getIntersectionPoint() - *this->center) / this->radius;
+    Vector* intersectionPoint = intersectionResult->getIntersectionPoint();
+
+    Vector n = (*intersectionPoint - *this->center) / this->radius;
 
     Vector v = ((*line->dir) * (-1)) / line->dir->getMagnitude();
 
     for (auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
 
-        Vector sourceMinusIntersection = *((*i)->getPosition()) - *intersectionResult->getIntersectionPoint();
+        Vector sourceMinusIntersection = *((*i)->getPosition()) - *intersectionPoint;
 
         double sourceMinusIntersectionMagnitude = sourceMinusIntersection.getMagnitude();
 
         Vector l = sourceMinusIntersection / sourceMinusIntersectionMagnitude;
         
         // verify if the lights intercepts any other object
+        Sp<Line> verifyShadowLine = new Line (
+            new Vector (
+                (*intersectionPoint)
+            ),
+            new Vector (l)
+        );
+
+        bool hasIntersectionWithOtherObjects = false;
+
+        for (auto j = objectsArray.begin(); (j != objectsArray.end() && !hasIntersectionWithOtherObjects); j++) {
+            
+            if ((*j) != this) {
+                Sp<IntersectionResult> intersectionShadow = (*j)->getIntersectionResult (verifyShadowLine.pointer);
+
+                hasIntersectionWithOtherObjects = intersectionShadow->getHasIntersection();
+            }
+
+        }
 
         // calculate the color to be painted
-        double lScalarProductN = scalarProduct (l, n);
+        if (!hasIntersectionWithOtherObjects) {
+            double lScalarProductN = scalarProduct (l, n);
 
-        Vector r = n * (2 * lScalarProductN) - l;
+            Vector r = n * (2 * lScalarProductN) - l;
 
-        double fDifusa = max (
-            0.0,
-            scalarProduct (l, n)
-        );
-
-        double fEspeculada = pow (
-            max (
+            double fDifusa = max (
                 0.0,
-                scalarProduct (r, v)
-            ),
-            this->getShininess()
-        );
+                scalarProduct (l, n)
+            );
 
-        Vector iDifusa = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fDifusa;
+            double fEspeculada = pow (
+                max (
+                    0.0,
+                    scalarProduct (r, v)
+                ),
+                this->getShininess()
+            );
 
-        Vector iEspeculada = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fEspeculada;
+            Vector iDifusa = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fDifusa;
 
-        resultColorRate = resultColorRate + iDifusa + iEspeculada;
+            Vector iEspeculada = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fEspeculada;
+
+            resultColorRate = resultColorRate + iDifusa + iEspeculada;
+        }
     }
 
 
@@ -721,8 +756,8 @@ Color* Plan::getColorToBePainted (IntersectionResult* intersectionResult, Lights
 
         }
 
+        // calculate the color to be painted
         if (!hasIntersectionWithOtherObjects) {    
-            // calculate the color to be painted
             Vector r = (*this->normal) * (2 * scalarProduct (l, *this->normal)) -  l;
 
             double fDifusa = max (
