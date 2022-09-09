@@ -19,7 +19,7 @@ int main () {
     Sphere* sphere2 = new Sphere (
         15.0,
         new Vector (1, 1, 1),
-        new Vector (0, 30, -80)
+        new Vector (0, 20, -70.0)
     );
 
     Sphere* eye1 = new Sphere (

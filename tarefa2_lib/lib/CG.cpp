@@ -220,12 +220,6 @@ Vector::Vector (double x, double y, double z) {
     this->positions[2] = z;
 }
 
-Vector::Vector (const Vector& vector) {
-    for (int i = 0; i < 3; i++) {
-        this->positions[i] = vector.positions[i];
-    }
-}
-
 double& Vector::operator [] (int idx) {
     return this->positions[idx % 3];
 }
@@ -308,16 +302,6 @@ Vector Vector::operator / (const double& operand) {
     );
 
     return result;
-}
-
-Vector Vector::operator = (const Vector& operand) {
-
-    for (int i = 0; i < 3; i++) {
-        this->positions[i] = operand.positions[i];
-    }
-
-    return *this;
-
 }
 
 double Vector::getMagnitude () {

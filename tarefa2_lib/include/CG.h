@@ -34,11 +34,9 @@ class Vector {
         Vector operator * (const double& operand);
         Vector operator / (const Vector& operand);
         Vector operator / (const double& operand);
-        Vector operator = (const Vector& operand);
         
         Vector ();
         Vector (double x, double y, double z);
-        Vector (const Vector& vector);
 };
 
 // returns the scalar product of two vectors
