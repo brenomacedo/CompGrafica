@@ -456,12 +456,21 @@ Vector* Sphere::getCenter () {
     return this->center;
 }
 
+void Sphere::setShininess (double shininess) {
+    this->shininess = shininess;
+}
+
+double Sphere::getShininess () {
+    return this->shininess;
+}
+
 Sphere::Sphere () {}
 
-Sphere::Sphere (double radius, Vector* reflectivity, Vector* center) {
+Sphere::Sphere (double radius, Vector* reflectivity, Vector* center, double shininess) {
     this->setRadius (radius);
     this->setReflectivity (reflectivity);
     this->setCenter (center);
+    this->setShininess (shininess);
 }
 
 Sphere::~Sphere () {
@@ -555,14 +564,17 @@ Color* Sphere::getColorToBePainted (IntersectionResult* intersectionResult, Ligh
             scalarProduct (l, n)
         );
 
-        double fEspeculada = max (
-            0.0,
-            scalarProduct (r, v)
+        double fEspeculada = pow (
+            max (
+                0.0,
+                scalarProduct (r, v)
+            ),
+            this->shininess
         );
 
         Vector iDifusa = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fDifusa;
 
-        Vector iEspeculada = (*(*i)->getIntensity()) * (*this->getReflectivity()) * iEspeculada;
+        Vector iEspeculada = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fEspeculada;
 
         resultColorRate = resultColorRate + iDifusa + iEspeculada;
     }

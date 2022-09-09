@@ -144,6 +144,8 @@ class Line {
 class Object {
     protected:
         ObjectType type;
+        Vector* reflectivity;
+        double shininess;
         
     public:
         virtual ObjectType getObjectType () = 0;
@@ -163,6 +165,9 @@ class Sphere : public Object {
 
         // center of the sphere
         Vector* center;
+
+        // shininess of the sphere (default to 1.0)
+        double shininess = 1.0;
 
     public:
         // return the type of sphere
@@ -186,6 +191,12 @@ class Sphere : public Object {
         // get the sphere center
         Vector* getCenter ();
 
+        // set the sphere shininess
+        void setShininess (double shininess);
+
+        // get the sphere shininess
+        double getShininess ();
+
         // get intersection of sphere and a line
         IntersectionResult* getIntersectionResult (Line* line);
 
@@ -193,7 +204,7 @@ class Sphere : public Object {
         Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, Line* line);
 
         Sphere ();
-        Sphere (double radius, Vector* reflectivity, Vector* center);
+        Sphere (double radius, Vector* reflectivity, Vector* center, double shininess = 1.0);
         ~Sphere ();
         
 };
