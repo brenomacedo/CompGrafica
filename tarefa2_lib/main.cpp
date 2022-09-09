@@ -44,6 +44,10 @@ int main () {
         new Color (100, 100, 100, 255)
     );
 
+    scene->setEnvironmentLight (
+        new Vector (0.1, 0.1, 0.1)
+    );
+
     scene->addLightSource(light);
     scene->addObject(sphere);
     scene->addObject(sphere2);

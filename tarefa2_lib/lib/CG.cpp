@@ -49,6 +49,10 @@ void Scene::setBackgroundColor (Color* color) {
     this->backgroundColor = color;
 }
 
+void Scene::setEnvironmentLight (Vector* environmentLight) {
+    this->environmentLight = environmentLight;
+}
+
 void Scene::addLightSource (Light* lightSource) {
     this->lights.push_back (lightSource);
 }
@@ -79,6 +83,10 @@ double Scene::getCanvasHeight () {
 
 double Scene::getWindowDistance () {
     return this->windowDistance;
+}
+
+Vector* Scene::getEnvironmentLight () {
+    return this->environmentLight;
 }
 
 void Scene::raycast (SDL_Renderer* renderer) {
@@ -124,7 +132,13 @@ void Scene::raycast (SDL_Renderer* renderer) {
             }
 
             if (nearestResult->getHasIntersection()) {
-                Sp<Color> colorToPaint = this->objects[nearestObjectIndex]->getColorToBePainted (nearestResult.pointer, this->lights, this->objects, line.pointer);
+                Sp<Color> colorToPaint = this->objects[nearestObjectIndex]->getColorToBePainted (
+                    nearestResult.pointer,
+                    this->lights,
+                    this->objects,
+                    line.pointer,
+                    this->environmentLight
+                );
 
                 setPaintColor (renderer, colorToPaint->r, colorToPaint->g, colorToPaint->b, colorToPaint->a);
                 paintPixel (renderer, c, l);
@@ -562,7 +576,13 @@ IntersectionResult* Sphere::getIntersectionResult (Line* line) {
 
 }
 
-Color* Sphere::getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, ObjectsArray objectsArray, Line* line) {
+Color* Sphere::getColorToBePainted (
+    IntersectionResult* intersectionResult,
+    LightsArray lightsArray,
+    ObjectsArray objectsArray,
+    Line* line,
+    Vector* environmentLight
+) {
     
     Vector resultColorRate (0, 0, 0);
 
@@ -627,6 +647,9 @@ Color* Sphere::getColorToBePainted (IntersectionResult* intersectionResult, Ligh
         }
     }
 
+    if (environmentLight != nullptr) {
+        resultColorRate = resultColorRate + *environmentLight;
+    }
 
     return new Color (
         resultColorRate[0] * 255,
@@ -724,7 +747,13 @@ IntersectionResult* Plan::getIntersectionResult (Line* line) {
 
 }
 
-Color* Plan::getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, ObjectsArray objectsArray, Line* line) {
+Color* Plan::getColorToBePainted (
+    IntersectionResult* intersectionResult,
+    LightsArray lightsArray,
+    ObjectsArray objectsArray,
+    Line* line,
+    Vector* environmentLight
+) {
 
     Vector resultColorRate (0, 0, 0);
 
@@ -783,6 +812,9 @@ Color* Plan::getColorToBePainted (IntersectionResult* intersectionResult, Lights
 
     }
 
+    if (environmentLight != nullptr) {
+        resultColorRate = resultColorRate + *environmentLight;
+    }
 
     return new Color (
         resultColorRate[0] * 255,
@@ -791,5 +823,3 @@ Color* Plan::getColorToBePainted (IntersectionResult* intersectionResult, Lights
         255
     );
 }
-
-// ADICIONAR ILUMINAÇÃO AMBIENTE!!!

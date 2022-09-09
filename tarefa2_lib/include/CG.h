@@ -160,7 +160,13 @@ class Object {
     public:
         virtual ObjectType getObjectType () = 0;
         virtual IntersectionResult* getIntersectionResult (Line* line) = 0;
-        virtual Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, ObjectsArray objectsArray, Line* line) = 0;
+        virtual Color* getColorToBePainted (
+            IntersectionResult* intersectionResult,
+            LightsArray lightsArray,
+            ObjectsArray objectsArray,
+            Line* line,
+            Vector* environmentLight
+        ) = 0;
 };
 
 class Sphere : public Object {
@@ -211,7 +217,13 @@ class Sphere : public Object {
         IntersectionResult* getIntersectionResult (Line* line);
 
         // get color to be painted
-        Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, ObjectsArray objectsArray, Line* line);
+        Color* getColorToBePainted (
+            IntersectionResult* intersectionResult,
+            LightsArray lightsArray,
+            ObjectsArray objectsArray,
+            Line* line,
+            Vector* environmentLight
+        );
 
         Sphere ();
         Sphere (double radius, Vector* reflectivity, Vector* center, double shininess = 1.0);
@@ -267,7 +279,13 @@ class Plan : public Object {
         IntersectionResult* getIntersectionResult (Line* line);
 
         // get color to be painted
-        Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, ObjectsArray objectsArray, Line* line);
+        Color* getColorToBePainted (
+            IntersectionResult* intersectionResult,
+            LightsArray lightsArray,
+            ObjectsArray objectsArray,
+            Line* line,
+            Vector* environmentLight
+        );
 
         Plan ();
         Plan (Vector* initialPoint, Vector* normal, Vector* reflectivity, double shininess = 1.0);
@@ -304,6 +322,9 @@ class Scene {
         // set of light sources in the scene
         LightsArray lights;
 
+        // environment light of the scene
+        Vector* environmentLight = nullptr;
+
         // background color of the scene
         // if the raycasting do not intercept any
         // object, the pixel will be painted with
@@ -339,7 +360,11 @@ class Scene {
         // in the future, this may be updated to a more complex position
         void setWindowDistance (double windowDistance);
 
+        // set the background color of the scene
         void setBackgroundColor (Color* color);
+
+        // set the environment light of the scene
+        void setEnvironmentLight (Vector* environmentLight);
 
         // add a light source to the scene
         void addLightSource (Light* lightSource);
@@ -365,6 +390,10 @@ class Scene {
 
         // returns the window distance to the eye
         double getWindowDistance ();
+
+        // returns the vector that contains
+        // the environment light
+        Vector* getEnvironmentLight ();
 
         // returns a copy of the vector
         // with the POINTERS to light sources
