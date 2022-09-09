@@ -208,7 +208,7 @@ Scene::Scene (
 }
 
 Scene::~Scene () {
-    delete this->eyeCenter;
+    delete this->getEyeCenter();
     
     for (auto i = this->objects.begin(); i != this->objects.end(); i++) {
         delete (*i);
@@ -372,8 +372,8 @@ Light::Light (Vector* intensity, Vector* position) {
 }
 
 Light::~Light () {
-    delete this->position;
-    delete this->intensity;
+    delete this->getPosition();
+    delete this->getIntensity();
 }
 
 Line::Line (Vector* P0, Vector* dir) {
@@ -419,11 +419,11 @@ ObjectRegion IntersectionResult::getObjectRegion () {
 }
 
 IntersectionResult IntersectionResult::operator = (const IntersectionResult& result) {
-    this->distanceFromP0 = result.distanceFromP0;
-    this->hasIntersection = result.hasIntersection;
+    this->setDistanceFromP0(result.distanceFromP0);
+    this->setHasIntersection(result.hasIntersection);
     
-    if (this->intersectionPoint != nullptr && result.intersectionPoint != nullptr) {
-        *this->intersectionPoint = *result.intersectionPoint;
+    if (this->getIntersectionPoint() != nullptr && result.intersectionPoint != nullptr) {
+        *this->getIntersectionPoint() = *result.intersectionPoint;
     }
 
     return *this;
@@ -448,7 +448,7 @@ IntersectionResult::IntersectionResult (const IntersectionResult& result) {
 }
 
 IntersectionResult::~IntersectionResult () {
-    delete this->intersectionPoint;
+    delete this->getIntersectionPoint();
 }
 
 ObjectType Sphere::getObjectType () {
@@ -497,17 +497,17 @@ Sphere::Sphere (double radius, Vector* reflectivity, Vector* center, double shin
 }
 
 Sphere::~Sphere () {
-    delete this->reflectivity;
-    delete this->center;
+    delete this->getReflectivity();
+    delete this->getCenter();
 }
 
 IntersectionResult* Sphere::getIntersectionResult (Line* line) {
 
-    Vector w = *(line->P0) - *(this->center);
+    Vector w = *(line->P0) - *(this->getCenter());
 
     double a = scalarProduct (line->dir, line->dir);
     double b = 2 * scalarProduct (w, *(line->dir));
-    double c = scalarProduct (w, w) - pow (this->radius, 2.0);
+    double c = scalarProduct (w, w) - pow (this->getRadius(), 2.0);
 
     double discriminant = (pow (b, 2.0) - 4 * a * c);
 
@@ -588,7 +588,7 @@ Color* Sphere::getColorToBePainted (
 
     Vector* intersectionPoint = intersectionResult->getIntersectionPoint();
 
-    Vector n = (*intersectionPoint - *this->center) / this->radius;
+    Vector n = (*intersectionPoint - *this->getCenter()) / this->getRadius();
 
     Vector v = ((*line->dir) * (-1)) / line->dir->getMagnitude();
 
@@ -700,16 +700,16 @@ double Plan::getShininess () {
 Plan::Plan () {}
 
 Plan::Plan (Vector* initialPoint, Vector* normal, Vector* reflectivity, double shininess) {
-    this->initialPoint = initialPoint;
-    this->normal = normal;
-    this->reflectivity = reflectivity;
-    this->shininess = shininess;
+    this->setInitialPoint (initialPoint);
+    this->setNormal (normal);
+    this->setReflectivity (reflectivity);
+    this->setShininess (shininess);
 }
 
 Plan::~Plan () {
-    delete this->initialPoint;
-    delete this->normal;
-    delete this->reflectivity;
+    delete this->getInitialPoint();
+    delete this->getNormal();
+    delete this->getReflectivity();
 }
 
 IntersectionResult* Plan::getIntersectionResult (Line* line) {
@@ -718,9 +718,9 @@ IntersectionResult* Plan::getIntersectionResult (Line* line) {
     result->setObjectRegion (ObjectRegion::PLAN);
     result->setHasIntersection (true);
 
-    Vector w = *(line->P0) - *this->initialPoint;
+    Vector w = *(line->P0) - *this->getInitialPoint();
 
-    double dirScalarN = scalarProduct (line->dir, this->normal);
+    double dirScalarN = scalarProduct (line->dir, this->getNormal());
 
     if (dirScalarN == 0) {
         result->setHasIntersection (false);
@@ -787,10 +787,10 @@ Color* Plan::getColorToBePainted (
 
         // calculate the color to be painted
         if (!hasIntersectionWithOtherObjects) {    
-            Vector r = (*this->normal) * (2 * scalarProduct (l, *this->normal)) -  l;
+            Vector r = (*this->getNormal()) * (2 * scalarProduct (l, *this->getNormal())) -  l;
 
             double fDifusa = max (
-                scalarProduct (l, *this->normal),
+                scalarProduct (l, *this->getNormal()),
                 0.0
             );
 
