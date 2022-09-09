@@ -224,7 +224,7 @@ class Plan : public Object {
         ObjectType type = ObjectType::PLAN;
 
         // reference point of the plan
-        Vector* P0;
+        Vector* initialPoint;
 
         // reflectivity of the sphere material
         Vector* reflectivity;
@@ -240,10 +240,10 @@ class Plan : public Object {
         ObjectType getObjectType ();
 
         // set the reference point of the plan
-        void setP0 (Vector* P0);
+        void setInitialPoint (Vector* initialPoint);
 
         // get the reference point of the plan
-        Vector* getP0 ();
+        Vector* getInitialPoint ();
 
         // set the normal of the plan
         void setNormal (Vector* normal);
@@ -270,7 +270,7 @@ class Plan : public Object {
         Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, Line* line);
 
         Plan ();
-        Plan (Vector* P0, Vector* normal, Vector* reflectivity, double shininess = 1.0);
+        Plan (Vector* initialPoint, Vector* normal, Vector* reflectivity, double shininess = 1.0);
         ~Plan ();
         
 };

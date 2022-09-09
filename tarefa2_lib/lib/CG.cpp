@@ -601,17 +601,17 @@ Color* Sphere::getColorToBePainted (IntersectionResult* intersectionResult, Ligh
 }
 
 Plan::~Plan () {
-    delete this->P0;
+    delete this->initialPoint;
     delete this->normal;
     delete this->reflectivity;
 }
 
-void Plan::setP0 (Vector* P0) {
-    this->P0 = P0;
+void Plan::setInitialPoint (Vector* initialPoint) {
+    this->initialPoint = initialPoint;
 }
 
-Vector* Plan::getP0 () {
-    return this->P0;
+Vector* Plan::getInitialPoint () {
+    return this->initialPoint;
 } 
 
 void Plan::setNormal (Vector* normal) {
@@ -640,15 +640,15 @@ double Plan::getShininess () {
 
 Plan::Plan () {}
 
-Plan::Plan (Vector* P0, Vector* normal, Vector* reflectivity, double shininess) {
-    this->P0 = P0;
+Plan::Plan (Vector* initialPoint, Vector* normal, Vector* reflectivity, double shininess) {
+    this->initialPoint = initialPoint;
     this->normal = normal;
     this->reflectivity = reflectivity;
     this->shininess = shininess;
 }
 
 IntersectionResult* Plan::getIntersectionResult (Line* line) {
-    
+
 }
 
 Color* Plan::getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, Line* line) {
