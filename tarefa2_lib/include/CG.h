@@ -219,6 +219,62 @@ class Sphere : public Object {
         
 };
 
+class Plan : public Object {
+    private:
+        ObjectType type = ObjectType::PLAN;
+
+        // reference point of the plan
+        Vector* P0;
+
+        // reflectivity of the sphere material
+        Vector* reflectivity;
+
+        // normal of the plan
+        Vector* normal;
+
+        // shininess of the sphere (default to 1.0)
+        double shininess = 1.0;
+
+    public:
+        // return the type of plan
+        ObjectType getObjectType ();
+
+        // set the reference point of the plan
+        void setP0 (Vector* P0);
+
+        // get the reference point of the plan
+        Vector* getP0 ();
+
+        // set the normal of the plan
+        void setNormal (Vector* normal);
+
+        // get the normal of the plan
+        Vector* getNormal ();
+
+        // set the plan reflectivity
+        void setReflectivity (Vector* reflectivity);
+
+        // get the plan reflectivity
+        Vector* getReflectivity ();
+
+        // set the plan shininess
+        void setShininess (double shininess);
+
+        // get the plan shininess
+        double getShininess ();
+
+        // get intersection of plan and a line
+        IntersectionResult* getIntersectionResult (Line* line);
+
+        // get color to be painted
+        Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, Line* line);
+
+        Plan ();
+        Plan (Vector* P0, Vector* normal, Vector* reflectivity, double shininess = 1.0);
+        ~Plan ();
+        
+};
+
 class Scene {
     private:
         // position where the eye is

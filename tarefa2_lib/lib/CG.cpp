@@ -600,4 +600,59 @@ Color* Sphere::getColorToBePainted (IntersectionResult* intersectionResult, Ligh
 
 }
 
+Plan::~Plan () {
+    delete this->P0;
+    delete this->normal;
+    delete this->reflectivity;
+}
+
+void Plan::setP0 (Vector* P0) {
+    this->P0 = P0;
+}
+
+Vector* Plan::getP0 () {
+    return this->P0;
+} 
+
+void Plan::setNormal (Vector* normal) {
+    this->normal = normal;
+}
+
+Vector* Plan::getNormal () {
+    return this->normal;
+}
+
+void Plan::setReflectivity (Vector* reflectivity) {
+    this->reflectivity = reflectivity;
+}
+
+Vector* Plan::getReflectivity () {
+    return this->reflectivity;
+}
+
+void Plan::setShininess (double shininess) {
+    this->shininess = shininess;
+}
+
+double Plan::getShininess () {
+    return this->shininess;
+}
+
+Plan::Plan () {}
+
+Plan::Plan (Vector* P0, Vector* normal, Vector* reflectivity, double shininess) {
+    this->P0 = P0;
+    this->normal = normal;
+    this->reflectivity = reflectivity;
+    this->shininess = shininess;
+}
+
+IntersectionResult* Plan::getIntersectionResult (Line* line) {
+    
+}
+
+Color* Plan::getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, Line* line) {
+    return new Color (255, 0, 0, 255);
+}
+
 // ADICIONAR ILUMINAÇÃO AMBIENTE!!!

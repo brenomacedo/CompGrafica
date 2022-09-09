@@ -12,7 +12,7 @@ int main () {
 
     Sphere* sphere = new Sphere (
         20.0,
-        new Vector (1, 0.3, 0.3),
+        new Vector (1, 1, 1),
         new Vector (0, 0, -100.0),
         5
     );
