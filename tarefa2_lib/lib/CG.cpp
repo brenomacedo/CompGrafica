@@ -106,7 +106,7 @@ void Scene::raycast (SDL_Renderer* renderer) {
             Sp<Line> line = new Line (P0, direction);
 
             int nearestObjectIndex = 0;
-            Sp<IntersectionResult> nearestResult = new IntersectionResult (false, nullptr, 0);
+            Sp<IntersectionResult> nearestResult = new IntersectionResult (false, nullptr, 0, ObjectRegion::UNKNOWN);
 
             for (int i = 0; i < numberOfObjects; i++) {
 
@@ -396,6 +396,14 @@ double IntersectionResult::getDistanceFromP0 () {
     return this->distanceFromP0;
 }
 
+void IntersectionResult::setObjectRegion (ObjectRegion region) {
+    this->region = region;
+}
+
+ObjectRegion IntersectionResult::getObjectRegion () {
+    return this->region;
+}
+
 IntersectionResult IntersectionResult::operator = (const IntersectionResult& result) {
     this->distanceFromP0 = result.distanceFromP0;
     this->hasIntersection = result.hasIntersection;
@@ -409,10 +417,11 @@ IntersectionResult IntersectionResult::operator = (const IntersectionResult& res
 
 IntersectionResult::IntersectionResult () {}
 
-IntersectionResult::IntersectionResult (bool hasIntersection, Vector* intersectionPoint, double distanceFromP0) {
+IntersectionResult::IntersectionResult (bool hasIntersection, Vector* intersectionPoint, double distanceFromP0, ObjectRegion region) {
     this->setHasIntersection (hasIntersection);
     this->setIntersectionPoint (intersectionPoint);
     this->setDistanceFromP0 (distanceFromP0);
+    this->setObjectRegion (region);
 }
 
 IntersectionResult::IntersectionResult (const IntersectionResult& result) {
@@ -490,6 +499,7 @@ IntersectionResult* Sphere::getIntersectionResult (Line* line) {
 
     double t;
     IntersectionResult* result = new IntersectionResult ();
+    result->setObjectRegion (ObjectRegion::SPHERE_SURFACE);
 
     if (discriminant == 0) {
         result->setHasIntersection (true);

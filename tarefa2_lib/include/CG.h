@@ -10,6 +10,7 @@ double min (double a, double b);
 double max (double a, double b);
 
 enum class ObjectType { SHPERE, PLAN, CYLINDER };
+enum class ObjectRegion { SPHERE_SURFACE, CYLINDER_SURFACE, CYLINDER_COVER, PLAN, UNKNOWN };
 
 class Object;
 class Light;
@@ -99,6 +100,9 @@ class IntersectionResult {
         // distance between the p0 of the line and the intersection point
         double distanceFromP0;
 
+        // region of object that was intercepted by the ray
+        ObjectRegion region;
+
     public:
         // set if the line cross the object
         void setHasIntersection (bool hasIntersection);
@@ -119,10 +123,16 @@ class IntersectionResult {
         // returns the distance between the p0 and the intersection point
         double getDistanceFromP0 ();
 
+        // set the object region
+        void setObjectRegion (ObjectRegion region);
+
+        // get the object region
+        ObjectRegion getObjectRegion ();
+
         IntersectionResult operator = (const IntersectionResult& result);
 
         IntersectionResult ();
-        IntersectionResult (bool hasIntersection, Vector* intersectionPoint, double distanceFromP0);
+        IntersectionResult (bool hasIntersection, Vector* intersectionPoint, double distanceFromP0, ObjectRegion region);
         ~IntersectionResult ();
         IntersectionResult (const IntersectionResult& result);
 
