@@ -160,7 +160,7 @@ class Object {
     public:
         virtual ObjectType getObjectType () = 0;
         virtual IntersectionResult* getIntersectionResult (Line* line) = 0;
-        virtual Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, Line* line) = 0;
+        virtual Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, ObjectsArray objectsArray, Line* line) = 0;
 };
 
 class Sphere : public Object {
@@ -211,7 +211,7 @@ class Sphere : public Object {
         IntersectionResult* getIntersectionResult (Line* line);
 
         // get color to be painted
-        Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, Line* line);
+        Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, ObjectsArray objectsArray, Line* line);
 
         Sphere ();
         Sphere (double radius, Vector* reflectivity, Vector* center, double shininess = 1.0);
@@ -267,7 +267,7 @@ class Plan : public Object {
         IntersectionResult* getIntersectionResult (Line* line);
 
         // get color to be painted
-        Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, Line* line);
+        Color* getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, ObjectsArray objectsArray, Line* line);
 
         Plan ();
         Plan (Vector* initialPoint, Vector* normal, Vector* reflectivity, double shininess = 1.0);

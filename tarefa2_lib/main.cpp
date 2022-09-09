@@ -20,13 +20,13 @@ int main () {
     Plan* plan = new Plan (
         new Vector (0, -20, 0),
         new Vector (0, 1, 0),
-        new Vector (1, 0, 0),
+        new Vector (0, 0.8, 0),
         0.5
     );
 
     Light* light = new Light (
         new Vector (0.7, 0.7, 0.7),
-        new Vector (0, 50, 0)
+        new Vector (100, 500, 100)
     );
 
     Sp<Scene> scene = new Scene (
