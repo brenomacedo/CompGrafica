@@ -143,7 +143,7 @@ void Scene::render () {
     // SDL_RenderSetScale(renderer, 4, 4);
 
     if (this->backgroundColor == nullptr) {
-        std::cout << "backgroundColor não iniciado" << std::endl;
+        std::cout << "backgroundColor is null" << std::endl;
     }
 
     setWindowBackground (
@@ -553,6 +553,10 @@ Color* Sphere::getColorToBePainted (IntersectionResult* intersectionResult, Ligh
     
     Vector resultColorRate (0, 0, 0);
 
+    Vector n = (*intersectionResult->getIntersectionPoint() - *this->center) / this->radius;
+
+    Vector v = ((*line->dir) * (-1)) / line->dir->getMagnitude();
+
     for (auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
 
         Vector sourceMinusIntersection = *((*i)->getPosition()) - *intersectionResult->getIntersectionPoint();
@@ -560,10 +564,6 @@ Color* Sphere::getColorToBePainted (IntersectionResult* intersectionResult, Ligh
         double sourceMinusIntersectionMagnitude = sourceMinusIntersection.getMagnitude();
 
         Vector l = sourceMinusIntersection / sourceMinusIntersectionMagnitude;
-
-        Vector n = (*intersectionResult->getIntersectionPoint() - *this->center) / this->radius;
-
-        Vector v = ((*line->dir) * (-1)) / line->dir->getMagnitude();
 
         double lScalarProductN = scalarProduct (l, n);
 
@@ -579,7 +579,7 @@ Color* Sphere::getColorToBePainted (IntersectionResult* intersectionResult, Ligh
                 0.0,
                 scalarProduct (r, v)
             ),
-            this->shininess
+            this->getShininess()
         );
 
         Vector iDifusa = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fDifusa;
@@ -600,10 +600,8 @@ Color* Sphere::getColorToBePainted (IntersectionResult* intersectionResult, Ligh
 
 }
 
-Plan::~Plan () {
-    delete this->initialPoint;
-    delete this->normal;
-    delete this->reflectivity;
+ObjectType Plan::getObjectType () {
+    return this->type;
 }
 
 void Plan::setInitialPoint (Vector* initialPoint) {
@@ -647,12 +645,87 @@ Plan::Plan (Vector* initialPoint, Vector* normal, Vector* reflectivity, double s
     this->shininess = shininess;
 }
 
+Plan::~Plan () {
+    delete this->initialPoint;
+    delete this->normal;
+    delete this->reflectivity;
+}
+
 IntersectionResult* Plan::getIntersectionResult (Line* line) {
+
+    IntersectionResult* result = new IntersectionResult ();
+    result->setObjectRegion (ObjectRegion::PLAN);
+    result->setHasIntersection (true);
+
+    Vector w = *(line->P0) - *this->initialPoint;
+
+    double dirScalarN = scalarProduct (line->dir, this->normal);
+
+    if (dirScalarN == 0) {
+        result->setHasIntersection (false);
+        return result;
+    }
+
+    double t = (-scalarProduct (w, *this->normal)) / dirScalarN;
+
+    if (t < 0) {
+        result->setHasIntersection (false);
+        return result;
+    }
+
+    Vector* intersectionPoint = new Vector ();
+    *intersectionPoint = *line->P0 + *line->dir * t;
+
+    Vector distanceVector = (*intersectionPoint) - (*line->P0);
+    double distanceFromP0 = distanceVector.getMagnitude ();
+
+    result->setIntersectionPoint (intersectionPoint);
+    result->setDistanceFromP0 (distanceFromP0);
+
+    return result;
 
 }
 
 Color* Plan::getColorToBePainted (IntersectionResult* intersectionResult, LightsArray lightsArray, Line* line) {
-    return new Color (255, 0, 0, 255);
+
+    Vector resultColorRate (0, 0, 0);
+
+    Vector v = ((*line->dir) * -1) / line->dir->getMagnitude();
+
+    for (auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
+        
+        Vector l = (*((*i)->getPosition()) - *intersectionResult->getIntersectionPoint()) / (*((*i)->getPosition()) - *intersectionResult->getIntersectionPoint()).getMagnitude();
+
+        Vector r = (*this->normal) * (2 * scalarProduct (l, *this->normal)) -  l;
+
+        double fDifusa = max (
+            scalarProduct (l, *this->normal),
+            0.0
+        );
+
+        double fEspeculada = pow (
+            max (
+                scalarProduct (r, v),
+                0.0
+            ),
+            this->getShininess()
+        );
+
+        Vector iDifusa = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fDifusa;
+
+        Vector iEspeculada = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fEspeculada;
+
+        resultColorRate = resultColorRate + iDifusa + iEspeculada;
+
+    }
+
+
+    return new Color (
+        resultColorRate[0] * 255,
+        resultColorRate[1] * 255,
+        resultColorRate[2] * 255,
+        255
+    );
 }
 
 // ADICIONAR ILUMINAÇÃO AMBIENTE!!!

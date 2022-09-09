@@ -13,13 +13,20 @@ int main () {
     Sphere* sphere = new Sphere (
         20.0,
         new Vector (1, 1, 1),
-        new Vector (0, 0, -100.0),
-        5
+        new Vector (0, 0, -80),
+        5.0
+    );
+
+    Plan* plan = new Plan (
+        new Vector (0, -20, 0),
+        new Vector (0, 1, 0),
+        new Vector (1, 0, 0),
+        0.5
     );
 
     Light* light = new Light (
         new Vector (0.7, 0.7, 0.7),
-        new Vector (0, 80, 0)
+        new Vector (0, 50, 0)
     );
 
     Sp<Scene> scene = new Scene (
@@ -32,6 +39,7 @@ int main () {
 
     scene->addLightSource(light);
     scene->addObject(sphere);
+    scene->addObject(plan);
 
     scene->render();
 

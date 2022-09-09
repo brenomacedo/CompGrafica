@@ -224,13 +224,13 @@ class Plan : public Object {
         ObjectType type = ObjectType::PLAN;
 
         // reference point of the plan
-        Vector* initialPoint;
+        Vector* initialPoint = nullptr;
 
         // reflectivity of the sphere material
-        Vector* reflectivity;
+        Vector* reflectivity = nullptr;
 
         // normal of the plan
-        Vector* normal;
+        Vector* normal = nullptr;
 
         // shininess of the sphere (default to 1.0)
         double shininess = 1.0;
