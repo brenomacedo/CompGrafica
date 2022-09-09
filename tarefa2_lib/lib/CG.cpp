@@ -615,7 +615,9 @@ Color* Sphere::getColorToBePainted (
             if ((*j) != this) {
                 Sp<IntersectionResult> intersectionShadow = (*j)->getIntersectionResult (verifyShadowLine.pointer);
 
-                hasIntersectionWithOtherObjects = intersectionShadow->getHasIntersection();
+                hasIntersectionWithOtherObjects =
+                    intersectionShadow->getHasIntersection() &&
+                    (intersectionShadow->getDistanceFromP0() < intersectionResult->getDistanceFromP0());
             }
 
         }
@@ -780,7 +782,9 @@ Color* Plan::getColorToBePainted (
             if ((*j) != this) {
                 Sp<IntersectionResult> intersectionShadow = (*j)->getIntersectionResult (verifyShadowLine.pointer);
 
-                hasIntersectionWithOtherObjects = intersectionShadow->getHasIntersection();
+                hasIntersectionWithOtherObjects =
+                    intersectionShadow->getHasIntersection() &&
+                    (intersectionShadow->getDistanceFromP0() < intersectionResult->getDistanceFromP0());
             }
 
         }

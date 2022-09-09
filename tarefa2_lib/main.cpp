@@ -13,14 +13,7 @@ int main () {
     Sphere* sphere = new Sphere (
         20.0,
         new Vector (1, 1, 1),
-        new Vector (0, 0, -80),
-        5.0
-    );
-
-    Sphere* sphere2 = new Sphere (
-        20.0,
-        new Vector (0, 0, 1),
-        new Vector (30, 30, -70),
+        new Vector (0, 0, -60),
         5.0
     );
 
@@ -31,9 +24,16 @@ int main () {
         0.5
     );
 
+    Plan* plan2 = new Plan (
+        new Vector (0, 0, -80),
+        new Vector (0, 0, 1),
+        new Vector (0, 0, 0.8),
+        0.5
+    );
+
     Light* light = new Light (
         new Vector (0.7, 0.7, 0.7),
-        new Vector (100, 500, 100)
+        new Vector (0, 50, 0)
     );
 
     Sp<Scene> scene = new Scene (
@@ -45,13 +45,13 @@ int main () {
     );
 
     scene->setEnvironmentLight (
-        new Vector (0.1, 0.1, 0.1)
+        new Vector (0.0, 0.1, 0.1)
     );
 
     scene->addLightSource(light);
     scene->addObject(sphere);
-    scene->addObject(sphere2);
     scene->addObject(plan);
+    scene->addObject(plan2);
 
     scene->render();
 
