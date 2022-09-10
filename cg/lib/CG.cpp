@@ -584,8 +584,8 @@ IntersectionResult* Sphere::getIntersectionResult (Line* line) {
         Vector intersectionPoint1 = (*line->P0) + (*line->dir) * t1;
         Vector intersectionPoint2 = (*line->P0) + (*line->dir) * t2;
 
-        double distanceP0toT1 = intersectionPoint1.getMagnitude ();
-        double distanceP0toT2 = intersectionPoint2.getMagnitude ();
+        double distanceP0toT1 = (intersectionPoint1 - *line->P0).getMagnitude ();
+        double distanceP0toT2 = (intersectionPoint2 - *line->P0).getMagnitude ();
 
         Vector* intersectionPoint = new Vector ();
 
@@ -908,7 +908,106 @@ double Cylinder::getShininess () {
 }
 
 IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
-    return new IntersectionResult(); // TODO: make cylinder getIntersectionResult
+
+    IntersectionResult* intersectionResult = new IntersectionResult ();
+    intersectionResult->setHasIntersection (false);
+
+    bool interceptsCover = false;
+
+    Vector dirT (
+        (*line->dir)[2],
+        (*line->dir)[1],
+        (*line->dir)[0]
+    );
+
+    Vector cylinderDirection = (*this->getBaseCenter() - *this->getTopCenter()) /
+                               (*this->getBaseCenter() - *this->getTopCenter()).getMagnitude();
+
+    Vector cylinderDirectionT (
+        cylinderDirection[2],
+        cylinderDirection[1],
+        cylinderDirection[0]
+    );
+
+    Vector w = *line->P0 - *this->getBaseCenter();
+
+    Vector wT (
+        w[2],
+        w[1],
+        w[0]
+    );
+
+    Vector Identity[3] = {
+        Vector (
+            1, 0, 0            
+        ),
+        Vector (
+            0, 1, 0
+        ),
+        Vector (
+            0, 0, 1
+        )
+    };
+
+    // M = Identity - cylinderDirection * cylinderDirectionT
+    Vector M[3];
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+
+            M[i][j] = Identity[i][j] - cylinderDirection[i] * cylinderDirectionT[j];
+
+        }
+    }
+
+    // ==================== verify intersection with the cylinder cover =======================
+
+    // dr * dc
+    double drPlusDc = scalarProduct (line->dir, this->getBaseCenter());
+    double t1;
+    double t2;
+
+    if (drPlusDc != 0) {
+        interceptsCover = true;
+
+        // base plan
+        t1 = (scalarProduct ((*line->P0 - *this->getBaseCenter()), cylinderDirection) / drPlusDc) * (-1);
+        
+        // top plan
+        t2 = (scalarProduct ((*line->P0 - *this->getTopCenter()), cylinderDirection) / drPlusDc) * (-1);
+    }
+
+    double distanceP0ToT1 = (*line->P0 + *line->dir * t1).getMagnitude();
+    double distanceP0ToT2 = (*line->P0 + *line->dir * t2).getMagnitude();
+
+    // ========================================================================================
+
+    
+    // ==================== verify intersection with the cylinder surface =====================
+
+    // cylinderDirectionT * M
+    Vector drTPlusM;
+
+    for (int i = 0; i < 3; i++) {
+        drTPlusM[i] = cylinderDirectionT[0] * M[0][i] + cylinderDirectionT[1] * M[1][i] + cylinderDirectionT[2] * M[2][i];
+    }
+
+    // (cylinderDirectionT * M)[1x3] * dir[3x1]
+    double a = drTPlusM[0] * (*line->dir)[0] + drTPlusM[1] * (*line->dir)[1] + drTPlusM[2] * (*line->dir)[2];
+
+    // wT * M
+    Vector wTPlusM;
+
+    for (int i = 0; i < 3; i++) {
+        wTPlusM[i] = wT[0] * M[0][i] + wT[1] * M[1][i] + wT[2] * M[2][i];
+    }
+
+    double b = 2 * (wTPlusM[0] * (*line->dir)[0] + wTPlusM[1] * (*line->dir)[1] + wTPlusM[2] * (*line->dir)[2]);
+
+    double c = (wTPlusM[0] * w[0] + wTPlusM[1] * w[1] + wTPlusM[2] * w[2]) - pow (this->getRadius(), 2.0);
+    
+    // ================================================================
+
 }
 
 Color* Cylinder::getColorToBePainted (
@@ -918,7 +1017,7 @@ Color* Cylinder::getColorToBePainted (
     Line* line,
     Vector* environmentLight
 ) {
-    return new Color (255, 0, 0, 0); // TODO: make cylinder getColorToBePainted
+    return new Color (255, 0, 0, 255); // TODO: make cylinder getColorToBePainted
 };
 
 Cylinder::Cylinder () {}
