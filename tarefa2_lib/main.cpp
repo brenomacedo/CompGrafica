@@ -33,7 +33,7 @@ int main () {
 
     Light* light = new Light (
         new Vector (0.7, 0.7, 0.7),
-        new Vector (0, 50, 0)
+        new Vector (0, 50, -30)
     );
 
     Sp<Scene> scene = new Scene (

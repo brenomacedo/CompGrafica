@@ -650,7 +650,7 @@ Color* Sphere::getColorToBePainted (
     }
 
     if (environmentLight != nullptr) {
-        resultColorRate = resultColorRate + *environmentLight;
+        resultColorRate = resultColorRate + ((*environmentLight) * (*this->getReflectivity()));
     }
 
     return new Color (
@@ -817,7 +817,7 @@ Color* Plan::getColorToBePainted (
     }
 
     if (environmentLight != nullptr) {
-        resultColorRate = resultColorRate + *environmentLight;
+        resultColorRate = resultColorRate + ((*environmentLight) * (*this->getReflectivity()));
     }
 
     return new Color (
@@ -827,3 +827,15 @@ Color* Plan::getColorToBePainted (
         255
     );
 }
+
+// ObjectType Cylinder::getObjectType () {
+//     return this->type;
+// }
+
+// void Cylinder::setBaseCenter (Vector* baseCenter) {
+//     this->baseCenter = baseCenter;
+// }
+
+// Vector* Cylinder::getBaseCenter () {
+//     return this->baseCenter;
+// }
