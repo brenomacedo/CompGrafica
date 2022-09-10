@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <SDL2/SDL.h>
+#include "./image.h"
 
 // return the max of a and b
 double min (double a, double b);
@@ -404,6 +405,16 @@ class Scene {
         // this color (defaults to nullptr)
         Color* backgroundColor = nullptr;
 
+        // background image of the scene
+        // if the raycasting do not intercepy any
+        // object, the pixel will be painted
+        // with the color of the equivalent pixel
+        // of the image (defaults to nullptr)
+        //
+        // obs: for a while, onyl supports jpg image
+        // transparent images will be supported soon
+        Image* backgroundImage = nullptr;
+
         // throw rays for each pixel of canvas
         // and verify if it has intersection with
         // an object and paint the pixel with the result color
@@ -436,6 +447,9 @@ class Scene {
         // set the background color of the scene
         void setBackgroundColor (Color* color);
 
+        // set the background image of the scene
+        void setBackgroundImage (Image* image);
+
         // set the environment light of the scene
         void setEnvironmentLight (Vector* environmentLight);
 
@@ -463,6 +477,12 @@ class Scene {
 
         // returns the window distance to the eye
         double getWindowDistance ();
+
+        // get the background color of the scene
+        Color* getBackgroundColor ();
+
+        // get the background image of the scene
+        Image* getBackgroundImage ();
 
         // returns the vector that contains
         // the environment light

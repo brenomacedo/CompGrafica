@@ -4,6 +4,7 @@
 #include "../include/utils.impl.h"
 #include "../include/CG.h"
 #include "../include/pixels.h"
+#include "../include/image.h"
 
 double min (double a, double b) {
     if (a < b) {
@@ -49,6 +50,10 @@ void Scene::setBackgroundColor (Color* color) {
     this->backgroundColor = color;
 }
 
+void Scene::setBackgroundImage (Image* image) {
+    this->backgroundImage = image;
+}
+
 void Scene::setEnvironmentLight (Vector* environmentLight) {
     this->environmentLight = environmentLight;
 }
@@ -85,6 +90,14 @@ double Scene::getWindowDistance () {
     return this->windowDistance;
 }
 
+Color* Scene::getBackgroundColor () {
+    return this->backgroundColor;
+}
+
+Image* Scene::getBackgroundImage () {
+    return this->backgroundImage;
+}
+
 Vector* Scene::getEnvironmentLight () {
     return this->environmentLight;
 }
@@ -98,6 +111,8 @@ void Scene::raycast (SDL_Renderer* renderer) {
 
     const double dx = wJanela / nCol;
     const double dy = hJanela / nLin;
+
+    Image* sceneBackgroundImage = this->getBackgroundImage ();
 
     int numberOfObjects = this->objects.size();
 
@@ -142,6 +157,18 @@ void Scene::raycast (SDL_Renderer* renderer) {
 
                 setPaintColor (renderer, colorToPaint->r, colorToPaint->g, colorToPaint->b, colorToPaint->a);
                 paintPixel (renderer, c, l);
+            } else if (sceneBackgroundImage != nullptr) {
+                // if there is no intersection, verify if there is an background image and paint
+                // with the color of equivalent pixel in the image
+
+                double x = (double (c) * double (sceneBackgroundImage->getImageWidth())) / this->getCanvasWidth ();
+                double y = (double (l) * double (sceneBackgroundImage->getImageHeight())) / this->getCanvasHeight ();
+
+                Pixel pixelToPaint = sceneBackgroundImage->getPixel (x, y);
+
+                setPaintColor (renderer, pixelToPaint.r, pixelToPaint.g, pixelToPaint.b, pixelToPaint.a);
+                paintPixel (renderer, c, l);
+
             }
 
         }
@@ -158,15 +185,20 @@ void Scene::render () {
 
     if (this->backgroundColor == nullptr) {
         std::cout << "backgroundColor is null" << std::endl;
-    }
 
-    setWindowBackground (
-        renderer,
-        this->backgroundColor->r,
-        this->backgroundColor->g,
-        this->backgroundColor->b,
-        this->backgroundColor->a
-    );
+        setWindowBackground (
+            renderer,
+            0, 0, 0, 255
+        );
+    } else {
+        setWindowBackground (
+            renderer,
+            this->backgroundColor->r,
+            this->backgroundColor->g,
+            this->backgroundColor->b,
+            this->backgroundColor->a
+        );
+    }
 
     this->raycast(renderer);
 
@@ -209,6 +241,9 @@ Scene::Scene (
 
 Scene::~Scene () {
     delete this->getEyeCenter();
+    delete this->getBackgroundImage();
+    delete this->getEnvironmentLight();
+    delete this->getBackgroundColor();
     
     for (auto i = this->objects.begin(); i != this->objects.end(); i++) {
         delete (*i);

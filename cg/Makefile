@@ -2,7 +2,7 @@ COMPILER=g++
 LIB=$(wildcard ./lib/*.cpp)
 INCLUDE=$(wildcard ./include/*.h)
 ELF=$(patsubst ./lib/%.cpp, ./build/%.o, $(LIB))
-FLAGS=`sdl2-config --cflags --libs`
+FLAGS=`sdl2-config --cflags --libs` -lSDL2_image
 
 ALL: main
 

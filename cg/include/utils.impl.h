@@ -2,6 +2,8 @@
 #include <string>
 #include "./utils.h"
 
+#pragma once
+
 template <typename T>
 SmartPtr<T>::SmartPtr (T* pointer) {
     this->pointer = pointer;
