@@ -828,14 +828,76 @@ Color* Plan::getColorToBePainted (
     );
 }
 
-// ObjectType Cylinder::getObjectType () {
-//     return this->type;
-// }
+ObjectType Cylinder::getObjectType () {
+    return this->type;
+}
 
-// void Cylinder::setBaseCenter (Vector* baseCenter) {
-//     this->baseCenter = baseCenter;
-// }
+void Cylinder::setBaseCenter (Vector* baseCenter) {
+    this->baseCenter = baseCenter;
+}
 
-// Vector* Cylinder::getBaseCenter () {
-//     return this->baseCenter;
-// }
+Vector* Cylinder::getBaseCenter () {
+    return this->baseCenter;
+}
+
+void Cylinder::setTopCenter (Vector* topCenter) {
+    this->topCenter = topCenter;
+}
+
+Vector* Cylinder::getTopCenter () {
+    return this->topCenter;
+}
+
+void Cylinder::setRadius (double radius) {
+    this->radius = radius;
+}
+
+double Cylinder::getRadius () {
+    return this->radius;
+}
+
+void Cylinder::setReflectivity (Vector* reflectivity) {
+    this->reflectivity = reflectivity;
+}
+
+Vector* Cylinder::getReflectivity () {
+    return this->reflectivity;
+}
+
+void Cylinder::setShininess (double shininess) {
+    this->shininess = shininess;
+}
+
+double Cylinder::getShininess () {
+    return this->shininess;
+}
+
+IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
+    return new IntersectionResult(); // TODO: make cylinder getIntersectionResult
+}
+
+Color* Cylinder::getColorToBePainted (
+    IntersectionResult* intersectionResult,
+    LightsArray lightsArray,
+    ObjectsArray objectsArray,
+    Line* line,
+    Vector* environmentLight
+) {
+    return new Color (255, 0, 0, 0); // TODO: make cylinder getColorToBePainted
+};
+
+Cylinder::Cylinder () {}
+
+Cylinder::Cylinder (Vector* baseCenter, Vector* topCenter, double radius, Vector* reflectivity, double shininess) {
+    this->setBaseCenter (baseCenter);
+    this->setTopCenter (topCenter);
+    this->setRadius (radius);
+    this->setReflectivity (reflectivity);
+    this->setShininess (shininess);
+}
+
+Cylinder::~Cylinder () {
+    delete this->getBaseCenter ();
+    delete this->getTopCenter ();
+    delete this->getReflectivity ();
+}
