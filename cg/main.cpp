@@ -12,60 +12,12 @@ int main () {
 
     Image* image = new Image ("./assets/cenario.jpg");
 
-    Sphere* sphere = new Sphere (
-        40.0,
-        new Vector (0.8, 0.8, 0.8),
-        new Vector (0, 0, -160),
-        10.0
-    );
-
-    Sphere* sphere2 = new Sphere (
-        30.0,
-        new Vector (0.8, 0.8, 0.8),
-        new Vector (0, 60, -150),
-        10.0
-    );
-
-    Sphere* eye1 = new Sphere (
-        3.0,
-        new Vector (0, 0, 0),
-        new Vector (-15, 60, -120),
-        10.0
-    );
-
-    Sphere* eye2 = new Sphere (
-        3.0,
-        new Vector (0, 0, 0),
-        new Vector (15, 60, -120),
-        10.0
-    );
-
-    Sphere* nose = new Sphere (
-        3.0,
-        new Vector (0.8, 0, 0),
-        new Vector (0, 50, -120),
-        10.0
-    );
-
-    Sphere* button1 = new Sphere (
-        3.0,
-        new Vector (0, 0.5, 0),
-        new Vector (0, 0, -120),
-        10.0
-    );
-
-    Sphere* button2 = new Sphere (
-        3.0,
-        new Vector (0, 0.5, 0),
-        new Vector (0, 10, -122),
-        10.0
-    );
-
-    Sphere* button3 = new Sphere (
-        3.0,
-        new Vector (0, 0.5, 0),
-        new Vector (0, -10, -122),
-        10.0
+    Cylinder* cylinder = new Cylinder (
+        new Vector (0, -20, 0),
+        new Vector (0, 20, 0),
+        20.0,
+        new Vector (0.5, 0.5, 0.5),
+        5.0
     );
 
     Plan* plan = new Plan (
@@ -94,15 +46,8 @@ int main () {
 
     scene->addLightSource(light);
     scene->setBackgroundImage(image);
-    scene->addObject(sphere);
-    scene->addObject(sphere2);
-    scene->addObject(eye1);
-    scene->addObject(eye2);
-    scene->addObject(nose);
-    scene->addObject(button1);
-    scene->addObject(button2);
-    scene->addObject(button3);
     scene->addObject(plan);
+    scene->addObject(cylinder);
 
     scene->render();
 

@@ -912,7 +912,8 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
     IntersectionResult* intersectionResult = new IntersectionResult ();
     intersectionResult->setHasIntersection (false);
 
-    bool interceptsCover = false;
+    bool interceptsBase = false;
+    bool interceptsTop = false;
 
     Vector dirT (
         (*line->dir)[2],
@@ -967,18 +968,62 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
     double t1;
     double t2;
 
+    Vector intersectionPointT1;
+    Vector intersectionPointT2;
+
+    double distanceP0ToT1;
+    double distanceP0ToT2;
+
     if (drPlusDc != 0) {
-        interceptsCover = true;
 
         // base plan
         t1 = (scalarProduct ((*line->P0 - *this->getBaseCenter()), cylinderDirection) / drPlusDc) * (-1);
         
         // top plan
         t2 = (scalarProduct ((*line->P0 - *this->getTopCenter()), cylinderDirection) / drPlusDc) * (-1);
+
+        intersectionPointT1 = (*line->P0 + *line->dir * t1);
+        intersectionPointT2 = (*line->P0 + *line->dir * t2);
+
+        distanceP0ToT1 = (intersectionPointT1 - *line->P0).getMagnitude();
+        distanceP0ToT2 = (intersectionPointT2 - *line->P0).getMagnitude();
+
+        if ( (intersectionPointT1 - *this->getBaseCenter()).getMagnitude() <= this->getRadius() ) {
+            interceptsBase = true;
+        }
+
+        if ( (intersectionPointT2 - *this->getBaseCenter()).getMagnitude() <= this->getRadius() ) {
+            interceptsTop = true;
+        }
+        
     }
 
-    double distanceP0ToT1 = (*line->P0 + *line->dir * t1).getMagnitude();
-    double distanceP0ToT2 = (*line->P0 + *line->dir * t2).getMagnitude();
+    if (interceptsBase && interceptsTop) {
+
+        intersectionResult->setHasIntersection(true);
+        intersectionResult->setObjectRegion(ObjectRegion::CYLINDER_COVER);
+        
+        if (distanceP0ToT1 < distanceP0ToT2) {
+            intersectionResult->setDistanceFromP0 (distanceP0ToT1);
+            intersectionResult->setIntersectionPoint (new Vector (intersectionPointT1));
+        } else {
+            intersectionResult->setDistanceFromP0 (distanceP0ToT2);
+            intersectionResult->setIntersectionPoint (new Vector (intersectionPointT2));
+        }
+
+        return intersectionResult;
+
+    }
+
+    if (interceptsBase) {
+        intersectionResult->setDistanceFromP0 (distanceP0ToT1);
+        intersectionResult->setIntersectionPoint (new Vector (intersectionPointT1));
+    }
+
+    if (interceptsTop) {
+        intersectionResult->setDistanceFromP0 (distanceP0ToT2);
+        intersectionResult->setIntersectionPoint (new Vector (intersectionPointT2));
+    }
 
     // ========================================================================================
 
@@ -1005,6 +1050,146 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
     double b = 2 * (wTPlusM[0] * (*line->dir)[0] + wTPlusM[1] * (*line->dir)[1] + wTPlusM[2] * (*line->dir)[2]);
 
     double c = (wTPlusM[0] * w[0] + wTPlusM[1] * w[1] + wTPlusM[2] * w[2]) - pow (this->getRadius(), 2.0);
+
+
+    double discriminant = (pow (b, 2.0) - 4 * a * c);
+
+    if (discriminant == 0) {
+
+        double t3 = (-b + sqrt (discriminant)) / (2 * a);
+
+        Vector intersectionPointT3  = *line->P0 + *line->dir * t3;
+
+        double distanceP0ToT3 = (intersectionPointT3 - *line->P0).getMagnitude();
+
+        if (interceptsBase && distanceP0ToT3 > distanceP0ToT1) {
+
+            intersectionResult->setHasIntersection (true);
+            intersectionResult->setDistanceFromP0 (distanceP0ToT1);
+            intersectionResult->setIntersectionPoint (new Vector (intersectionPointT1));
+            intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_COVER);
+
+            return intersectionResult;
+            
+        } else if (interceptsTop && distanceP0ToT3 > distanceP0ToT2) {
+
+            intersectionResult->setHasIntersection (true);
+            intersectionResult->setDistanceFromP0 (distanceP0ToT2);
+            intersectionResult->setIntersectionPoint (new Vector (intersectionPointT2));
+            intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_COVER);
+
+            return intersectionResult;
+
+        }
+
+        intersectionResult->setHasIntersection (true);
+        intersectionResult->setDistanceFromP0 (distanceP0ToT3);
+        intersectionResult->setIntersectionPoint (new Vector (intersectionPointT3));
+        intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_SURFACE);
+
+        return intersectionResult;
+
+    } else if (discriminant > 0) {
+
+        double t3 = (-b + sqrt (discriminant)) / (2 * a);
+
+        Vector intersectionPointT3  = *line->P0 + *line->dir * t3;
+
+        double distanceP0ToT3 = (intersectionPointT3 - *line->P0).getMagnitude();
+
+        double t4 = (-b - sqrt (discriminant)) / (2 * a);
+
+        Vector intersectionPointT4  = *line->P0 + *line->dir * t4;
+
+        double distanceP0ToT4 = (intersectionPointT4 - *line->P0).getMagnitude();
+
+        if (distanceP0ToT3 < distanceP0ToT4) {
+
+            if (interceptsBase && distanceP0ToT3 > distanceP0ToT1) {
+
+                intersectionResult->setHasIntersection (true);
+                intersectionResult->setDistanceFromP0 (distanceP0ToT1);
+                intersectionResult->setIntersectionPoint (new Vector (intersectionPointT1));
+                intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_COVER);
+
+                return intersectionResult;
+                
+            } else if (interceptsTop && distanceP0ToT3 > distanceP0ToT2) {
+
+                intersectionResult->setHasIntersection (true);
+                intersectionResult->setDistanceFromP0 (distanceP0ToT2);
+                intersectionResult->setIntersectionPoint (new Vector (intersectionPointT2));
+                intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_COVER);
+
+                return intersectionResult;
+
+            }
+
+            intersectionResult->setHasIntersection (true);
+            intersectionResult->setDistanceFromP0 (distanceP0ToT3);
+            intersectionResult->setIntersectionPoint (new Vector (intersectionPointT3));
+            intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_SURFACE);
+
+            return intersectionResult;
+
+        } else {
+
+            if (interceptsBase && distanceP0ToT4 > distanceP0ToT1) {
+
+                intersectionResult->setHasIntersection (true);
+                intersectionResult->setDistanceFromP0 (distanceP0ToT1);
+                intersectionResult->setIntersectionPoint (new Vector (intersectionPointT1));
+                intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_COVER);
+
+                return intersectionResult;
+                
+            } else if (interceptsTop && distanceP0ToT4 > distanceP0ToT2) {
+
+                intersectionResult->setHasIntersection (true);
+                intersectionResult->setDistanceFromP0 (distanceP0ToT2);
+                intersectionResult->setIntersectionPoint (new Vector (intersectionPointT2));
+                intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_COVER);
+
+                return intersectionResult;
+
+            }
+
+            intersectionResult->setHasIntersection (true);
+            intersectionResult->setDistanceFromP0 (distanceP0ToT4);
+            intersectionResult->setIntersectionPoint (new Vector (intersectionPointT4));
+            intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_SURFACE);
+
+            return intersectionResult;
+
+        }
+
+    } else {
+
+        if (interceptsTop) {
+            
+            intersectionResult->setHasIntersection (true);
+            intersectionResult->setDistanceFromP0 (distanceP0ToT2);
+            intersectionResult->setIntersectionPoint (new Vector (intersectionPointT2));
+            intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_COVER);
+
+            return intersectionResult;
+
+        }
+
+        if (interceptsBase) {
+
+            intersectionResult->setHasIntersection (true);
+            intersectionResult->setDistanceFromP0 (distanceP0ToT1);
+            intersectionResult->setIntersectionPoint (new Vector (intersectionPointT1));
+            intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_COVER);
+
+            return intersectionResult;
+
+        }
+
+        return intersectionResult;
+
+    }
     
     // ================================================================
 
