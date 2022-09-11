@@ -13,23 +13,11 @@ int main () {
     Image* image = new Image ("./assets/cenario.jpg");
 
     Cylinder* cylinder = new Cylinder (
-        new Vector (0, -20, 0),
-        new Vector (0, 20, 0),
+        new Vector (0, -20, -100),
+        new Vector (0, 20, -100),
         20.0,
         new Vector (0.5, 0.5, 0.5),
         5.0
-    );
-
-    Plan* plan = new Plan (
-        new Vector (0, -40, 0),
-        new Vector (0, 1, 0),
-        new Vector (0.2, 0.7, 0.2),
-        1.0
-    );
-
-    Light* light = new Light (
-        new Vector (0.7, 0.7, 0.7),
-        new Vector (0, 60, -30)
     );
 
     Sp<Scene> scene = new Scene (
@@ -40,13 +28,11 @@ int main () {
         new Color (100, 100, 100, 255)
     );
 
-    scene->setEnvironmentLight (
-        new Vector (0.3, 0.3, 0.3)
-    );
+    // scene->setEnvironmentLight (
+    //     new Vector (0.3, 0.3, 0.3)
+    // );
 
-    scene->addLightSource(light);
-    scene->setBackgroundImage(image);
-    scene->addObject(plan);
+    // scene->addLightSource(light);
     scene->addObject(cylinder);
 
     scene->render();

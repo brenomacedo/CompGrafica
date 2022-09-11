@@ -912,30 +912,32 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
     IntersectionResult* intersectionResult = new IntersectionResult ();
     intersectionResult->setHasIntersection (false);
 
+    double cylinderHeight = (*this->getTopCenter() - *this->getBaseCenter()).getMagnitude();
+
     bool interceptsBase = false;
     bool interceptsTop = false;
 
     Vector dirT (
-        (*line->dir)[2],
+        (*line->dir)[0],
         (*line->dir)[1],
-        (*line->dir)[0]
+        (*line->dir)[2]
     );
 
-    Vector cylinderDirection = (*this->getBaseCenter() - *this->getTopCenter()) /
-                               (*this->getBaseCenter() - *this->getTopCenter()).getMagnitude();
+    Vector cylinderDirection = (*this->getTopCenter() - *this->getBaseCenter()) /
+                               (*this->getTopCenter() - *this->getBaseCenter()).getMagnitude();
 
     Vector cylinderDirectionT (
-        cylinderDirection[2],
+        cylinderDirection[0],
         cylinderDirection[1],
-        cylinderDirection[0]
+        cylinderDirection[2]
     );
 
     Vector w = *line->P0 - *this->getBaseCenter();
 
     Vector wT (
-        w[2],
+        w[0],
         w[1],
-        w[0]
+        w[2]
     );
 
     Vector Identity[3] = {
@@ -964,7 +966,7 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
     // ==================== verify intersection with the cylinder cover =======================
 
     // dr * dc
-    double drPlusDc = scalarProduct (line->dir, this->getBaseCenter());
+    double drPlusDc = scalarProduct (*line->dir, cylinderDirection);
     double t1;
     double t2;
 
@@ -985,14 +987,14 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
         intersectionPointT1 = (*line->P0 + *line->dir * t1);
         intersectionPointT2 = (*line->P0 + *line->dir * t2);
 
-        distanceP0ToT1 = (intersectionPointT1 - *line->P0).getMagnitude();
-        distanceP0ToT2 = (intersectionPointT2 - *line->P0).getMagnitude();
+        distanceP0ToT1 = (intersectionPointT1 - *this->getBaseCenter()).getMagnitude();
+        distanceP0ToT2 = (intersectionPointT2 - *this->getTopCenter()).getMagnitude();
 
         if ( (intersectionPointT1 - *this->getBaseCenter()).getMagnitude() <= this->getRadius() ) {
             interceptsBase = true;
         }
 
-        if ( (intersectionPointT2 - *this->getBaseCenter()).getMagnitude() <= this->getRadius() ) {
+        if ( (intersectionPointT2 - *this->getTopCenter()).getMagnitude() <= this->getRadius() ) {
             interceptsTop = true;
         }
         
@@ -1025,19 +1027,19 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
         intersectionResult->setIntersectionPoint (new Vector (intersectionPointT2));
     }
 
-    // ========================================================================================
+    // // ========================================================================================
 
     
-    // ==================== verify intersection with the cylinder surface =====================
+    // // ==================== verify intersection with the cylinder surface =====================
 
-    // cylinderDirectionT * M
+    // dr * M
     Vector drTPlusM;
 
     for (int i = 0; i < 3; i++) {
-        drTPlusM[i] = cylinderDirectionT[0] * M[0][i] + cylinderDirectionT[1] * M[1][i] + cylinderDirectionT[2] * M[2][i];
+        drTPlusM[i] = (*line->dir)[0] * M[0][i] + (*line->dir)[1] * M[1][i] + (*line->dir)[2] * M[2][i];
     }
 
-    // (cylinderDirectionT * M)[1x3] * dir[3x1]
+    // (dr * M)[1x3] * dir[3x1]
     double a = drTPlusM[0] * (*line->dir)[0] + drTPlusM[1] * (*line->dir)[1] + drTPlusM[2] * (*line->dir)[2];
 
     // wT * M
@@ -1054,11 +1056,27 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
     double discriminant = (pow (b, 2.0) - 4 * a * c);
 
+    // if (discriminant > 0) {
+    //     intersectionResult->setHasIntersection (true);
+    //     return intersectionResult;
+    // }
+    // return intersectionResult;
+
     if (discriminant == 0) {
 
         double t3 = (-b + sqrt (discriminant)) / (2 * a);
 
         Vector intersectionPointT3  = *line->P0 + *line->dir * t3;
+
+        // projection of intersection point on cylinder direction
+        double CbAT3byDir = scalarProduct ((intersectionPointT3 - *this->getBaseCenter()), cylinderDirection);
+        Vector CbAT3 = cylinderDirection * CbAT3byDir;
+
+        if (CbAT3byDir > 0 && CbAT3.getMagnitude () < cylinderHeight) {
+            intersectionResult->setHasIntersection (true);
+            return intersectionResult;
+        }
+        return intersectionResult;
 
         double distanceP0ToT3 = (intersectionPointT3 - *line->P0).getMagnitude();
 
@@ -1102,6 +1120,18 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
         Vector intersectionPointT4  = *line->P0 + *line->dir * t4;
 
         double distanceP0ToT4 = (intersectionPointT4 - *line->P0).getMagnitude();
+
+        double CbAT3ByDir = scalarProduct ((intersectionPointT3 - *this->getBaseCenter()), cylinderDirection);
+        Vector CbAT3 = cylinderDirection * CbAT3ByDir;
+
+        double CbAT4ByDir = scalarProduct ((intersectionPointT4 - *this->getBaseCenter()), cylinderDirection);
+        Vector CbAT4 = cylinderDirection * CbAT4ByDir;
+
+        if (CbAT3ByDir > 0 && CbAT3.getMagnitude () < cylinderHeight || CbAT4ByDir > 0 && CbAT4.getMagnitude () < cylinderHeight) {
+            intersectionResult->setHasIntersection (true);
+            return intersectionResult;
+        }
+        return intersectionResult;
 
         if (distanceP0ToT3 < distanceP0ToT4) {
 
