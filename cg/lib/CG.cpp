@@ -1000,8 +1000,8 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
         intersectionPointT1 = (*line->P0 + *line->dir * t1);
         intersectionPointT2 = (*line->P0 + *line->dir * t2);
 
-        distanceP0ToT1 = (intersectionPointT1 - *this->getBaseCenter()).getMagnitude();
-        distanceP0ToT2 = (intersectionPointT2 - *this->getTopCenter()).getMagnitude();
+        distanceP0ToT1 = (intersectionPointT1 - *line->P0).getMagnitude();
+        distanceP0ToT2 = (intersectionPointT2 - *line->P0).getMagnitude();
 
         if ( (intersectionPointT1 - *this->getBaseCenter()).getMagnitude() <= this->getRadius() ) {
             interceptsBase = true;

@@ -13,8 +13,8 @@ int main () {
     Image* image = new Image ("./assets/cenario.jpg");
 
     Cylinder* cylinder = new Cylinder (
-        new Vector (0, -20, -100),
         new Vector (0, 20, -100),
+        new Vector (0, 40, -100),
         20.0,
         new Vector (0.9, 0.2, 0.2),
         5.0
