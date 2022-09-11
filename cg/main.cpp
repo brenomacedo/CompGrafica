@@ -99,7 +99,7 @@ int main () {
     Sp<Scene> scene = new Scene (
         new Vector (0, 0, 0),
         60.0, 60.0,
-        500, 500,
+        1000, 1000,
         30,
         new Color (100, 100, 100, 255)
     );

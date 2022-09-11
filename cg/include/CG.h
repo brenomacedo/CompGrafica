@@ -168,6 +168,18 @@ class Object {
             Line* line,
             Vector* environmentLight
         ) = 0;
+
+        static Color* calculateColorToBePainted (
+            IntersectionResult* intersectionResult,
+            LightsArray lightsArray,
+            ObjectsArray objectsArray,
+            Line* line,
+            Vector* environmentLight,
+            Vector* normal,
+            Vector* reflectivity,
+            double shininess,
+            Object* objAddr
+        );
 };
 
 class Sphere : public Object {

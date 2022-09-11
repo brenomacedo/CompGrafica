@@ -486,6 +486,90 @@ IntersectionResult::~IntersectionResult () {
     delete this->getIntersectionPoint();
 }
 
+Color* Object::calculateColorToBePainted (
+    IntersectionResult* intersectionResult,
+    LightsArray lightsArray,
+    ObjectsArray objectsArray,
+    Line* line,
+    Vector* environmentLight,
+    Vector* normal,
+    Vector* reflectivity,
+    double shininess,
+    Object* objAddr
+) {
+
+    Vector resultColorRate (0, 0, 0);
+
+    Vector v = ((*line->dir) * -1) / line->dir->getMagnitude();
+
+    for (auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
+
+        Vector* intersectionPoint = intersectionResult->getIntersectionPoint();
+        
+        Vector l = (*((*i)->getPosition()) - *intersectionPoint) / (*((*i)->getPosition()) - *intersectionResult->getIntersectionPoint()).getMagnitude();
+        // verify if the lights intercepts any other object
+
+        Sp<Line> verifyShadowLine = new Line (
+            new Vector (
+                (*intersectionPoint)
+            ),
+            new Vector (l)
+        );
+
+        bool hasIntersectionWithOtherObjects = false;
+
+        for (auto j = objectsArray.begin(); (j != objectsArray.end() && !hasIntersectionWithOtherObjects); j++) {
+            
+            if ((*j) != objAddr) {
+                Sp<IntersectionResult> intersectionShadow = (*j)->getIntersectionResult (verifyShadowLine.pointer);
+
+                hasIntersectionWithOtherObjects =
+                    intersectionShadow->getHasIntersection() &&
+                    (intersectionShadow->getDistanceFromP0() < intersectionResult->getDistanceFromP0());
+            }
+
+        }
+
+        // calculate the color to be painted
+        if (!hasIntersectionWithOtherObjects) {    
+            Vector r = (*normal) * (2 * scalarProduct (l, *normal)) -  l;
+
+            double fDifusa = max (
+                scalarProduct (l, *normal),
+                0.0
+            );
+
+            double fEspeculada = pow (
+                max (
+                    scalarProduct (r, v),
+                    0.0
+                ),
+                shininess
+            );
+
+            Vector iDifusa = (*(*i)->getIntensity()) * (*reflectivity) * fDifusa;
+
+            Vector iEspeculada = (*(*i)->getIntensity()) * (*reflectivity) * fEspeculada;
+
+            resultColorRate = resultColorRate + iDifusa + iEspeculada;
+        }
+
+
+    }
+
+    if (environmentLight != nullptr) {
+        resultColorRate = resultColorRate + ((*environmentLight) * (*reflectivity));
+    }
+
+    return new Color (
+        resultColorRate[0] * 255,
+        resultColorRate[1] * 255,
+        resultColorRate[2] * 255,
+        255
+    );
+
+}
+
 ObjectType Sphere::getObjectType () {
     return this->type;
 }
@@ -618,83 +702,21 @@ Color* Sphere::getColorToBePainted (
     Line* line,
     Vector* environmentLight
 ) {
-    
-    Vector resultColorRate (0, 0, 0);
 
     Vector* intersectionPoint = intersectionResult->getIntersectionPoint();
+    Sp<Vector> normal = new Vector ((*intersectionPoint - *this->getCenter()) / this->getRadius());
 
-    Vector n = (*intersectionPoint - *this->getCenter()) / this->getRadius();
-
-    Vector v = ((*line->dir) * (-1)) / line->dir->getMagnitude();
-
-    for (auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
-
-        Vector sourceMinusIntersection = *((*i)->getPosition()) - *intersectionPoint;
-
-        double sourceMinusIntersectionMagnitude = sourceMinusIntersection.getMagnitude();
-
-        Vector l = sourceMinusIntersection / sourceMinusIntersectionMagnitude;
-        
-        // verify if the lights intercepts any other object
-        Sp<Line> verifyShadowLine = new Line (
-            new Vector (
-                (*intersectionPoint)
-            ),
-            new Vector (l)
-        );
-
-        bool hasIntersectionWithOtherObjects = false;
-
-        for (auto j = objectsArray.begin(); (j != objectsArray.end() && !hasIntersectionWithOtherObjects); j++) {
-            
-            if ((*j) != this) {
-                Sp<IntersectionResult> intersectionShadow = (*j)->getIntersectionResult (verifyShadowLine.pointer);
-
-                hasIntersectionWithOtherObjects =
-                    intersectionShadow->getHasIntersection() &&
-                    (intersectionShadow->getDistanceFromP0() < intersectionResult->getDistanceFromP0());
-            }
-
-        }
-
-        // calculate the color to be painted
-        if (!hasIntersectionWithOtherObjects) {
-            double lScalarProductN = scalarProduct (l, n);
-
-            Vector r = n * (2 * lScalarProductN) - l;
-
-            double fDifusa = max (
-                0.0,
-                scalarProduct (l, n)
-            );
-
-            double fEspeculada = pow (
-                max (
-                    0.0,
-                    scalarProduct (r, v)
-                ),
-                this->getShininess()
-            );
-
-            Vector iDifusa = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fDifusa;
-
-            Vector iEspeculada = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fEspeculada;
-
-            resultColorRate = resultColorRate + iDifusa + iEspeculada;
-        }
-    }
-
-    if (environmentLight != nullptr) {
-        resultColorRate = resultColorRate + ((*environmentLight) * (*this->getReflectivity()));
-    }
-
-    return new Color (
-        resultColorRate[0] * 255,
-        resultColorRate[1] * 255,
-        resultColorRate[2] * 255,
-        255
+    return Object::calculateColorToBePainted (
+        intersectionResult,
+        lightsArray,
+        objectsArray,
+        line,
+        environmentLight,
+        normal.pointer,
+        this->getReflectivity(),
+        this->getShininess(),
+        this
     );
-
 
 }
 
@@ -792,75 +814,18 @@ Color* Plan::getColorToBePainted (
     Vector* environmentLight
 ) {
 
-    Vector resultColorRate (0, 0, 0);
-
-    Vector v = ((*line->dir) * -1) / line->dir->getMagnitude();
-
-    for (auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
-
-        Vector* intersectionPoint = intersectionResult->getIntersectionPoint();
-        
-        Vector l = (*((*i)->getPosition()) - *intersectionPoint) / (*((*i)->getPosition()) - *intersectionResult->getIntersectionPoint()).getMagnitude();
-        // verify if the lights intercepts any other object
-
-        Sp<Line> verifyShadowLine = new Line (
-            new Vector (
-                (*intersectionPoint)
-            ),
-            new Vector (l)
-        );
-
-        bool hasIntersectionWithOtherObjects = false;
-
-        for (auto j = objectsArray.begin(); (j != objectsArray.end() && !hasIntersectionWithOtherObjects); j++) {
-            
-            if ((*j) != this) {
-                Sp<IntersectionResult> intersectionShadow = (*j)->getIntersectionResult (verifyShadowLine.pointer);
-
-                hasIntersectionWithOtherObjects =
-                    intersectionShadow->getHasIntersection() &&
-                    (intersectionShadow->getDistanceFromP0() < intersectionResult->getDistanceFromP0());
-            }
-
-        }
-
-        // calculate the color to be painted
-        if (!hasIntersectionWithOtherObjects) {    
-            Vector r = (*this->getNormal()) * (2 * scalarProduct (l, *this->getNormal())) -  l;
-
-            double fDifusa = max (
-                scalarProduct (l, *this->getNormal()),
-                0.0
-            );
-
-            double fEspeculada = pow (
-                max (
-                    scalarProduct (r, v),
-                    0.0
-                ),
-                this->getShininess()
-            );
-
-            Vector iDifusa = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fDifusa;
-
-            Vector iEspeculada = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fEspeculada;
-
-            resultColorRate = resultColorRate + iDifusa + iEspeculada;
-        }
-
-
-    }
-
-    if (environmentLight != nullptr) {
-        resultColorRate = resultColorRate + ((*environmentLight) * (*this->getReflectivity()));
-    }
-
-    return new Color (
-        resultColorRate[0] * 255,
-        resultColorRate[1] * 255,
-        resultColorRate[2] * 255,
-        255
+    return Object::calculateColorToBePainted (
+        intersectionResult,
+        lightsArray,
+        objectsArray,
+        line,
+        environmentLight,
+        this->getNormal (),
+        this->getReflectivity (),
+        this->getShininess (),
+        this
     );
+    
 }
 
 ObjectType Cylinder::getObjectType () {
@@ -1317,77 +1282,19 @@ Color* Cylinder::getColorToBePainted (
     Line* line,
     Vector* environmentLight
 ) {
-    
-    Vector resultColorRate (0, 0, 0);
 
     if (intersectionResult->getObjectRegion() == ObjectRegion::CYLINDER_COVER) {
 
-        Vector v = ((*line->dir) * -1) / line->dir->getMagnitude();
-
-        for (auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
-
-            Vector* intersectionPoint = intersectionResult->getIntersectionPoint();
-            
-            Vector l = (*((*i)->getPosition()) - *intersectionPoint) / (*((*i)->getPosition()) - *intersectionResult->getIntersectionPoint()).getMagnitude();
-            // verify if the lights intercepts any other object
-
-            Sp<Line> verifyShadowLine = new Line (
-                new Vector (
-                    (*intersectionPoint)
-                ),
-                new Vector (l)
-            );
-
-            bool hasIntersectionWithOtherObjects = false;
-
-            for (auto j = objectsArray.begin(); (j != objectsArray.end() && !hasIntersectionWithOtherObjects); j++) {
-                
-                if ((*j) != this) {
-                    Sp<IntersectionResult> intersectionShadow = (*j)->getIntersectionResult (verifyShadowLine.pointer);
-
-                    hasIntersectionWithOtherObjects =
-                        intersectionShadow->getHasIntersection() &&
-                        (intersectionShadow->getDistanceFromP0() < intersectionResult->getDistanceFromP0());
-                }
-
-            }
-
-            // calculate the color to be painted
-            if (!hasIntersectionWithOtherObjects) {    
-                Vector r = (*this->getDirection()) * (2 * scalarProduct (l, *this->getDirection())) -  l;
-
-                double fDifusa = max (
-                    scalarProduct (l, *this->getDirection()),
-                    0.0
-                );
-
-                double fEspeculada = pow (
-                    max (
-                        scalarProduct (r, v),
-                        0.0
-                    ),
-                    this->getShininess()
-                );
-
-                Vector iDifusa = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fDifusa;
-
-                Vector iEspeculada = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fEspeculada;
-
-                resultColorRate = resultColorRate + iDifusa + iEspeculada;
-            }
-
-
-        }
-
-        if (environmentLight != nullptr) {
-            resultColorRate = resultColorRate + ((*environmentLight) * (*this->getReflectivity()));
-        }
-
-        return new Color (
-            resultColorRate[0] * 255,
-            resultColorRate[1] * 255,
-            resultColorRate[2] * 255,
-            255
+        return Object::calculateColorToBePainted (
+            intersectionResult,
+            lightsArray,
+            objectsArray,
+            line,
+            environmentLight,
+            this->getDirection (),
+            this->getReflectivity (),
+            this->getShininess (),
+            this
         );
 
     } else {
@@ -1425,74 +1332,18 @@ Color* Cylinder::getColorToBePainted (
         }
 
         // normal to surface unitary
-        Vector n = N / (N.getMagnitude());
+        Sp<Vector> normal = new Vector (N / (N.getMagnitude()));
 
-        Vector v = ((*line->dir) * -1) / line->dir->getMagnitude();
-
-        for (auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
-
-            Vector* intersectionPoint = intersectionResult->getIntersectionPoint();
-            
-            Vector l = (*((*i)->getPosition()) - *intersectionPoint) / (*((*i)->getPosition()) - *intersectionResult->getIntersectionPoint()).getMagnitude();
-            // verify if the lights intercepts any other object
-
-            Sp<Line> verifyShadowLine = new Line (
-                new Vector (
-                    (*intersectionPoint)
-                ),
-                new Vector (l)
-            );
-
-            bool hasIntersectionWithOtherObjects = false;
-
-            for (auto j = objectsArray.begin(); (j != objectsArray.end() && !hasIntersectionWithOtherObjects); j++) {
-                
-                if ((*j) != this) {
-                    Sp<IntersectionResult> intersectionShadow = (*j)->getIntersectionResult (verifyShadowLine.pointer);
-
-                    hasIntersectionWithOtherObjects =
-                        intersectionShadow->getHasIntersection() &&
-                        (intersectionShadow->getDistanceFromP0() < intersectionResult->getDistanceFromP0());
-                }
-
-            }
-
-            // calculate the color to be painted
-            if (!hasIntersectionWithOtherObjects) {    
-                Vector r = (n) * (2 * scalarProduct (l, n)) -  l;
-
-                double fDifusa = max (
-                    scalarProduct (l, n),
-                    0.0
-                );
-
-                double fEspeculada = pow (
-                    max (
-                        scalarProduct (r, v),
-                        0.0
-                    ),
-                    this->getShininess()
-                );
-
-                Vector iDifusa = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fDifusa;
-
-                Vector iEspeculada = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fEspeculada;
-
-                resultColorRate = resultColorRate + iDifusa + iEspeculada;
-            }
-
-
-        }
-
-        if (environmentLight != nullptr) {
-            resultColorRate = resultColorRate + ((*environmentLight) * (*this->getReflectivity()));
-        }
-
-        return new Color (
-            resultColorRate[0] * 255,
-            resultColorRate[1] * 255,
-            resultColorRate[2] * 255,
-            255
+        return Object::calculateColorToBePainted (
+            intersectionResult,
+            lightsArray,
+            objectsArray,
+            line,
+            environmentLight,
+            normal.pointer,
+            this->getReflectivity (),
+            this->getShininess (),
+            this
         );
 
     }
@@ -1522,5 +1373,3 @@ Cylinder::~Cylinder () {
     delete this->getReflectivity ();
     delete this->getDirection ();
 }
-
-// TODO: OPTIMIZE THE GET COLOR TO BE PAINTED OF ALL OBJECTS IN ONLY ONE FUNCION
