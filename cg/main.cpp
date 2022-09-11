@@ -20,6 +20,14 @@ int main () {
         5.0
     );
 
+    Cylinder* cylinder2 = new Cylinder (
+        new Vector (0, 85, -150),
+        new Vector (0, 100, -150),
+        25.0,
+        new Vector (0.2, 0.2, 0.2),
+        5.0
+    );
+
     Sphere* sphere = new Sphere (
         40.0,
         new Vector (0.8, 0.8, 0.8),
@@ -111,6 +119,7 @@ int main () {
     scene->addObject(button2);
     scene->addObject(button3);
     scene->addObject(cylinder);
+    scene->addObject(cylinder2);
     scene->addObject(plan);
 
     scene->render();
