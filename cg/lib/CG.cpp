@@ -1012,11 +1012,27 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
         intersectionResult->setObjectRegion(ObjectRegion::CYLINDER_COVER);
         
         if (distanceP0ToT1 < distanceP0ToT2) {
+
+            // VERIFYING IF T IS POSITIVE
+            if (t1 < 0) {
+                intersectionResult->setHasIntersection (false);
+                return intersectionResult;
+            }
+
             intersectionResult->setDistanceFromP0 (distanceP0ToT1);
             intersectionResult->setIntersectionPoint (new Vector (intersectionPointT1));
+
         } else {
+
+            // VERIFYING IF T IS POSITIVE
+            if (t2 < 0) {
+                intersectionResult->setHasIntersection (false);
+                return intersectionResult;
+            }
+
             intersectionResult->setDistanceFromP0 (distanceP0ToT2);
             intersectionResult->setIntersectionPoint (new Vector (intersectionPointT2));
+
         }
 
         return intersectionResult;
@@ -1083,6 +1099,12 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
         if (CbAT3byDir > 0 && CbAT3.getMagnitude() <= this->getHeight ()) {
 
+            // VERIFYING IF T IS POSITIVE
+            if (t3 < 0) {
+                intersectionResult->setHasIntersection (false);
+                return intersectionResult;
+            }
+
             intersectionResult->setHasIntersection (true);
             intersectionResult->setDistanceFromP0 (distanceP0ToT3);
             intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_SURFACE);
@@ -1120,11 +1142,24 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
         if (CbAT3ByDir > 0 && CbAT3.getMagnitude () < this->getHeight () && CbAT4ByDir > 0 && CbAT4.getMagnitude () < this->getHeight ()) {
             if (distanceP0ToT3 < distanceP0ToT4) {
+
+                // VERIFYING IF T IS POSITIVE
+                if (t3 < 0) {
+                    intersectionResult->setHasIntersection (false);
+                    return intersectionResult;
+                }
+
                 intersectionResult->setHasIntersection (true);
                 intersectionResult->setDistanceFromP0 (distanceP0ToT3);
                 intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_SURFACE);
                 intersectionResult->setIntersectionPoint (new Vector (intersectionPointT3));
 
+                return intersectionResult;
+            }
+
+            // VERIFYING IF T IS POSITIVE
+            if (t4 < 0) {
+                intersectionResult->setHasIntersection (false);
                 return intersectionResult;
             }
 
@@ -1143,6 +1178,12 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
                 if (distanceP0ToT3 < distanceP0ToT1) {
 
+                    // VERIFYING IF T IS POSITIVE
+                    if (t3 < 0) {
+                        intersectionResult->setHasIntersection (false);
+                        return intersectionResult;
+                    }
+
                     intersectionResult->setHasIntersection (true);
                     intersectionResult->setDistanceFromP0 (distanceP0ToT3);
                     intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_SURFACE);
@@ -1150,6 +1191,12 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
                     return intersectionResult;
 
+                }
+
+                // VERIFYING IF T IS POSITIVE
+                if (t1 < 0) {
+                    intersectionResult->setHasIntersection (false);
+                    return intersectionResult;
                 }
 
                 intersectionResult->setHasIntersection (true);
@@ -1163,6 +1210,12 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
             if (distanceP0ToT3 < distanceP0ToT2) {
 
+                // VERIFYING IF T IS POSITIVE
+                if (t3 < 0) {
+                    intersectionResult->setHasIntersection (false);
+                    return intersectionResult;
+                }
+
                 intersectionResult->setHasIntersection (true);
                 intersectionResult->setDistanceFromP0 (distanceP0ToT3);
                 intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_SURFACE);
@@ -1170,6 +1223,12 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
                 return intersectionResult;
 
+            }
+
+            // VERIFYING IF T IS POSITIVE
+            if (t2 < 0) {
+                intersectionResult->setHasIntersection (false);
+                return intersectionResult;
             }
 
             intersectionResult->setHasIntersection (true);
@@ -1187,6 +1246,12 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
                 if (distanceP0ToT4 < distanceP0ToT1) {
 
+                    // VERIFYING IF T IS POSITIVE
+                    if (t4 < 0) {
+                        intersectionResult->setHasIntersection (false);
+                        return intersectionResult;
+                    }
+
                     intersectionResult->setHasIntersection (true);
                     intersectionResult->setDistanceFromP0 (distanceP0ToT4);
                     intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_SURFACE);
@@ -1194,6 +1259,12 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
                     return intersectionResult;
 
+                }
+
+                // VERIFYING IF T IS POSITIVE
+                if (t1 < 0) {
+                    intersectionResult->setHasIntersection (false);
+                    return intersectionResult;
                 }
 
                 intersectionResult->setHasIntersection (true);
@@ -1207,6 +1278,12 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
             if (distanceP0ToT4 < distanceP0ToT2) {
 
+                // VERIFYING IF T IS POSITIVE
+                if (t4 < 0) {
+                    intersectionResult->setHasIntersection (false);
+                    return intersectionResult;
+                }
+
                 intersectionResult->setHasIntersection (true);
                 intersectionResult->setDistanceFromP0 (distanceP0ToT4);
                 intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_SURFACE);
@@ -1214,6 +1291,12 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
                 return intersectionResult;
 
+            }
+
+            // VERIFYING IF T IS POSITIVE
+            if (t2 < 0) {
+                intersectionResult->setHasIntersection (false);
+                return intersectionResult;
             }
 
             intersectionResult->setHasIntersection (true);
@@ -1243,7 +1326,9 @@ Color* Cylinder::getColorToBePainted (
     Line* line,
     Vector* environmentLight
 ) {
-    return new Color (255, 0, 0, 255); // TODO: make cylinder getColorToBePainted
+    
+    
+
 };
 
 Cylinder::Cylinder () {}
