@@ -315,6 +315,9 @@ class Cylinder : public Object {
         // shininess of cylinder
         double shininess;
 
+        // height of cylinder
+        double height;
+
     public:
         // return the type of plan
         ObjectType getObjectType ();
@@ -348,6 +351,12 @@ class Cylinder : public Object {
 
         // get the shininess of cylinder
         double getShininess ();
+
+        // set the height of cylinder
+        void setHeight (double height);
+
+        // get the height of cylinder
+        double getHeight ();
 
         // get intersection of cylinder and a line
         IntersectionResult* getIntersectionResult (Line* line);
