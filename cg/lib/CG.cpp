@@ -915,6 +915,14 @@ double Cylinder::getHeight () {
     return this->height;
 }
 
+void Cylinder::setDirection (Vector* direction) {
+    this->direction = direction;
+}
+
+Vector* Cylinder::getDirection () {
+    return this->direction;
+}
+
 IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
     IntersectionResult* intersectionResult = new IntersectionResult ();
@@ -929,8 +937,7 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
         (*line->dir)[2]
     );
 
-    Vector cylinderDirection = (*this->getTopCenter() - *this->getBaseCenter()) /
-                               (*this->getTopCenter() - *this->getBaseCenter()).getMagnitude();
+    Vector cylinderDirection = *this->getDirection ();
 
     Vector cylinderDirectionT (
         cylinderDirection[0],
@@ -1039,16 +1046,6 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
     }
 
-    if (interceptsBase) {
-        intersectionResult->setDistanceFromP0 (distanceP0ToT1);
-        intersectionResult->setIntersectionPoint (new Vector (intersectionPointT1));
-    }
-
-    if (interceptsTop) {
-        intersectionResult->setDistanceFromP0 (distanceP0ToT2);
-        intersectionResult->setIntersectionPoint (new Vector (intersectionPointT2));
-    }
-
     // // ========================================================================================
 
     
@@ -1077,12 +1074,6 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
 
     double discriminant = (pow (b, 2.0) - 4 * a * c);
-
-    // if (discriminant > 0) {
-    //     intersectionResult->setHasIntersection (true);
-    //     return intersectionResult;
-    // }
-    // return intersectionResult;
 
     if (discriminant == 0) {
 
@@ -1233,7 +1224,7 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
             intersectionResult->setHasIntersection (true);
             intersectionResult->setDistanceFromP0 (distanceP0ToT2);
-            intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_SURFACE);
+            intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_COVER);
             intersectionResult->setIntersectionPoint (new Vector (intersectionPointT2));
 
             return intersectionResult;
@@ -1301,7 +1292,7 @@ IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
             intersectionResult->setHasIntersection (true);
             intersectionResult->setDistanceFromP0 (distanceP0ToT2);
-            intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_SURFACE);
+            intersectionResult->setObjectRegion (ObjectRegion::CYLINDER_COVER);
             intersectionResult->setIntersectionPoint (new Vector (intersectionPointT2));
 
             return intersectionResult;
@@ -1327,7 +1318,184 @@ Color* Cylinder::getColorToBePainted (
     Vector* environmentLight
 ) {
     
-    
+    Vector resultColorRate (0, 0, 0);
+
+    if (intersectionResult->getObjectRegion() == ObjectRegion::CYLINDER_COVER) {
+
+        Vector v = ((*line->dir) * -1) / line->dir->getMagnitude();
+
+        for (auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
+
+            Vector* intersectionPoint = intersectionResult->getIntersectionPoint();
+            
+            Vector l = (*((*i)->getPosition()) - *intersectionPoint) / (*((*i)->getPosition()) - *intersectionResult->getIntersectionPoint()).getMagnitude();
+            // verify if the lights intercepts any other object
+
+            Sp<Line> verifyShadowLine = new Line (
+                new Vector (
+                    (*intersectionPoint)
+                ),
+                new Vector (l)
+            );
+
+            bool hasIntersectionWithOtherObjects = false;
+
+            for (auto j = objectsArray.begin(); (j != objectsArray.end() && !hasIntersectionWithOtherObjects); j++) {
+                
+                if ((*j) != this) {
+                    Sp<IntersectionResult> intersectionShadow = (*j)->getIntersectionResult (verifyShadowLine.pointer);
+
+                    hasIntersectionWithOtherObjects =
+                        intersectionShadow->getHasIntersection() &&
+                        (intersectionShadow->getDistanceFromP0() < intersectionResult->getDistanceFromP0());
+                }
+
+            }
+
+            // calculate the color to be painted
+            if (!hasIntersectionWithOtherObjects) {    
+                Vector r = (*this->getDirection()) * (2 * scalarProduct (l, *this->getDirection())) -  l;
+
+                double fDifusa = max (
+                    scalarProduct (l, *this->getDirection()),
+                    0.0
+                );
+
+                double fEspeculada = pow (
+                    max (
+                        scalarProduct (r, v),
+                        0.0
+                    ),
+                    this->getShininess()
+                );
+
+                Vector iDifusa = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fDifusa;
+
+                Vector iEspeculada = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fEspeculada;
+
+                resultColorRate = resultColorRate + iDifusa + iEspeculada;
+            }
+
+
+        }
+
+        if (environmentLight != nullptr) {
+            resultColorRate = resultColorRate + ((*environmentLight) * (*this->getReflectivity()));
+        }
+
+        return new Color (
+            resultColorRate[0] * 255,
+            resultColorRate[1] * 255,
+            resultColorRate[2] * 255,
+            255
+        );
+
+    } else {
+
+        Vector pIMinusCb = *intersectionResult->getIntersectionPoint() - *this->getBaseCenter();
+
+        Vector Identity[3] = {
+            Vector (
+                1, 0, 0            
+            ),
+            Vector (
+                0, 1, 0
+            ),
+            Vector (
+                0, 0, 1
+            )
+        };
+
+        // M = Identity - cylinderDirection * cylinderDirectionT
+        Vector M[3];
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+
+                M[i][j] = Identity[i][j] - (*this->getDirection())[i] * (*this->getDirection())[j];
+
+            }
+        }
+
+        // normal to surface not unitary
+        Vector N;
+
+        for (int i = 0; i < 3; i++) {
+            N[i] = M[i][0] * pIMinusCb[0] + M[i][1] * pIMinusCb[1] + M[i][2] * pIMinusCb[2];
+        }
+
+        // normal to surface unitary
+        Vector n = N / (N.getMagnitude());
+
+        Vector v = ((*line->dir) * -1) / line->dir->getMagnitude();
+
+        for (auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
+
+            Vector* intersectionPoint = intersectionResult->getIntersectionPoint();
+            
+            Vector l = (*((*i)->getPosition()) - *intersectionPoint) / (*((*i)->getPosition()) - *intersectionResult->getIntersectionPoint()).getMagnitude();
+            // verify if the lights intercepts any other object
+
+            Sp<Line> verifyShadowLine = new Line (
+                new Vector (
+                    (*intersectionPoint)
+                ),
+                new Vector (l)
+            );
+
+            bool hasIntersectionWithOtherObjects = false;
+
+            for (auto j = objectsArray.begin(); (j != objectsArray.end() && !hasIntersectionWithOtherObjects); j++) {
+                
+                if ((*j) != this) {
+                    Sp<IntersectionResult> intersectionShadow = (*j)->getIntersectionResult (verifyShadowLine.pointer);
+
+                    hasIntersectionWithOtherObjects =
+                        intersectionShadow->getHasIntersection() &&
+                        (intersectionShadow->getDistanceFromP0() < intersectionResult->getDistanceFromP0());
+                }
+
+            }
+
+            // calculate the color to be painted
+            if (!hasIntersectionWithOtherObjects) {    
+                Vector r = (n) * (2 * scalarProduct (l, n)) -  l;
+
+                double fDifusa = max (
+                    scalarProduct (l, n),
+                    0.0
+                );
+
+                double fEspeculada = pow (
+                    max (
+                        scalarProduct (r, v),
+                        0.0
+                    ),
+                    this->getShininess()
+                );
+
+                Vector iDifusa = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fDifusa;
+
+                Vector iEspeculada = (*(*i)->getIntensity()) * (*this->getReflectivity()) * fEspeculada;
+
+                resultColorRate = resultColorRate + iDifusa + iEspeculada;
+            }
+
+
+        }
+
+        if (environmentLight != nullptr) {
+            resultColorRate = resultColorRate + ((*environmentLight) * (*this->getReflectivity()));
+        }
+
+        return new Color (
+            resultColorRate[0] * 255,
+            resultColorRate[1] * 255,
+            resultColorRate[2] * 255,
+            255
+        );
+
+    }
 
 };
 
@@ -1340,10 +1508,19 @@ Cylinder::Cylinder (Vector* baseCenter, Vector* topCenter, double radius, Vector
     this->setReflectivity (reflectivity);
     this->setShininess (shininess);
     this->setHeight ((*this->getTopCenter() - *this->getBaseCenter()).getMagnitude());
+    this->setDirection (
+        new Vector (
+            (*this->getTopCenter() - *this->getBaseCenter()) /
+            (*this->getTopCenter() - *this->getBaseCenter()).getMagnitude()
+        )
+    );
 }
 
 Cylinder::~Cylinder () {
     delete this->getBaseCenter ();
     delete this->getTopCenter ();
     delete this->getReflectivity ();
+    delete this->getDirection ();
 }
+
+// TODO: OPTIMIZE THE GET COLOR TO BE PAINTED OF ALL OBJECTS IN ONLY ONE FUNCION

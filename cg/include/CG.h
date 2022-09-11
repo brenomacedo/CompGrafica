@@ -318,6 +318,9 @@ class Cylinder : public Object {
         // height of cylinder
         double height;
 
+        // cylinder direction
+        Vector* direction = nullptr;
+
     public:
         // return the type of plan
         ObjectType getObjectType ();
@@ -357,6 +360,12 @@ class Cylinder : public Object {
 
         // get the height of cylinder
         double getHeight ();
+
+        // set the cylinder direction
+        void setDirection (Vector* vector);
+
+        // get the cylinder direction
+        Vector* getDirection ();
 
         // get intersection of cylinder and a line
         IntersectionResult* getIntersectionResult (Line* line);
