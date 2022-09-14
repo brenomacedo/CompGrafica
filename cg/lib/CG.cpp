@@ -361,6 +361,11 @@ Vector Vector::operator / (const double& operand) {
     return result;
 }
 
+ostream& operator << (ostream& os, Vector vector) {
+    os << "Vector [" << vector[0] << ", " << vector[1] << ", " << vector[2] << "]";
+    return os;
+}
+
 double Vector::getMagnitude () {
     double result = 0;
 
@@ -1392,6 +1397,19 @@ Cylinder::Cylinder (Vector* baseCenter, Vector* topCenter, double radius, Vector
     );
 }
 
+Cylinder::Cylinder (Vector* baseCenter, Vector* direction, double height, double radius, Vector* reflectivity, double shininess) {
+    this->setBaseCenter (baseCenter);
+    this->setRadius (radius);
+    this->setReflectivity (reflectivity);
+    this->setShininess (shininess);
+    this->setHeight (height);
+    *direction = *direction / (*direction).getMagnitude ();
+    this->setDirection (direction);
+    this->setTopCenter (
+        new Vector (*this->getBaseCenter() + *this->getDirection () * this->getHeight ())
+    );
+}
+
 Cylinder::~Cylinder () {
     delete this->getBaseCenter ();
     delete this->getTopCenter ();
@@ -1784,6 +1802,21 @@ Cone::Cone (Vector* baseCenter, Vector* top, double radius, Vector* reflectivity
         new Vector (
             (*this->getTop () - *this->getBaseCenter ())
             / (*this->getTop () - *this->getBaseCenter ()).getMagnitude()
+        )
+    );
+}
+
+Cone::Cone (Vector* baseCenter, Vector* direction, double height, double radius, Vector* reflectivity, double shininess) {
+    this->setBaseCenter (baseCenter);
+    this->setRadius (radius);
+    this->setHeight (height);
+    this->setReflectivity (reflectivity);
+    this->setShininess (shininess);
+    *direction = *direction / (*direction).getMagnitude ();
+    this->setDirection (direction);
+    this->setTop (
+        new Vector (
+            *this->getBaseCenter () + *this->getDirection () * this->getHeight()
         )
     );
 }

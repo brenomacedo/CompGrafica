@@ -1,8 +1,11 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 #include <SDL2/SDL.h>
 #include "./image.h"
+
+using std::ostream;
 
 class Object;
 class Light;
@@ -44,6 +47,8 @@ class Vector {
         Vector ();
         Vector (double x, double y, double z);
 };
+
+ostream& operator << (ostream& os, Vector vector);
 
 // returns the scalar product of two vectors
 double scalarProduct (Vector a, Vector b);
@@ -397,6 +402,7 @@ class Cylinder : public Object {
 
         Cylinder ();
         Cylinder (Vector* baseCenter, Vector* topCenter, double radius, Vector* reflectivity, double shininess = 1.0);
+        Cylinder (Vector* baseCenter, Vector* direction, double height, double radius, Vector* reflectivity, double shininess = 1.0);
         ~Cylinder ();
 
 };
@@ -494,6 +500,7 @@ class Cone : public Object {
 
         Cone ();
         Cone (Vector* baseCenter, Vector* top, double radius, Vector* reflectivity, double shininess);
+        Cone (Vector* baseCenter, Vector* direction, double height, double radius, Vector* reflectivity, double shininess = 1.0);
         ~Cone ();
 
 };
