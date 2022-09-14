@@ -1481,7 +1481,7 @@ IntersectionResult* Cone::getIntersectionResult (Line* line) {
     double drPlusDc = scalarProduct (*line->dir, coneDirection);
 
     if (drPlusDc != 0) {
-        t1 = scalarProduct ((*line->P0 - *this->getBaseCenter ()), coneDirection) / drPlusDc;
+        t1 = (scalarProduct ((*line->P0 - *this->getBaseCenter ()), coneDirection) / drPlusDc) * (-1);
 
         intersectionPointT1 = (*line->P0 + *line->dir * t1);
 
