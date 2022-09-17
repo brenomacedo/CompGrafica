@@ -22,7 +22,7 @@ double max (double a, double b);
 // return the vector product of two vectors a and b
 Vector vectorProduct (Vector a, Vector b);
 
-enum class ObjectType { SHPERE, PLAN, CYLINDER, CONE };
+enum class ObjectType { SPHERE, PLAN, CYLINDER, CONE };
 enum class ObjectRegion { SPHERE_SURFACE, CYLINDER_SURFACE, CYLINDER_BASE, CYLINDER_TOP, PLAN, CONE_SURFACE, CONE_BASE, UNKNOWN };
 
 // vector of 3 positions (x, y, z)
@@ -193,7 +193,7 @@ class Object {
 
 class Sphere : public Object {
     private:
-        ObjectType type = ObjectType::SHPERE;
+        ObjectType type = ObjectType::SPHERE;
 
         // radius of the sphere
         double radius;
