@@ -474,6 +474,12 @@ class Cone : public Object {
         // set the cone direction
         void setDirection (Vector* direction);
 
+        // returns the cosin ^ 2 of cone angle
+        double getCos2Angle ();
+
+        // set the cosin ^ 2 of cone angle
+        void setCos2Angle (double cos2angle);
+
         // returns the cone shininess
         double getShininess ();
 

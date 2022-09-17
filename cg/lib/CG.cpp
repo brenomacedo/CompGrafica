@@ -1451,6 +1451,7 @@ double Cone::getHeight () {
 
 void Cone::setHeight (double height) {
     this->height = height;
+    this->setCos2Angle (pow (this->getHeight (), 2.0) / (pow (this->getRadius (), 2.0) + pow (this->getHeight (), 2.0)));
 }
 
 Vector* Cone::getDirection () {
@@ -1459,6 +1460,15 @@ Vector* Cone::getDirection () {
 
 void Cone::setDirection (Vector* direction) {
     this->direction = direction;
+    this->setCos2Angle (pow (this->getHeight (), 2.0) / (pow (this->getRadius (), 2.0) + pow (this->getHeight (), 2.0)));
+}
+
+double Cone::getCos2Angle () {
+    return this->cos2angle;
+}
+
+void Cone::setCos2Angle (double cos2angle) {
+    this->cos2angle = cos2angle;
 }
 
 double Cone::getShininess () {
@@ -1490,7 +1500,7 @@ IntersectionResult* Cone::getIntersectionResult (Line* line) {
 
     double distanceP0ToT1;
 
-    double cosin2angle = pow (this->getHeight (), 2.0) / (pow (this->getRadius (), 2.0) + pow (this->getHeight (), 2.0));
+    double cosin2angle = this->getCos2Angle ();
 
     Vector coneDirection = *this->getDirection ();
 
