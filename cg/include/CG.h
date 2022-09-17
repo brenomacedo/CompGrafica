@@ -434,9 +434,6 @@ class Cone : public Object {
         // cos2angle
         double cos2angle;
 
-        // alpha = R^2 / H^2
-        double alpha;
-
         // cone reflectivity
         Vector* reflectivity = nullptr;
 
