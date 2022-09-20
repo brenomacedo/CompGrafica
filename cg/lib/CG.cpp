@@ -499,6 +499,8 @@ IntersectionResult::~IntersectionResult () {
     delete this->getIntersectionPoint();
 }
 
+Object::~Object () {}
+
 Color* Object::calculateColorToBePainted (
     IntersectionResult* intersectionResult,
     LightsArray lightsArray,

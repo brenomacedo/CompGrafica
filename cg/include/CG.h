@@ -189,6 +189,8 @@ class Object {
             double shininess,
             Object* objAddr
         );
+
+        virtual ~Object ();
 };
 
 class Sphere : public Object {
