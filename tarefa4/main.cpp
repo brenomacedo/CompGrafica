@@ -1,9 +1,13 @@
 #include <iostream>
 #include <string>
 #include <cmath>
-#include "./include/CGI.h"
+#include "./include/CG.h"
+#include "./include/utils.impl.h"
+#include "./include/pixels.h"
 
 using std::string;
+
+
 
 int main () {
 
