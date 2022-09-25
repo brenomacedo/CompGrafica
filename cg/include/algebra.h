@@ -10,7 +10,6 @@ class Vector {
         double positions[3];
 
     public:
-        // get the magnitude of vector: || vector ||
         double getMagnitude ();
 
         double& operator [] (int index);
@@ -29,16 +28,11 @@ class Vector {
 
 ostream& operator << (ostream& os, Vector vector);
 
-// returns the scalar product of two vectors
 double scalarProduct (Vector a, Vector b);
-// returns the scalar product of two vectors
 double scalarProduct (Vector *a, Vector *b);
 
-// return the max of a and b
 double min (double a, double b);
 
-// return the min of a and b
 double max (double a, double b);
 
-// return the vector product of two vectors a and b
 Vector vectorProduct (Vector a, Vector b);

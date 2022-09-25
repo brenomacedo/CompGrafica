@@ -8,10 +8,7 @@ using std::string;
 
 class Pixel {
     public:
-        int r;
-        int g;
-        int b;
-        int a;
+        int r, g, b, a;
 
         Pixel ();
         Pixel (int r, int g, int b, int a = 255);
