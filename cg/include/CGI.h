@@ -6,3 +6,4 @@
 #include "../include/cylinder.h"
 #include "../include/plan.h"
 #include "../include/mesh.h"
+#include "../include/cube.h"
