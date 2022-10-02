@@ -380,7 +380,7 @@ Color* Cone::getColorToBePainted (
         this->getShininess (),
         this
     );
-};
+}
 
 Cone::Cone () {}
 

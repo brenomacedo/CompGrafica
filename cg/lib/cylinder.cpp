@@ -539,7 +539,7 @@ Color* Cylinder::getColorToBePainted (
 
     }
 
-};
+}
 
 Cylinder::Cylinder () {}
 

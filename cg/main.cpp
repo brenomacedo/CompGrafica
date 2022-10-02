@@ -31,6 +31,9 @@ int main () {
         new Vector (0.3, 0.3, 0.3)
     );
 
+    scene->setBackgroundImage(
+        new Image("./assets/sasq.jpg")
+    );
     scene->addLightSource(light);
     scene->addObject(mesh);
 

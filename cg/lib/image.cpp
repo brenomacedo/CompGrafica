@@ -49,22 +49,19 @@ Pixel Image::getPixel (int x, int y) {
         case 1:
             selectedPixel = *pixel;
             break;
-
         case 2:
             selectedPixel = *((Uint16*) pixel);
             break;
-
         case 3:
-            if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+            if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
                 selectedPixel = pixel[0] << 16 | pixel[1] << 8 | pixel[2];
-            else
+            } else {
                 selectedPixel = pixel[0] | pixel[1] << 8 | pixel[2] << 16;
-                break;
-
+            }
+            break;
         case 4:
             selectedPixel = *((Uint32*)pixel);
             break;
-
         default:
             selectedPixel = 0;
     }

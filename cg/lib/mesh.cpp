@@ -101,18 +101,6 @@ Mesh::Mesh(double shininess, Vector* reflectivity) {
     this->reflectivity = reflectivity;
 }
 
-Mesh::Mesh(double shininess, Vector* reflectivity, string file) {
-    this->setReflectivity(reflectivity);
-    this->setShininess(shininess);
-
-    ifstream objFile (file);
-
-    string line;
-    while (getline(objFile, line)) {
-        std::cout << line << std::endl;
-    }
-}
-
 Mesh::~Mesh() {
     delete this->reflectivity;
 
