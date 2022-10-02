@@ -1,10 +1,13 @@
 #pragma once
 
-#include <memory>
+#include <string>
 #include <vector>
 #include "./CG.h"
 
-enum class SHADOW { FLAT, SMOOTH };
+using std::string;
+
+enum class MeshType { MANUAL, BLENDER };
+enum class Shadow { FLAT, SMOOTH };
 
 class Face;
 class Edge;
@@ -92,6 +95,7 @@ class Mesh : public Object {
 
         Mesh();
         Mesh(double shininess, Vector* reflectivity);
+        Mesh(double shininess, Vector* reflectivity, string file);
         ~Mesh();
 
 };

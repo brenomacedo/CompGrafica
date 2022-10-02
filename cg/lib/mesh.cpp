@@ -1,6 +1,9 @@
 #include <iostream>
+#include <fstream>
 #include <SDL2/SDL.h>
 #include "../include/mesh.h"
+
+using std::ifstream;
 
 Vector* MeshIntersectionResult::getNormal() {
     return this->normal;
@@ -98,6 +101,18 @@ Mesh::Mesh(double shininess, Vector* reflectivity) {
     this->reflectivity = reflectivity;
 }
 
+Mesh::Mesh(double shininess, Vector* reflectivity, string file) {
+    this->setReflectivity(reflectivity);
+    this->setShininess(shininess);
+
+    ifstream objFile (file);
+
+    string line;
+    while (getline(objFile, line)) {
+        std::cout << line << std::endl;
+    }
+}
+
 Mesh::~Mesh() {
     delete this->reflectivity;
 
@@ -134,17 +149,17 @@ IntersectionResult* Mesh::getIntersectionResult (Line* line) {
 
         int v1, v2, v3;
 
-        int n1 = vertex11Id * vertex12Id;
-        int n = n1 / vertex21Id;
+        int n1 = (vertex11Id + 1) * (vertex12Id + 1);
+        int n = n1 / (vertex21Id + 1);
 
-        if (n == vertex11Id || n == vertex12Id) {
+        if (n == (vertex11Id + 1) || n == (vertex12Id + 1)) {
             v1 = vertex21Id;
             v2 = vertex22Id;
-            v3 = n;
+            v3 = n - 1;
         } else {
             v1 = vertex22Id;
             v2 = vertex21Id;
-            v3 = n1/v1;
+            v3 = (n1/(v1 + 1)) - 1;
         }
 
         Vector P1 = *this->getVertexesArray()[v1]->point;

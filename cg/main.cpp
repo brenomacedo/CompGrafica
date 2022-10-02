@@ -134,7 +134,7 @@ int main () {
         new Face(3, 16, 10)
     );
     mesh->addFace(
-        new Face(1, 17, 7)
+        new Face(11, 17, 7)
     );
     mesh->addFace(
         new Face(3, 8, 17)
