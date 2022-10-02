@@ -5,3 +5,4 @@
 #include "../include/cone.h"
 #include "../include/cylinder.h"
 #include "../include/plan.h"
+#include "../include/mesh.h"

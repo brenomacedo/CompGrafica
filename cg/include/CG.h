@@ -11,7 +11,7 @@ class Light;
 using ObjectsArray = std::vector<Object*>;
 using LightsArray = std::vector<Light*>;
 
-enum class ObjectType { SPHERE, PLAN, CYLINDER, CONE };
+enum class ObjectType { SPHERE, PLAN, CYLINDER, CONE, MESH };
 enum class ObjectRegion { SPHERE_SURFACE, CYLINDER_SURFACE, CYLINDER_BASE, CYLINDER_TOP, PLAN, CONE_SURFACE, CONE_BASE, UNKNOWN };
 
 class Color {
@@ -58,7 +58,7 @@ class IntersectionResult {
 
         IntersectionResult ();
         IntersectionResult (bool hasIntersection, Vector* intersectionPoint, double distanceFromP0, ObjectRegion region);
-        ~IntersectionResult ();
+        virtual ~IntersectionResult ();
         IntersectionResult (const IntersectionResult& result);
 
 };

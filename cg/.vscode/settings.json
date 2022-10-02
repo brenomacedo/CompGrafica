@@ -44,6 +44,10 @@
         "initializer_list": "cpp",
         "limits": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "complex": "cpp",
+        "cstring": "cpp",
+        "map": "cpp",
+        "unordered_set": "cpp"
     }
 }
