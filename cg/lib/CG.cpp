@@ -389,7 +389,7 @@ Color* Object::calculateColorToBePainted (
 
                 hasIntersectionWithOtherObjects =
                     intersectionShadow->getHasIntersection() &&
-                    (intersectionShadow->getDistanceFromP0() < intersectionResult->getDistanceFromP0());
+                    (intersectionShadow->getDistanceFromP0() < (*((*i)->getPosition()) - *intersectionPoint).getMagnitude());
             }
 
         }
