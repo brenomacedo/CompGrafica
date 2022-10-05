@@ -1,7 +1,7 @@
 #include "../include/cube.h"
 
-Mesh* Cube::create(Vector* baseCenter, double edgeSize, Vector* reflectiveness, double shininness) {
-    Mesh* mesh = new Mesh (shininness, reflectiveness);
+Mesh* Cube::create(Vector* baseCenter, double edgeSize, Vector* reflectivity, double shininness) {
+    Mesh* mesh = new Mesh (shininness, reflectivity);
     mesh->addVertex(
         new Vertex(
             new Vector(

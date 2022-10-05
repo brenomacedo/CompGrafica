@@ -8,7 +8,7 @@ using std::string;
 int main () {
 
     Plan* plan1 = new Plan(
-        new Vector(0, -170, 0),
+        new Vector(0, -150, 0),
         new Vector(0, 1, 0),
         new Vector(0.686, 0.933, 0.933),
         5.0
@@ -43,7 +43,7 @@ int main () {
     );
 
     Mesh* mesh = Cube::create(
-        new Vector(0, -170, -165),
+        new Vector(0, -150, -165),
         40,
         new Vector(1.0, 0.078, 0.576),
         5.0
