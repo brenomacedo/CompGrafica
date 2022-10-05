@@ -7,7 +7,7 @@ using std::string;
 
 int main () {
 
-    Image* floorTexture = new Image("./assets/textura.jpg");
+    Image* floorTexture = new Image("./assets/madeira.jpg");
 
     PlanWithTexture* plan1 = new PlanWithTexture(
         floorTexture,
@@ -81,7 +81,7 @@ int main () {
     Sp<Scene> scene = new Scene (
         new Vector (0, 0, 0),
         60.0, 60.0,
-        500, 500,
+        800, 800,
         20,
         new Color (100, 100, 100, 255)
     );

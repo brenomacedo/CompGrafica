@@ -1,4 +1,5 @@
 #include "../include/planWithTexture.h"
+#include "../include/utils.impl.h"
 
 void PlanWithTexture::setTexture(Image* texture) {
     this->texture = texture;
@@ -15,20 +16,6 @@ Color* PlanWithTexture::getColorToBePainted(
     Line* line,
     Vector* environmentLight
 ) {
-
-    // Vector resultColorRate = this->calculateResultColorRate(
-    //     line,
-    //     intersectionResult,
-    //     lightsArray,
-    //     objectsArray,
-    //     this->getNormal(),
-    //     Vector* reflectivity,
-    //     double shininess
-    // );
-
-    // if (environmentLight != nullptr) {
-    //     resultColorRate = resultColorRate + ((*environmentLight) * (*this->getReflectivity()));
-    // }
 
     Vector intersectionPoint = *intersectionResult->getIntersectionPoint();
     int x = intersectionPoint[0];
@@ -51,13 +38,33 @@ Color* PlanWithTexture::getColorToBePainted(
 
     Pixel pixelToPaint = this->texture->getPixel(imagePixelPositionX, imagePixelPositionY);
 
-    return new Color(
-        pixelToPaint.r,
-        pixelToPaint.g,
-        pixelToPaint.b,
-        pixelToPaint.a
+    Sp<Vector> pixelReflectivity = new Vector(
+        ((double) pixelToPaint.r) / 255.0,
+        ((double) pixelToPaint.g) / 255.0,
+        ((double) pixelToPaint.b) / 255.0
     );
-};
+
+    Vector resultColorRate = this->calculateResultColorRate(
+        line,
+        intersectionResult,
+        lightsArray,
+        objectsArray,
+        this->getNormal(),
+        pixelReflectivity.pointer,
+        this->getShininess()
+    );
+
+    if (environmentLight != nullptr) {
+        resultColorRate = resultColorRate + ((*environmentLight) * (*pixelReflectivity));
+    }
+
+    return new Color(
+        resultColorRate[0] * 255,
+        resultColorRate[1] * 255,
+        resultColorRate[2] * 255,
+        255
+    );
+}
 
 PlanWithTexture::PlanWithTexture() {}
 
