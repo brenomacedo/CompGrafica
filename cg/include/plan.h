@@ -13,7 +13,7 @@ class Plan : public Object {
         Vector* getInitialPoint ();
         Vector* getNormal ();
         IntersectionResult* getIntersectionResult (Line* line);
-        Color* getColorToBePainted (
+        virtual Color* getColorToBePainted (
             IntersectionResult* intersectionResult,
             LightsArray lightsArray,
             ObjectsArray objectsArray,
@@ -26,6 +26,6 @@ class Plan : public Object {
 
         Plan ();
         Plan (Vector* initialPoint, Vector* normal, Vector* reflectivity, double shininess = 1.0);
-        ~Plan ();
+        virtual ~Plan ();
         
 };

@@ -7,3 +7,4 @@
 #include "../include/plan.h"
 #include "../include/mesh.h"
 #include "../include/cube.h"
+#include "../include/planWithTexture.h"

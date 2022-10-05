@@ -7,7 +7,10 @@ using std::string;
 
 int main () {
 
-    Plan* plan1 = new Plan(
+    Image* floorTexture = new Image("./assets/textura.jpg");
+
+    PlanWithTexture* plan1 = new PlanWithTexture(
+        floorTexture,
         new Vector(0, -150, 0),
         new Vector(0, 1, 0),
         new Vector(0.686, 0.933, 0.933),
