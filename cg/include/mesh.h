@@ -63,8 +63,6 @@ class Mesh : public Object {
 
     private:
         ObjectType type = ObjectType::MESH;
-        double shininess;
-        Vector* reflectivity = nullptr;
 
         VertexesArray vertexesArray;
         EdgesArray edgesArray;
@@ -72,14 +70,11 @@ class Mesh : public Object {
 
     public:
         ObjectType getObjectType();
-        double getShininess();
-        Vector* getReflectivity();
+        
         VertexesArray getVertexesArray ();
         EdgesArray getEdgesArray();
         FacesArray getFacesArray();
 
-        void setShininess(double shininess);
-        void setReflectivity(Vector* reflectivity);
         void addVertex(Vertex* vertex);
         void addEdge(Edge* edge);
         void addFace(Face* face);

@@ -76,10 +76,16 @@ class Object {
     protected:
         ObjectType type;
         Vector* reflectivity;
-        double shininess;
+        double shininess = 1.0;
         
     public:
         virtual ObjectType getObjectType () = 0;
+        Vector* getReflectivity ();
+        double getShininess ();
+
+        void setReflectivity (Vector* reflectivity);
+        void setShininess (double shininess);
+
         virtual IntersectionResult* getIntersectionResult (Line* line) = 0;
         virtual Color* getColorToBePainted (
             IntersectionResult* intersectionResult,
@@ -101,6 +107,8 @@ class Object {
             Object* objAddr
         );
 
+        Object();
+        Object(Vector* reflectivity);
         virtual ~Object ();
 };
 

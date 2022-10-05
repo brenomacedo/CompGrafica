@@ -14,28 +14,12 @@ double Sphere::getRadius () {
     return this->radius;
 }
 
-void Sphere::setReflectivity (Vector* reflectivity) {
-    this->reflectivity = reflectivity;
-}
-
-Vector* Sphere::getReflectivity () {
-    return this->reflectivity;
-}
-
 void Sphere::setCenter (Vector* center) {
     this->center = center;
 }
 
 Vector* Sphere::getCenter () {
     return this->center;
-}
-
-void Sphere::setShininess (double shininess) {
-    this->shininess = shininess;
-}
-
-double Sphere::getShininess () {
-    return this->shininess;
 }
 
 Sphere::Sphere () {}
@@ -48,7 +32,6 @@ Sphere::Sphere (double radius, Vector* reflectivity, Vector* center, double shin
 }
 
 Sphere::~Sphere () {
-    delete this->getReflectivity();
     delete this->getCenter();
 }
 

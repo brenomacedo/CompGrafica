@@ -21,22 +21,6 @@ Vector* Plan::getNormal () {
     return this->normal;
 }
 
-void Plan::setReflectivity (Vector* reflectivity) {
-    this->reflectivity = reflectivity;
-}
-
-Vector* Plan::getReflectivity () {
-    return this->reflectivity;
-}
-
-void Plan::setShininess (double shininess) {
-    this->shininess = shininess;
-}
-
-double Plan::getShininess () {
-    return this->shininess;
-}
-
 Plan::Plan () {}
 
 Plan::Plan (Vector* initialPoint, Vector* normal, Vector* reflectivity, double shininess) {
@@ -49,7 +33,6 @@ Plan::Plan (Vector* initialPoint, Vector* normal, Vector* reflectivity, double s
 Plan::~Plan () {
     delete this->getInitialPoint();
     delete this->getNormal();
-    delete this->getReflectivity();
 }
 
 IntersectionResult* Plan::getIntersectionResult (Line* line) {

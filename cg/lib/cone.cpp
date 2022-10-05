@@ -56,22 +56,6 @@ void Cone::setCos2Angle (double cos2angle) {
     this->cos2angle = cos2angle;
 }
 
-double Cone::getShininess () {
-    return this->shininess;
-}
-
-void Cone::setShininess (double shininess) {
-    this->shininess = shininess;
-}
-
-Vector* Cone::getReflectivity () {
-    return this->reflectivity;
-}
-
-void Cone::setReflectivity (Vector* reflectivity) {
-    this->reflectivity = reflectivity;
-}
-
 IntersectionResult* Cone::getIntersectionResult (Line* line) {
 
     IntersectionResult* intersectionResult = new IntersectionResult ();
@@ -420,5 +404,4 @@ Cone::~Cone () {
     delete this->getBaseCenter ();
     delete this->getTop ();
     delete this->getDirection ();
-    delete this->getReflectivity ();
 }

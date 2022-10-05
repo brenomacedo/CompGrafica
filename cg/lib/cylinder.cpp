@@ -30,22 +30,6 @@ double Cylinder::getRadius () {
     return this->radius;
 }
 
-void Cylinder::setReflectivity (Vector* reflectivity) {
-    this->reflectivity = reflectivity;
-}
-
-Vector* Cylinder::getReflectivity () {
-    return this->reflectivity;
-}
-
-void Cylinder::setShininess (double shininess) {
-    this->shininess = shininess;
-}
-
-double Cylinder::getShininess () {
-    return this->shininess;
-}
-
 void Cylinder::setHeight (double height) {
     this->height = height;
 }
@@ -574,6 +558,5 @@ Cylinder::Cylinder (Vector* baseCenter, Vector* direction, double height, double
 Cylinder::~Cylinder () {
     delete this->getBaseCenter ();
     delete this->getTopCenter ();
-    delete this->getReflectivity ();
     delete this->getDirection ();
 }

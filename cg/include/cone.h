@@ -11,9 +11,7 @@ class Cone : public Object {
         double radius;
         double height;
         Vector* direction = nullptr;
-        double shininess;
         double cos2angle;
-        Vector* reflectivity = nullptr;
 
     public:
         ObjectType getObjectType ();
@@ -23,8 +21,6 @@ class Cone : public Object {
         double getHeight ();
         Vector* getDirection ();
         double getCos2Angle ();
-        double getShininess ();
-        Vector* getReflectivity ();
 
         Vector* getBaseCenter ();
         void setTop (Vector* top);
@@ -32,8 +28,6 @@ class Cone : public Object {
         void setHeight (double height);
         void setDirection (Vector* direction);
         void setCos2Angle (double cos2angle);
-        void setShininess (double shininess);
-        void setReflectivity (Vector* reflectivity);
         IntersectionResult* getIntersectionResult (Line* line);
 
         Color* getColorToBePainted (

@@ -348,7 +348,31 @@ IntersectionResult::~IntersectionResult () {
     delete this->getIntersectionPoint();
 }
 
-Object::~Object () {}
+void Object::setReflectivity (Vector* reflectivity) {
+    this->reflectivity = reflectivity;
+}
+
+Vector* Object::getReflectivity () {
+    return this->reflectivity;
+}
+
+void Object::setShininess (double shininess) {
+    this->shininess = shininess;
+}
+
+double Object::getShininess () {
+    return this->shininess;
+}
+
+Object::Object () {}
+
+Object::Object (Vector* reflectivity) {
+    this->reflectivity = reflectivity;
+}
+
+Object::~Object () {
+    delete this->getReflectivity();
+}
 
 Color* Object::calculateColorToBePainted (
     IntersectionResult* intersectionResult,

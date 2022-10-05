@@ -54,14 +54,6 @@ ObjectType Mesh::getObjectType() {
     return this->type;
 }
 
-double Mesh::getShininess() {
-    return this->shininess;
-}
-
-Vector* Mesh::getReflectivity() {
-    return this->reflectivity;
-}
-
 VertexesArray Mesh::getVertexesArray() {
     return this->vertexesArray;
 }
@@ -72,14 +64,6 @@ EdgesArray Mesh::getEdgesArray() {
 
 FacesArray Mesh::getFacesArray() {
     return this->facesArray;
-}
-
-void Mesh::setShininess(double shininess) {
-    this->shininess = shininess;
-}
-
-void Mesh::setReflectivity(Vector* reflectivity) {
-    this->reflectivity = reflectivity;
 }
 
 void Mesh::addVertex(Vertex* vertex) {
@@ -102,17 +86,15 @@ Mesh::Mesh(double shininess, Vector* reflectivity) {
 }
 
 Mesh::~Mesh() {
-    delete this->reflectivity;
-
-    for (Face* face : this->facesArray) {
+    for (Face* face : this->getFacesArray()) {
         delete face;
     }
 
-    for (Edge* edge : this->edgesArray) {
+    for (Edge* edge : this->getEdgesArray()) {
         delete edge;
     }
 
-    for (Vertex* vertex: this->vertexesArray) {
+    for (Vertex* vertex: this->getVertexesArray()) {
         delete vertex;
     }
 }

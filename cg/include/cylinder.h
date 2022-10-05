@@ -9,8 +9,6 @@ class Cylinder : public Object {
         Vector* baseCenter = nullptr;
         Vector* topCenter = nullptr;
         double radius;
-        Vector* reflectivity = nullptr;
-        double shininess;
         double height;
         Vector* direction = nullptr;
 
@@ -20,8 +18,6 @@ class Cylinder : public Object {
         Vector* getTopCenter ();
         void setRadius (double radius);
         double getRadius ();
-        Vector* getReflectivity ();
-        double getShininess ();
         double getHeight ();
         Vector* getDirection ();
         IntersectionResult* getIntersectionResult (Line* line);
@@ -35,8 +31,6 @@ class Cylinder : public Object {
 
         void setBaseCenter (Vector* baseCenter);
         void setTopCenter (Vector* topCenter);
-        void setReflectivity (Vector* reflectivity);
-        void setShininess (double shininess);
         void setHeight (double height);
         void setDirection (Vector* vector);
 

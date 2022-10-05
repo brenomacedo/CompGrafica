@@ -6,16 +6,12 @@ class Sphere : public Object {
     private:
         ObjectType type = ObjectType::SPHERE;
         double radius;
-        Vector* reflectivity;
         Vector* center;
-        double shininess = 1.0;
 
     public:
         ObjectType getObjectType ();
         double getRadius ();
-        Vector* getReflectivity ();
         Vector* getCenter ();
-        double getShininess ();
         IntersectionResult* getIntersectionResult (Line* line);
         Color* getColorToBePainted (
             IntersectionResult* intersectionResult,
@@ -26,9 +22,7 @@ class Sphere : public Object {
         );
 
         void setRadius (double radius);
-        void setReflectivity (Vector* reflectivity);
         void setCenter (Vector* center);
-        void setShininess (double shininess);
 
         Sphere ();
         Sphere (double radius, Vector* reflectivity, Vector* center, double shininess = 1.0);
