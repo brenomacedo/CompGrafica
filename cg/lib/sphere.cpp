@@ -121,7 +121,7 @@ Color* Sphere::getColorToBePainted (
     Vector* intersectionPoint = intersectionResult->getIntersectionPoint();
     Sp<Vector> normal = new Vector ((*intersectionPoint - *this->getCenter()) / this->getRadius());
 
-    return Object::calculateColorToBePainted (
+    return this->calculateColorToBePainted (
         intersectionResult,
         lightsArray,
         objectsArray,
@@ -129,8 +129,7 @@ Color* Sphere::getColorToBePainted (
         environmentLight,
         normal.pointer,
         this->getReflectivity(),
-        this->getShininess(),
-        this
+        this->getShininess()
     );
 
 }

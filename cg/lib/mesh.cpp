@@ -185,7 +185,7 @@ Color* Mesh::getColorToBePainted (
 ) {
     MeshIntersectionResult* meshIntersectionResult = (MeshIntersectionResult*) intersectionResult;
 
-    return Object::calculateColorToBePainted(
+    return this->calculateColorToBePainted(
         intersectionResult,
         lightsArray,
         objectsArray,
@@ -193,7 +193,6 @@ Color* Mesh::getColorToBePainted (
         environmentLight,
         meshIntersectionResult->getNormal(),
         this->getReflectivity(),
-        this->getShininess(),
-        this
+        this->getShininess()
     );
 }

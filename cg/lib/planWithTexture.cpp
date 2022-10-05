@@ -1,4 +1,3 @@
-#include <iostream>
 #include "../include/planWithTexture.h"
 
 void PlanWithTexture::setTexture(Image* texture) {
@@ -11,11 +10,26 @@ Image* PlanWithTexture::getTexture() {
 
 Color* PlanWithTexture::getColorToBePainted(
     IntersectionResult* intersectionResult,
-    LightsArray,
-    ObjectsArray,
-    Line*,
-    Vector*
+    LightsArray lightsArray,
+    ObjectsArray objectsArray,
+    Line* line,
+    Vector* environmentLight
 ) {
+
+    // Vector resultColorRate = this->calculateResultColorRate(
+    //     line,
+    //     intersectionResult,
+    //     lightsArray,
+    //     objectsArray,
+    //     this->getNormal(),
+    //     Vector* reflectivity,
+    //     double shininess
+    // );
+
+    // if (environmentLight != nullptr) {
+    //     resultColorRate = resultColorRate + ((*environmentLight) * (*this->getReflectivity()));
+    // }
+
     Vector intersectionPoint = *intersectionResult->getIntersectionPoint();
     int x = intersectionPoint[0];
     int z = intersectionPoint[2];
@@ -43,7 +57,7 @@ Color* PlanWithTexture::getColorToBePainted(
         pixelToPaint.b,
         pixelToPaint.a
     );
-}
+};
 
 PlanWithTexture::PlanWithTexture() {}
 

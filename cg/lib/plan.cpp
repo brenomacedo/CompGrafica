@@ -78,7 +78,7 @@ Color* Plan::getColorToBePainted (
     Vector* environmentLight
 ) {
 
-    return Object::calculateColorToBePainted (
+    return this->calculateColorToBePainted (
         intersectionResult,
         lightsArray,
         objectsArray,
@@ -86,8 +86,7 @@ Color* Plan::getColorToBePainted (
         environmentLight,
         this->getNormal (),
         this->getReflectivity (),
-        this->getShininess (),
-        this
+        this->getShininess ()
     );
     
 }

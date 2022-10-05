@@ -77,6 +77,29 @@ class Object {
         ObjectType type;
         Vector* reflectivity;
         double shininess = 1.0;
+
+        Color* calculateColorToBePainted(
+            IntersectionResult* intersectionResult,
+            LightsArray lightsArray,
+            ObjectsArray objectsArray,
+            Line* line,
+            Vector* environmentLight,
+            Vector* normal,
+            Vector* reflectivity,
+            double shininess
+        );
+
+        Vector calculateResultColorRate(
+            Line* line,
+            IntersectionResult* intersectionResult,
+            LightsArray lightsArray,
+            ObjectsArray objectsArray,
+            Vector* normal,
+            Vector* reflectivity,
+            double shininess
+        );
+
+        bool hasIntersectionWithOtherObjects(ObjectsArray objectsArray, Vector* intersectionPoint, Vector* l, Light* light);
         
     public:
         virtual ObjectType getObjectType () = 0;
@@ -94,18 +117,6 @@ class Object {
             Line* line,
             Vector* environmentLight
         ) = 0;
-
-        static Color* calculateColorToBePainted (
-            IntersectionResult* intersectionResult,
-            LightsArray lightsArray,
-            ObjectsArray objectsArray,
-            Line* line,
-            Vector* environmentLight,
-            Vector* normal,
-            Vector* reflectivity,
-            double shininess,
-            Object* objAddr
-        );
 
         Object();
         Object(Vector* reflectivity);

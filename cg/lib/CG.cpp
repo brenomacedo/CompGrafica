@@ -382,41 +382,58 @@ Color* Object::calculateColorToBePainted (
     Vector* environmentLight,
     Vector* normal,
     Vector* reflectivity,
-    double shininess,
-    Object* objAddr
+    double shininess
+) {
+
+    Vector resultColorRate = this->calculateResultColorRate(
+        line,
+        intersectionResult,
+        lightsArray,
+        objectsArray,
+        normal,
+        reflectivity,
+        shininess
+    );
+
+    if (environmentLight != nullptr) {
+        resultColorRate = resultColorRate + ((*environmentLight) * (*reflectivity));
+    }
+
+    return new Color (
+        resultColorRate[0] * 255,
+        resultColorRate[1] * 255,
+        resultColorRate[2] * 255,
+        255
+    );
+
+}
+
+Vector Object::calculateResultColorRate(
+    Line* line,
+    IntersectionResult* intersectionResult,
+    LightsArray lightsArray,
+    ObjectsArray objectsArray,
+    Vector* normal,
+    Vector* reflectivity,
+    double shininess
 ) {
 
     Vector resultColorRate (0, 0, 0);
 
     Vector v = ((*line->dir) * -1) / line->dir->getMagnitude();
 
+    Vector* intersectionPoint = intersectionResult->getIntersectionPoint();
+
+    // verify if the lights intercepts any other object
+
     for (auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
 
-        Vector* intersectionPoint = intersectionResult->getIntersectionPoint();
+        Vector l = (*((*i)->getPosition()) - *intersectionPoint) / (*((*i)->getPosition())
+            - *intersectionResult->getIntersectionPoint()).getMagnitude();
         
-        Vector l = (*((*i)->getPosition()) - *intersectionPoint) / (*((*i)->getPosition()) - *intersectionResult->getIntersectionPoint()).getMagnitude();
-        // verify if the lights intercepts any other object
-
-        Sp<Line> verifyShadowLine = new Line (
-            new Vector (
-                (*intersectionPoint)
-            ),
-            new Vector (l)
+        bool hasIntersectionWithOtherObjects = this->hasIntersectionWithOtherObjects(
+            objectsArray, intersectionPoint, new Vector(l), *i
         );
-
-        bool hasIntersectionWithOtherObjects = false;
-
-        for (auto j = objectsArray.begin(); (j != objectsArray.end() && !hasIntersectionWithOtherObjects); j++) {
-            
-            if ((*j) != objAddr) {
-                Sp<IntersectionResult> intersectionShadow = (*j)->getIntersectionResult (verifyShadowLine.pointer);
-
-                hasIntersectionWithOtherObjects =
-                    intersectionShadow->getHasIntersection() &&
-                    (intersectionShadow->getDistanceFromP0() < (*((*i)->getPosition()) - *intersectionPoint).getMagnitude());
-            }
-
-        }
 
         // calculate the color to be painted
         if (!hasIntersectionWithOtherObjects) {    
@@ -441,19 +458,33 @@ Color* Object::calculateColorToBePainted (
 
             resultColorRate = resultColorRate + iDifusa + iEspeculada;
         }
-
-
     }
 
-    if (environmentLight != nullptr) {
-        resultColorRate = resultColorRate + ((*environmentLight) * (*reflectivity));
-    }
+    return resultColorRate;
+}
 
-    return new Color (
-        resultColorRate[0] * 255,
-        resultColorRate[1] * 255,
-        resultColorRate[2] * 255,
-        255
+bool Object::hasIntersectionWithOtherObjects(ObjectsArray objectsArray, Vector* intersectionPoint, Vector* l, Light* light) {
+
+    Sp<Line> verifyShadowLine = new Line (
+        new Vector (
+            (*intersectionPoint)
+        ),
+        l
     );
 
+    bool hasIntersectionWithOtherObjects = false;
+
+    for (auto j = objectsArray.begin(); (j != objectsArray.end() && !hasIntersectionWithOtherObjects); j++) {
+        
+        if ((*j) != this) {
+            Sp<IntersectionResult> intersectionShadow = (*j)->getIntersectionResult (verifyShadowLine.pointer);
+
+            hasIntersectionWithOtherObjects =
+                intersectionShadow->getHasIntersection() &&
+                (intersectionShadow->getDistanceFromP0() < (*(light->getPosition()) - *intersectionPoint).getMagnitude());
+        }
+
+    }
+
+    return hasIntersectionWithOtherObjects;
 }

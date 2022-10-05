@@ -324,7 +324,7 @@ Color* Cone::getColorToBePainted (
 
         Sp<Vector> normal = new Vector (*this->getDirection () * (-1));
 
-        return Object::calculateColorToBePainted (
+        return this->calculateColorToBePainted (
             intersectionResult,
             lightsArray,
             objectsArray,
@@ -332,8 +332,7 @@ Color* Cone::getColorToBePainted (
             environmentLight,
             normal.pointer,
             this->getReflectivity (),
-            this->getShininess (),
-            this
+            this->getShininess ()
         );
 
     }
@@ -361,8 +360,7 @@ Color* Cone::getColorToBePainted (
         environmentLight,
         normal.pointer,
         this->getReflectivity (),
-        this->getShininess (),
-        this
+        this->getShininess ()
     );
 }
 

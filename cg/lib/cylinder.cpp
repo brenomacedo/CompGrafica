@@ -444,7 +444,7 @@ Color* Cylinder::getColorToBePainted (
 
     if (intersectionResult->getObjectRegion() == ObjectRegion::CYLINDER_TOP) {
 
-        return Object::calculateColorToBePainted (
+        return this->calculateColorToBePainted (
             intersectionResult,
             lightsArray,
             objectsArray,
@@ -452,8 +452,7 @@ Color* Cylinder::getColorToBePainted (
             environmentLight,
             this->getDirection (),
             this->getReflectivity (),
-            this->getShininess (),
-            this
+            this->getShininess ()
         );
 
     } else if (intersectionResult->getObjectRegion() == ObjectRegion::CYLINDER_BASE) {
@@ -468,8 +467,7 @@ Color* Cylinder::getColorToBePainted (
             environmentLight,
             normal.pointer,
             this->getReflectivity (),
-            this->getShininess (),
-            this
+            this->getShininess ()
         );
 
     } else {
@@ -517,8 +515,7 @@ Color* Cylinder::getColorToBePainted (
             environmentLight,
             normal.pointer,
             this->getReflectivity (),
-            this->getShininess (),
-            this
+            this->getShininess ()
         );
 
     }
