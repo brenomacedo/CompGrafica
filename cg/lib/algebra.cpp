@@ -17,6 +17,30 @@ double max (double a, double b) {
     return b;
 }
 
+Vector rotateX(Vector a, double angle) {
+    return Vector(
+        a[0],
+        a[1]*cos(angle) - a[2]*sin(angle),
+        a[1]*sin(angle) + a[2]*cos(angle)
+    );
+}
+
+Vector rotateZ(Vector a, double angle) {
+    return Vector(
+        a[0]*cos(angle) - a[1]*sin(angle),
+        a[0]*sin(angle) + a[1]*cos(angle),
+        a[2]
+    );
+}
+
+Vector rotateY(Vector a, double angle) {
+    return Vector(
+        a[0]*cos(angle) + a[2]*sin(angle),
+        a[1],
+        -a[0]*sin(angle) + a[2]*cos(angle)
+    );
+}
+
 Vector vectorProduct (Vector a, Vector b) {
     return Vector (
         a[1] * b[2] - a[2] * b[1],
