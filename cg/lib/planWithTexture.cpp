@@ -17,9 +17,39 @@ Color* PlanWithTexture::getColorToBePainted(
     Vector* environmentLight
 ) {
 
+    Vector planNormal = *this->getNormal();
     Vector intersectionPoint = *intersectionResult->getIntersectionPoint();
-    int x = intersectionPoint[0];
-    int z = intersectionPoint[2];
+    Vector intersectionPointMinusPlanP0 = intersectionPoint - *this->getInitialPoint();
+
+    Vector planRotatedToNormalInYAxes = intersectionPointMinusPlanP0;
+
+    if (planNormal[0] != 0 || planNormal[2] != 0) {
+        Vector planNormalRotatedInY = rotateY (
+            planNormal,
+            -asin(planNormal[0] / (
+                sqrt(
+                    pow(planNormal[0], 2.0) + pow (planNormal[2], 2.0)
+                )
+            ))
+        );
+
+        Vector intersectionPointMinusPlanP0RotatedInY = rotateY (
+            intersectionPointMinusPlanP0,
+            -asin(planNormal[0] / (
+                sqrt(
+                    pow(planNormal[0], 2.0) + pow (planNormal[2], 2.0)
+                )
+            ))
+        );
+
+        planRotatedToNormalInYAxes = rotateX (
+            intersectionPointMinusPlanP0RotatedInY,
+            -acos(planNormalRotatedInY[1])  
+        );
+    }
+
+    int x = planRotatedToNormalInYAxes[0];
+    int z = planRotatedToNormalInYAxes[2];
 
     int imagePixelPositionX;
     int imagePixelPositionY;

@@ -35,4 +35,8 @@ double min (double a, double b);
 
 double max (double a, double b);
 
+Vector rotateX(Vector a, double angle);
+Vector rotateZ(Vector a, double angle);
+Vector rotateY(Vector a, double angle);
+
 Vector vectorProduct (Vector a, Vector b);
