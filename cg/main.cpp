@@ -13,7 +13,6 @@ int main () {
         floorTexture,
         new Vector(0, -150, 0),
         new Vector(0, 1, 0),
-        new Vector(0.686, 0.933, 0.933),
         5.0
     );
 

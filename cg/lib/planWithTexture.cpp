@@ -98,11 +98,10 @@ Color* PlanWithTexture::getColorToBePainted(
 
 PlanWithTexture::PlanWithTexture() {}
 
-PlanWithTexture::PlanWithTexture(Image* texture, Vector* initialPoint, Vector* normal, Vector* reflectivity, double shininess) {
+PlanWithTexture::PlanWithTexture(Image* texture, Vector* initialPoint, Vector* normal, double shininess) {
     this->setTexture(texture);
     this->setInitialPoint(initialPoint);
     this->setNormal(normal);
-    this->setReflectivity(reflectivity);
     this->setShininess(shininess);
 }
 

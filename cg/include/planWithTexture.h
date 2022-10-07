@@ -19,6 +19,6 @@ class PlanWithTexture : public Plan {
         );
 
         PlanWithTexture();
-        PlanWithTexture(Image* texture, Vector* initialPoint, Vector* normal, Vector* reflectivity, double shininess = 1.0);
+        PlanWithTexture(Image* texture, Vector* initialPoint, Vector* normal, double shininess = 1.0);
         ~PlanWithTexture();
 };
