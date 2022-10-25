@@ -99,6 +99,105 @@ Mesh::~Mesh() {
     }
 }
 
+void Mesh::applyScale(double sx, double sy, double sz) {
+    for (Vertex* vertex : this->getVertexesArray()) {
+        *vertex->point = scale(
+            *vertex->point,
+            sx, sy, sz
+        );
+    }
+}
+
+void Mesh::applyTranslate(double x, double y, double z) {
+    for (Vertex* vertex : this->getVertexesArray()) {
+        *vertex->point = translate(
+            *vertex->point,
+            x, y, z
+        );
+    }
+}
+
+void Mesh::applyRotateX(double angle) {
+    for (Vertex* vertex : this->getVertexesArray()) {
+        *vertex->point = rotateX(
+            *vertex->point,
+            angle
+        );
+    }
+}
+
+void Mesh::applyRotateY(double angle) {
+    for (Vertex* vertex : this->getVertexesArray()) {
+        *vertex->point = rotateY(
+            *vertex->point,
+            angle
+        );
+    }
+}
+
+void Mesh::applyRotateZ(double angle) {
+    for (Vertex* vertex : this->getVertexesArray()) {
+        *vertex->point = rotateZ(
+            *vertex->point,
+            angle
+        );
+    }
+}
+
+void Mesh::applyShearXY(double angle) {
+    for (Vertex* vertex : this->getVertexesArray()) {
+        *vertex->point = shearXY(
+            *vertex->point,
+            angle
+        );
+    }
+}
+
+void Mesh::applyShearYX(double angle) {
+    for (Vertex* vertex : this->getVertexesArray()) {
+        *vertex->point = shearYX(
+            *vertex->point,
+            angle
+        );
+    }
+}
+
+void Mesh::applyShearZX(double angle) {
+    for (Vertex* vertex : this->getVertexesArray()) {
+        *vertex->point = shearZX(
+            *vertex->point,
+            angle
+        );
+    }
+}
+
+void Mesh::applyShearXZ(double angle) {
+    for (Vertex* vertex : this->getVertexesArray()) {
+        *vertex->point = shearXZ(
+            *vertex->point,
+            angle
+        );
+    }
+}
+
+void Mesh::applyShearYZ(double angle) {
+    for (Vertex* vertex : this->getVertexesArray()) {
+        *vertex->point = shearYZ(
+            *vertex->point,
+            angle
+        );
+    }
+}
+
+void Mesh::applyShearZY(double angle) {
+    for (Vertex* vertex : this->getVertexesArray()) {
+        *vertex->point = shearZY(
+            *vertex->point,
+            angle
+        );
+    }
+}
+
 IntersectionResult* Mesh::getIntersectionResult (Line* line) {
     MeshIntersectionResult* result = new MeshIntersectionResult ();
     result->setObjectRegion(ObjectRegion::PLAN);

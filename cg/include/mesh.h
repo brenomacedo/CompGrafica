@@ -79,6 +79,18 @@ class Mesh : public Object {
         void addEdge(Edge* edge);
         void addFace(Face* face);
 
+        void applyScale(double sx, double sy, double sz);
+        void applyTranslate(double x, double y, double z);
+        void applyRotateX(double angle);
+        void applyRotateY(double angle);
+        void applyRotateZ(double angle);
+        void applyShearXY(double angle);
+        void applyShearYX(double angle);
+        void applyShearZX(double angle);
+        void applyShearXZ(double angle);
+        void applyShearYZ(double angle);
+        void applyShearZY(double angle);
+
         IntersectionResult* getIntersectionResult (Line* line);
         Color* getColorToBePainted (
             IntersectionResult* intersectionResult,

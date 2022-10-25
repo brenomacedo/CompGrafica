@@ -38,5 +38,16 @@ double max (double a, double b);
 Vector rotateX(Vector a, double angle);
 Vector rotateZ(Vector a, double angle);
 Vector rotateY(Vector a, double angle);
+Vector translate(Vector a, double x, double y, double z);
+Vector scale(Vector a, double sx, double sy, double sz);
+Vector reflectXY(Vector a);
+Vector reflectXZ(Vector a);
+Vector reflectYZ(Vector a);
+Vector shearYX(Vector a, double angle);
+Vector shearXY(Vector a, double angle);
+Vector shearXZ(Vector a, double angle);
+Vector shearZX(Vector a, double angle);
+Vector shearYZ(Vector a, double angle);
+Vector shearZY(Vector a, double angle);
 
 Vector vectorProduct (Vector a, Vector b);

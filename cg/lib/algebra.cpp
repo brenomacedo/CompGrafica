@@ -41,6 +41,94 @@ Vector rotateY(Vector a, double angle) {
     );
 }
 
+Vector translate(Vector a, double x, double y, double z) {
+    return Vector(
+        a[0] + x,
+        a[1] + y,
+        a[2] + z
+    );
+}
+
+Vector scale(Vector a, double sx, double sy, double sz) {
+    return Vector(
+        a[0] * sx,
+        a[1] * sy,
+        a[2] * sz
+    );
+}
+
+Vector reflectXY(Vector a) {
+    return Vector(
+        a[0],
+        a[1],
+        -a[2]
+    );
+}
+
+Vector reflectXZ(Vector a) {
+    return Vector(
+        a[0],
+        -a[1],
+        a[2]
+    );
+}
+
+Vector reflectYZ(Vector a) {
+    return Vector(
+        -a[0],
+        a[1],
+        a[2]
+    );
+}
+
+Vector shearYX(Vector a, double angle) {
+    return Vector(
+        a[0] + a[1] * tan(angle),
+        a[1],
+        a[2]
+    );
+}
+
+Vector shearXY(Vector a, double angle) {
+    return Vector(
+        a[0],
+        a[1] + a[0] * tan(angle),
+        a[2]
+    );
+}
+
+Vector shearXZ(Vector a, double angle) {
+    return Vector(
+        a[0],
+        a[1],
+        a[2] + a[0] * tan(angle)
+    );
+}
+
+Vector shearZX(Vector a, double angle) {
+    return Vector(
+       a[0] + a[2] * tan(angle),
+       a[1],
+       a[2]
+    );
+}
+
+Vector shearYZ(Vector a, double angle) {
+    return Vector(
+        a[0],
+        a[1],
+        a[2] + a[1] * tan(angle)
+    );
+}
+
+Vector shearZY(Vector a, double angle) {
+    return Vector(
+        a[0],
+        a[1] + a[2] * tan(angle),
+        a[2]
+    );
+}
+
 Vector vectorProduct (Vector a, Vector b) {
     return Vector (
         a[1] * b[2] - a[2] * b[1],
