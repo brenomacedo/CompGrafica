@@ -134,7 +134,7 @@ class Line {
 class Object {
     protected:
         ObjectType type;
-        Vector* reflectivity;
+        Vector* reflectivity = nullptr;
         double shininess = 1.0;
 
         Color* calculateColorToBePainted(
