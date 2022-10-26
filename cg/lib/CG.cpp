@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <limits>
 #include "../include/utils.impl.h"
 #include "../include/CG.h"
 #include "../include/pixels.h"
@@ -249,28 +250,152 @@ void Light::setIntensity (Vector* intensity) {
     this->intensity = intensity;
 }
 
-void Light::setPosition (Vector* position) {
-    this->position = position;
-}
-
 Vector* Light::getIntensity () {
     return this->intensity;
 }
 
-Vector* Light::getPosition () {
-    return this->position;
-}
-
 Light::Light () {}
 
-Light::Light (Vector* intensity, Vector* position) {
+Light::Light (Vector* intensity) {
     this->setIntensity(intensity);
-    this->setPosition(position);
 }
 
 Light::~Light () {
-    delete this->getPosition();
     delete this->getIntensity();
+}
+
+IlluminationInfo::IlluminationInfo() {}
+
+IlluminationInfo::IlluminationInfo(Vector l, Vector intensity) {
+    this->l = l;
+    this->intensity = intensity;
+}
+
+void PointLight::setPosition(Vector* position) {
+    this->position = position;
+}
+
+Vector* PointLight::getPosition() {
+    return this->position;
+}
+
+double PointLight::getDistanceFromPoint(Vector point) {
+    return (*this->getPosition() - point).getMagnitude();
+}
+
+IlluminationInfo PointLight::getIlluminationInfo(Vector intersectionPoint) {
+    Vector l = (*this->getPosition() - intersectionPoint) / (*this->getPosition()
+        - intersectionPoint).getMagnitude();
+
+    Vector intensity = *this->getIntensity();
+
+    return IlluminationInfo(
+        l, intensity
+    );
+}
+
+PointLight::PointLight() {}
+
+PointLight::PointLight(Vector* intensity, Vector* position) : Light::Light(intensity) {
+    this->setPosition(position);
+}
+
+PointLight::~PointLight() {
+    delete this->getPosition();
+}
+
+void DirectionalLight::setDirection(Vector* direction) {
+    this->direction = direction;
+}
+
+Vector* DirectionalLight::getDirection() {
+    return this->direction;
+}
+
+double DirectionalLight::getDistanceFromPoint(Vector) {
+    return std::numeric_limits<double>::infinity();
+}
+
+IlluminationInfo DirectionalLight::getIlluminationInfo(Vector) {
+    Vector lNotNormalized = *this->getDirection() * -1;
+    Vector l = lNotNormalized / lNotNormalized.getMagnitude();
+    Vector intensity = *this->getIntensity();
+
+    return IlluminationInfo(
+        l, intensity
+    );
+}
+
+DirectionalLight::DirectionalLight() {}
+
+DirectionalLight::DirectionalLight(Vector* intensity, Vector* direction) : Light::Light(intensity) {
+    this->setDirection(direction);
+}
+
+DirectionalLight::~DirectionalLight() {
+    delete this->getDirection();
+}
+
+void SpotLight::setDirection(Vector* direction) {
+    this->direction = new Vector(*direction / direction->getMagnitude());
+}
+
+Vector* SpotLight::getDirection() {
+    return this->direction;
+}
+
+void SpotLight::setPosition(Vector* position) {
+    this->position = position;
+}
+
+Vector* SpotLight::getPosition() {
+    return this->position;
+}
+
+void SpotLight::setAngle(double angle) {
+    this->angle = angle;
+}
+
+double SpotLight::getAngle() {
+    return this->angle;
+}
+
+double SpotLight::getDistanceFromPoint(Vector point) {
+    return (*this->getPosition() - point).getMagnitude();
+}
+
+IlluminationInfo SpotLight::getIlluminationInfo(Vector intersectionPoint) {
+    Vector l = (*this->getPosition() - intersectionPoint) / (*this->getPosition()
+        - intersectionPoint).getMagnitude();
+    double clds = scalarProduct(l, (*this->getDirection() * -1));
+
+    Vector spotIntensity = *this->getIntensity();
+
+    Vector intensity;
+
+    if (clds < cos(angle)) {
+        intensity = Vector(0, 0, 0);
+    } else {
+        intensity = spotIntensity * clds;
+    }
+
+    return IlluminationInfo(
+        l, intensity
+    );
+}
+
+SpotLight::SpotLight() {}
+
+SpotLight::SpotLight(Vector* intensity, Vector* direction, Vector* position, double angle) {
+    this->setIntensity(intensity);
+    this->setDirection(direction);
+    this->setPosition(position);
+    this->setAngle(angle);
+}
+
+SpotLight::~SpotLight() {
+    delete this->getDirection();
+    delete this->getPosition();
 }
 
 Line::Line (Vector* P0, Vector* dir) {
@@ -428,8 +553,9 @@ Vector Object::calculateResultColorRate(
 
     for (auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
 
-        Vector l = (*((*i)->getPosition()) - *intersectionPoint) / (*((*i)->getPosition())
-            - *intersectionResult->getIntersectionPoint()).getMagnitude();
+        IlluminationInfo illuminationInfo = (*i)->getIlluminationInfo(*intersectionPoint);
+        Vector l = illuminationInfo.l;
+        Vector intensity = illuminationInfo.intensity;
         
         bool hasIntersectionWithOtherObjects = this->hasIntersectionWithOtherObjects(
             objectsArray, intersectionPoint, new Vector(l), *i
@@ -452,9 +578,9 @@ Vector Object::calculateResultColorRate(
                 shininess
             );
 
-            Vector iDifusa = (*(*i)->getIntensity()) * (*reflectivity) * fDifusa;
+            Vector iDifusa = intensity * (*reflectivity) * fDifusa;
 
-            Vector iEspeculada = (*(*i)->getIntensity()) * (*reflectivity) * fEspeculada;
+            Vector iEspeculada = intensity * (*reflectivity) * fEspeculada;
 
             resultColorRate = resultColorRate + iDifusa + iEspeculada;
         }
@@ -481,7 +607,7 @@ bool Object::hasIntersectionWithOtherObjects(ObjectsArray objectsArray, Vector* 
 
             hasIntersectionWithOtherObjects =
                 intersectionShadow->getHasIntersection() &&
-                (intersectionShadow->getDistanceFromP0() < (*(light->getPosition()) - *intersectionPoint).getMagnitude());
+                (intersectionShadow->getDistanceFromP0() < (light->getDistanceFromPoint(*intersectionPoint)));
         }
 
     }

@@ -20,21 +20,80 @@ class Color {
         Color (int r, int g, int b, int a);
 };
 
+class IlluminationInfo {
+    public:
+        Vector l;
+        Vector intensity;
+
+        IlluminationInfo();
+        IlluminationInfo(Vector l, Vector intensity);
+};
+
 class Light {
     private:
         Vector* intensity = nullptr;
-        Vector* position = nullptr;
 
     public:
         void setIntensity (Vector* intensity);
-        void setPosition (Vector* position);
-        
         Vector* getIntensity ();
-        Vector* getPosition();
+        virtual double getDistanceFromPoint (Vector point) = 0;
+        virtual IlluminationInfo getIlluminationInfo(Vector intersectionPoint) = 0; 
 
         Light ();
-        Light (Vector* intensity, Vector* position);
-        ~Light();
+        Light (Vector* intensity);
+        virtual ~Light();
+};
+
+class PointLight : public Light {
+    private:
+        Vector* position = nullptr;
+    
+    public:
+        void setPosition(Vector* position);
+        Vector* getPosition();
+        double getDistanceFromPoint (Vector point);
+        IlluminationInfo getIlluminationInfo(Vector intersectionPoint);
+
+        PointLight();
+        PointLight(Vector* intensity, Vector* position);
+        ~PointLight();
+};
+
+class DirectionalLight : public Light {
+    private:
+        Vector* direction = nullptr;
+
+    public:
+        void setDirection(Vector* direction);
+        Vector* getDirection();
+        double getDistanceFromPoint (Vector point);
+        IlluminationInfo getIlluminationInfo(Vector intersectionPoint);
+
+        DirectionalLight();
+        DirectionalLight(Vector* intensity, Vector* direction);
+        ~DirectionalLight();
+};
+
+class SpotLight : public Light {
+    private:
+        Vector* direction = nullptr;
+        Vector* position = nullptr;
+        double angle;
+
+    public:
+        void setDirection(Vector* direction);
+        Vector* getDirection();
+        void setPosition(Vector* position);
+        Vector* getPosition();
+        void setAngle(double angle);
+        double getAngle();
+        
+        double getDistanceFromPoint (Vector point);
+        IlluminationInfo getIlluminationInfo(Vector intersectionPoint);
+
+        SpotLight();
+        SpotLight(Vector* intensity, Vector* direction, Vector* position, double angle);
+        ~SpotLight();
 };
 
 class IntersectionResult {
