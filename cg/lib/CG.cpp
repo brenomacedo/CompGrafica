@@ -59,9 +59,9 @@ Vector LookAt::convertWorldLineToCanvas(Vector worldLine) {
 
     Vector Jc = vectorProduct(Kc, Ic);
 
-    double minusIcPlusEye = 0;// -scalarProduct(Ic, (*this->getEye()));
-    double minusJcPlusEye = 0;// -scalarProduct(Jc, (*this->getEye()));
-    double minusKcPlusEye = 0;// -scalarProduct(Kc, (*this->getEye()));
+    double minusIcPlusEye = 0;
+    double minusJcPlusEye = 0;
+    double minusKcPlusEye = 0;
 
     return Vector(
         minusIcPlusEye + Ic[2]*worldLine[2] + Ic[1]*worldLine[1] + Ic[0]*worldLine[0],
