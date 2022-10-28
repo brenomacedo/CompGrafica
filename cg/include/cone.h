@@ -21,6 +21,7 @@ class Cone : public Object {
         double getHeight ();
         Vector* getDirection ();
         double getCos2Angle ();
+        void applyWorldToCanvasConversion(LookAt* lookAt);
 
         Vector* getBaseCenter ();
         void setTop (Vector* top);

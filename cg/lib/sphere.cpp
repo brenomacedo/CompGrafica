@@ -35,6 +35,16 @@ Sphere::~Sphere () {
     delete this->getCenter();
 }
 
+void Sphere::applyWorldToCanvasConversion(LookAt* lookAt) {
+    Vector* newCenter = new Vector(
+        lookAt->convertWorldVectorToCanvas(
+            *this->getCenter()
+        )
+    );
+    delete this->getCenter();
+    this->setCenter(newCenter);
+}
+
 IntersectionResult* Sphere::getIntersectionResult (Line* line) {
 
     Vector w = *(line->P0) - *(this->getCenter());

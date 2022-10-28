@@ -46,6 +46,33 @@ Vector* Cylinder::getDirection () {
     return this->direction;
 }
 
+void Cylinder::applyWorldToCanvasConversion(LookAt* lookAt) {
+    Vector* newBaseCenter = new Vector(
+        lookAt->convertWorldVectorToCanvas(
+            *this->getBaseCenter()
+        )
+    );
+    delete this->getBaseCenter();
+    this->setBaseCenter(newBaseCenter);
+
+    Vector* newTopCenter = new Vector(
+        lookAt->convertWorldVectorToCanvas(
+            *this->getTopCenter()
+        )
+    );
+    delete this->getTopCenter();
+    this->setTopCenter(newTopCenter);
+
+    Vector newDirectionNotUnitary = lookAt->convertWorldVectorToCanvas(
+        *this->getDirection()
+    );
+    Vector* newDirection = new Vector(
+        newDirectionNotUnitary / newDirectionNotUnitary.getMagnitude()
+    );
+    delete this->getDirection();
+    this->setDirection(newDirection);
+}
+
 IntersectionResult* Cylinder::getIntersectionResult (Line* line) {
 
     IntersectionResult* intersectionResult = new IntersectionResult ();

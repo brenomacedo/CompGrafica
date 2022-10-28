@@ -28,6 +28,7 @@ class Cylinder : public Object {
             Line* line,
             Vector* environmentLight
         );
+        void applyWorldToCanvasConversion(LookAt* lookAt);
 
         void setBaseCenter (Vector* baseCenter);
         void setTopCenter (Vector* topCenter);

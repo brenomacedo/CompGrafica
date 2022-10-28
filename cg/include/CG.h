@@ -8,6 +8,7 @@
 
 class Object;
 class Light;
+class LookAt;
 using ObjectsArray = std::vector<Object*>;
 using LightsArray = std::vector<Light*>;
 
@@ -37,7 +38,8 @@ class Light {
         void setIntensity (Vector* intensity);
         Vector* getIntensity ();
         virtual double getDistanceFromPoint (Vector point) = 0;
-        virtual IlluminationInfo getIlluminationInfo(Vector intersectionPoint) = 0; 
+        virtual IlluminationInfo getIlluminationInfo(Vector intersectionPoint) = 0;
+        virtual void applyWorldToCanvasConversion(LookAt* lookat) = 0;
 
         Light ();
         Light (Vector* intensity);
@@ -53,6 +55,7 @@ class PointLight : public Light {
         Vector* getPosition();
         double getDistanceFromPoint (Vector point);
         IlluminationInfo getIlluminationInfo(Vector intersectionPoint);
+        virtual void applyWorldToCanvasConversion(LookAt* lookat);
 
         PointLight();
         PointLight(Vector* intensity, Vector* position);
@@ -68,6 +71,7 @@ class DirectionalLight : public Light {
         Vector* getDirection();
         double getDistanceFromPoint (Vector point);
         IlluminationInfo getIlluminationInfo(Vector intersectionPoint);
+        virtual void applyWorldToCanvasConversion(LookAt* lookat);
 
         DirectionalLight();
         DirectionalLight(Vector* intensity, Vector* direction);
@@ -90,6 +94,7 @@ class SpotLight : public Light {
         
         double getDistanceFromPoint (Vector point);
         IlluminationInfo getIlluminationInfo(Vector intersectionPoint);
+        virtual void applyWorldToCanvasConversion(LookAt* lookat);
 
         SpotLight();
         SpotLight(Vector* intensity, Vector* direction, Vector* position, double angle);
@@ -176,6 +181,7 @@ class Object {
             Line* line,
             Vector* environmentLight
         ) = 0;
+        virtual void applyWorldToCanvasConversion(LookAt* lookat) = 0;
 
         Object();
         Object(Vector* reflectivity);
@@ -196,7 +202,7 @@ class LookAt {
         void setUp(Vector* up);
         Vector* getUp();
 
-        Vector convertWorldLineToCanvas(Vector worldLine);
+        Vector convertWorldVectorToCanvas(Vector worldVector);
 
         LookAt();
         LookAt(

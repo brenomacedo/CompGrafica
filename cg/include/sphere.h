@@ -20,6 +20,7 @@ class Sphere : public Object {
             Line* line,
             Vector* environmentLight
         );
+        void applyWorldToCanvasConversion(LookAt* lookAt);
 
         void setRadius (double radius);
         void setCenter (Vector* center);

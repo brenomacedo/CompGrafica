@@ -35,6 +35,27 @@ Plan::~Plan () {
     delete this->getNormal();
 }
 
+void Plan::applyWorldToCanvasConversion(LookAt* lookAt) {
+    Vector* newInitialPoint = new Vector(
+        lookAt->convertWorldVectorToCanvas(
+            *this->getInitialPoint()
+        )
+    );
+    delete this->getInitialPoint();
+    this->setInitialPoint(
+        newInitialPoint
+    );
+
+    Vector newNormalNotUnitary = lookAt->convertWorldVectorToCanvas(
+        *this->getNormal()
+    );
+    Vector* newNormal = new Vector(
+        newNormalNotUnitary / newNormalNotUnitary.getMagnitude()
+    );
+    delete this->getNormal();
+    this->setNormal(newNormal);
+}
+
 IntersectionResult* Plan::getIntersectionResult (Line* line) {
 
     IntersectionResult* result = new IntersectionResult ();

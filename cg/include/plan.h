@@ -23,6 +23,7 @@ class Plan : public Object {
 
         void setInitialPoint (Vector* initialPoint);
         void setNormal (Vector* normal);
+        void applyWorldToCanvasConversion(LookAt* lookAt);
 
         Plan ();
         Plan (Vector* initialPoint, Vector* normal, Vector* reflectivity, double shininess = 1.0);

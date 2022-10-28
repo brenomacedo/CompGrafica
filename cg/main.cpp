@@ -35,12 +35,6 @@ int main () {
         new Color (0, 0, 0, 255)
     );
 
-    scene->lookAt(
-        new Vector(0, 0, 0),
-        new Vector(0, 70, -150),
-        new Vector(0, 100, 0)
-    );
-
     scene->setBackgroundImage(new Image("./assets/arca.jpg"));
 
     scene->setEnvironmentLight (
@@ -50,6 +44,12 @@ int main () {
     scene->addLightSource(spotLight);
     scene->addObject(plan1);
     scene->addObject(sphere);
+
+    scene->lookAt(
+        new Vector(0, 150, 0),
+        new Vector(0, -70, -150),
+        new Vector(0, 180, 0)
+    );
 
     scene->render();
 

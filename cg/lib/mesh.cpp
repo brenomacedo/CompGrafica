@@ -198,6 +198,14 @@ void Mesh::applyShearZY(double angle) {
     }
 }
 
+void Mesh::applyWorldToCanvasConversion(LookAt* lookAt) {
+    for (Vertex* vertex : this->getVertexesArray()) {
+        *vertex->point = lookAt->convertWorldVectorToCanvas(
+            *vertex->point
+        );
+    }
+}
+
 IntersectionResult* Mesh::getIntersectionResult (Line* line) {
     MeshIntersectionResult* result = new MeshIntersectionResult ();
     result->setObjectRegion(ObjectRegion::PLAN);

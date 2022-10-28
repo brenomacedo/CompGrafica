@@ -91,6 +91,8 @@ class Mesh : public Object {
         void applyShearYZ(double angle);
         void applyShearZY(double angle);
 
+        void applyWorldToCanvasConversion(LookAt* lookAt);
+
         IntersectionResult* getIntersectionResult (Line* line);
         Color* getColorToBePainted (
             IntersectionResult* intersectionResult,

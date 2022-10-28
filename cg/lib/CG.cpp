@@ -49,25 +49,27 @@ LookAt::~LookAt() {
     delete this->getUp();
 }
 
-Vector LookAt::convertWorldLineToCanvas(Vector worldLine) {
+Vector LookAt::convertWorldVectorToCanvas(Vector worldVector) {
     Vector K = *this->getEye() - *this->getAt();
     Vector Kc = K / K.getMagnitude();
-    
+
     Vector Vup = *this->getUp() - *this->getEye();
     Vector I = vectorProduct(Vup, Kc);
     Vector Ic = I / I.getMagnitude();
 
     Vector Jc = vectorProduct(Kc, Ic);
 
-    double minusIcPlusEye = 0;
-    double minusJcPlusEye = 0;
-    double minusKcPlusEye = 0;
+    double minusIcPlusEye = -scalarProduct(Ic, *this->getEye());
+    double minusJcPlusEye = -scalarProduct(Jc, *this->getEye());
+    double minusKcPlusEye = -scalarProduct(Kc, *this->getEye());
 
-    return Vector(
-        minusIcPlusEye + Ic[2]*worldLine[2] + Ic[1]*worldLine[1] + Ic[0]*worldLine[0],
-        minusJcPlusEye + Jc[2]*worldLine[2] + Jc[1]*worldLine[1] + Jc[0]*worldLine[0],
-        minusKcPlusEye + Kc[2]*worldLine[2] + Kc[1]*worldLine[1] + Kc[0]*worldLine[0]
+    Vector result = Vector(
+        minusIcPlusEye + Ic[2]*worldVector[2] + Ic[1]*worldVector[1] + Ic[0]*worldVector[0],
+        minusJcPlusEye + Jc[2]*worldVector[2] + Jc[1]*worldVector[1] + Jc[0]*worldVector[0],
+        minusKcPlusEye + Kc[2]*worldVector[2] + Kc[1]*worldVector[1] + Kc[0]*worldVector[0]
     );
+
+    return result;
 }
 
 void Scene::setWindowHeight (double windowHeight) {
@@ -151,6 +153,14 @@ void Scene::lookAt(
     this->eyeLookAt = new LookAt(
         eye, at, up
     );
+
+    for (Object* object : this->getObjects()) {
+        object->applyWorldToCanvasConversion(this->eyeLookAt);
+    }
+
+    for (Light* light : this->getLights()) {
+        light->applyWorldToCanvasConversion(this->eyeLookAt);
+    }
 }
 
 void Scene::raycast (SDL_Renderer* renderer) {
@@ -175,15 +185,8 @@ void Scene::raycast (SDL_Renderer* renderer) {
         for (int c = 0; c < nCol; c++) {
             const double x = -wJanela / 2.0 + dx / 2.0 + c * dx;
 
-            Vector* direction = new Vector(
-                this->eyeLookAt->convertWorldLineToCanvas(Vector (x, y, z))
-            );
-
-
-            Vector* P0 = new Vector(
-                *this->eyeLookAt->getEye()
-            );
-
+            Vector* P0 = new Vector (0, 0, 0);
+            Vector* direction = new Vector (x, y, z);
             Sp<Line> line = new Line (P0, direction);
 
             int nearestObjectIndex = 0;
@@ -359,6 +362,16 @@ double PointLight::getDistanceFromPoint(Vector point) {
     return (*this->getPosition() - point).getMagnitude();
 }
 
+void PointLight::applyWorldToCanvasConversion(LookAt* lookAt) {
+    Vector* newPosition = new Vector(
+        lookAt->convertWorldVectorToCanvas(
+            *this->getPosition()
+        )
+    );
+    delete this->getPosition();
+    this->setPosition(newPosition);
+}
+
 IlluminationInfo PointLight::getIlluminationInfo(Vector intersectionPoint) {
     Vector l = (*this->getPosition() - intersectionPoint) / (*this->getPosition()
         - intersectionPoint).getMagnitude();
@@ -390,6 +403,17 @@ Vector* DirectionalLight::getDirection() {
 
 double DirectionalLight::getDistanceFromPoint(Vector) {
     return std::numeric_limits<double>::infinity();
+}
+
+void DirectionalLight::applyWorldToCanvasConversion(LookAt* lookAt) {
+    Vector newDirectionNotNormal = lookAt->convertWorldVectorToCanvas(
+        *this->getDirection()
+    );
+    Vector* newDirection = new Vector(
+        newDirectionNotNormal / newDirectionNotNormal.getMagnitude()
+    );
+    delete this->getDirection();
+    this->setDirection(newDirection);
 }
 
 IlluminationInfo DirectionalLight::getIlluminationInfo(Vector) {
@@ -438,6 +462,24 @@ double SpotLight::getAngle() {
 
 double SpotLight::getDistanceFromPoint(Vector point) {
     return (*this->getPosition() - point).getMagnitude();
+}
+
+void SpotLight::applyWorldToCanvasConversion(LookAt* lookAt) {
+    Vector* newDirection = new Vector(
+        lookAt->convertWorldVectorToCanvas(
+            *this->getDirection()
+        )
+    );
+    delete this->getDirection();
+    this->setDirection(newDirection);
+
+    Vector* newPosition = new Vector(
+        lookAt->convertWorldVectorToCanvas(
+            *this->getPosition()
+        )
+    );
+    delete this->getPosition();
+    this->setPosition(newPosition);
 }
 
 IlluminationInfo SpotLight::getIlluminationInfo(Vector intersectionPoint) {
