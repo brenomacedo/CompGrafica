@@ -7,8 +7,67 @@
 #include "../include/pixels.h"
 #include "../include/image.h"
 
-void Scene::setEyeCenter (Vector* eyeCenter) {
-    this->eyeCenter = eyeCenter;
+void LookAt::setAt(Vector* at) {
+    this->at = at;
+}
+
+Vector* LookAt::getAt() {
+    return this->at;
+}
+
+void LookAt::setEye(Vector* eye) {
+    this->eye = eye;
+}
+
+Vector* LookAt::getEye() {
+    return this->eye;
+}
+
+void LookAt::setUp(Vector* up) {
+    this->up = up;
+}
+
+Vector* LookAt::getUp() {
+    return this->up;
+}
+
+LookAt::LookAt() {}
+
+LookAt::LookAt(
+    Vector* eye,
+    Vector* at,
+    Vector* up
+) {
+    this->setEye(eye);
+    this->setAt(at);
+    this->setUp(up);
+}
+
+LookAt::~LookAt() {
+    delete this->getAt();
+    delete this->getEye();
+    delete this->getUp();
+}
+
+Vector LookAt::convertWorldLineToCanvas(Vector worldLine) {
+    Vector K = *this->getEye() - *this->getAt();
+    Vector Kc = K / K.getMagnitude();
+    
+    Vector Vup = *this->getUp() - *this->getEye();
+    Vector I = vectorProduct(Vup, Kc);
+    Vector Ic = I / I.getMagnitude();
+
+    Vector Jc = vectorProduct(Kc, Ic);
+
+    double minusIcPlusEye = 0;// -scalarProduct(Ic, (*this->getEye()));
+    double minusJcPlusEye = 0;// -scalarProduct(Jc, (*this->getEye()));
+    double minusKcPlusEye = 0;// -scalarProduct(Kc, (*this->getEye()));
+
+    return Vector(
+        minusIcPlusEye + Ic[2]*worldLine[2] + Ic[1]*worldLine[1] + Ic[0]*worldLine[0],
+        minusJcPlusEye + Jc[2]*worldLine[2] + Jc[1]*worldLine[1] + Jc[0]*worldLine[0],
+        minusKcPlusEye + Kc[2]*worldLine[2] + Kc[1]*worldLine[1] + Kc[0]*worldLine[0]
+    );
 }
 
 void Scene::setWindowHeight (double windowHeight) {
@@ -51,10 +110,6 @@ void Scene::addObject (Object* object) {
     this->objects.push_back (object);
 }
 
-Vector* Scene::getEyeCenter () {
-    return this->eyeCenter;
-}
-
 double Scene::getWindowHeight () {
     return this->windowHeight;
 }
@@ -87,6 +142,17 @@ Vector* Scene::getEnvironmentLight () {
     return this->environmentLight;
 }
 
+void Scene::lookAt(
+    Vector* eye,
+    Vector* at,
+    Vector* up
+) {
+    delete this->eyeLookAt;
+    this->eyeLookAt = new LookAt(
+        eye, at, up
+    );
+}
+
 void Scene::raycast (SDL_Renderer* renderer) {
     const double nLin = this->getCanvasHeight ();
     const double nCol = this->getCanvasWidth ();
@@ -109,8 +175,15 @@ void Scene::raycast (SDL_Renderer* renderer) {
         for (int c = 0; c < nCol; c++) {
             const double x = -wJanela / 2.0 + dx / 2.0 + c * dx;
 
-            Vector* P0 = new Vector (*this->getEyeCenter());
-            Vector* direction = new Vector (x, y, z);
+            Vector* direction = new Vector(
+                this->eyeLookAt->convertWorldLineToCanvas(Vector (x, y, z))
+            );
+
+
+            Vector* P0 = new Vector(
+                *this->eyeLookAt->getEye()
+            );
+
             Sp<Line> line = new Line (P0, direction);
 
             int nearestObjectIndex = 0;
@@ -202,7 +275,6 @@ ObjectsArray Scene::getObjects () {
 Scene::Scene () {}
 
 Scene::Scene (
-    Vector* eyeCenter,
     double windowHeight,
     double windowWidth,
     int canvasHeight,
@@ -210,12 +282,16 @@ Scene::Scene (
     double windowDistance,
     Color* color
 ) {
-    this->setEyeCenter (eyeCenter);
     this->setWindowHeight (windowHeight);
     this->setWindowWidth (windowWidth);
     this->setCanvasHeight (canvasHeight);
     this->setCanvasWidth (canvasWidth);
     this->setWindowDistance (windowDistance);
+    this->lookAt(
+        new Vector(0, 0, 0),
+        new Vector(0, 0, -1),
+        new Vector(0, 1, 0)
+    );
     
     if (color == nullptr) {
         this->setBackgroundColor (new Color (0, 0, 0, 255));
@@ -225,10 +301,10 @@ Scene::Scene (
 }
 
 Scene::~Scene () {
-    delete this->getEyeCenter();
     delete this->getBackgroundImage();
     delete this->getEnvironmentLight();
     delete this->getBackgroundColor();
+    delete this->eyeLookAt;
     
     for (auto i = this->objects.begin(); i != this->objects.end(); i++) {
         delete (*i);

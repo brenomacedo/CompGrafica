@@ -29,11 +29,16 @@ int main () {
     );
 
     Sp<Scene> scene = new Scene (
-        new Vector (0, 0, 0),
         60.0, 60.0,
-        400, 400,
+        800, 800,
         20,
         new Color (0, 0, 0, 255)
+    );
+
+    scene->lookAt(
+        new Vector(0, 0, 0),
+        new Vector(0, 70, -150),
+        new Vector(0, 100, 0)
     );
 
     scene->setBackgroundImage(new Image("./assets/arca.jpg"));

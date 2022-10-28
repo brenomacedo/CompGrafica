@@ -182,9 +182,33 @@ class Object {
         virtual ~Object ();
 };
 
+class LookAt {
+    private:
+        Vector* eye = nullptr;
+        Vector* at = nullptr;
+        Vector* up = nullptr;
+
+    public:
+        void setEye(Vector* eye);
+        Vector* getEye();
+        void setAt(Vector* at);
+        Vector* getAt();
+        void setUp(Vector* up);
+        Vector* getUp();
+
+        Vector convertWorldLineToCanvas(Vector worldLine);
+
+        LookAt();
+        LookAt(
+            Vector* eye,
+            Vector* at,
+            Vector* up
+        );
+        ~LookAt();
+};
+
 class Scene {
     private:
-        Vector* eyeCenter = nullptr;
         double windowHeight = 100.0;
         double windowWidth = 100.0;
         int canvasHeight = 400;
@@ -198,10 +222,10 @@ class Scene {
         Color* backgroundColor = nullptr;
         Image* backgroundImage = nullptr;
         
+        LookAt* eyeLookAt = nullptr;
         void raycast(SDL_Renderer* renderer);
 
     public:
-        void setEyeCenter (Vector* eyeCenter);
         void setWindowHeight (double windowHeight);
         void setWindowWidth (double windowWidth);
         void setCanvasWidth (double canvasWidth);
@@ -209,12 +233,16 @@ class Scene {
         void setWindowDistance (double windowDistance);
         void setBackgroundColor (Color* color);
         void setBackgroundImage (Image* image);
-        
+        void lookAt(
+            Vector* eye,
+            Vector* at,
+            Vector* up
+        );
+
         void setEnvironmentLight (Vector* environmentLight);
         void addLightSource (Light* lightSource);
         void addObject (Object* object);
-        
-        Vector* getEyeCenter ();
+
         double getWindowHeight ();
         double getWindowWidth ();
         double getCanvasWidth ();
@@ -233,7 +261,6 @@ class Scene {
 
         Scene ();
         Scene (
-            Vector* eyeCenter,
             double windowHeight,
             double windowWidth,
             int canvasHeight,
