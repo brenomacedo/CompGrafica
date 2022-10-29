@@ -48,7 +48,7 @@ void Plan::applyWorldToCanvasConversion(LookAt* lookAt) {
 
     Vector newNormalNotUnitary = lookAt->convertWorldVectorToCanvas(
         *this->getNormal()
-    );
+    ) - lookAt->convertWorldVectorToCanvas(Vector(0, 0, 0));
     Vector* newNormal = new Vector(
         newNormalNotUnitary / newNormalNotUnitary.getMagnitude()
     );

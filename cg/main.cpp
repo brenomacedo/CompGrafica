@@ -11,43 +11,97 @@ int main () {
 
     PlanWithTexture* plan1 = new PlanWithTexture(
         floorTexture,
-        new Vector(0, -100, 0),
+        new Vector(0, -150, 0),
         new Vector(0, 1, 0),
         5.0
     );
 
-    Sphere* sphere = new Sphere(
-        30, new Vector(0.2, 0.7, 0.7),
-        new Vector(0, -70, -150), 5.0
+    Plan* plan2 = new Plan(
+        new Vector(200, -150, 0),
+        new Vector(-1, 0, 0),
+        new Vector(0.686, 0.933, 0.933),
+        5.0
     );
 
-    Light* spotLight = new SpotLight(
+    Plan* plan3 = new Plan(
+        new Vector(200, -150, -400),
+        new Vector(0, 0, 1),
+        new Vector(0.686, 0.933, 0.933),
+        5.0
+    );
+
+    Plan* plan4 = new Plan(
+        new Vector(-200, -150, 0),
+        new Vector(1, 0, 0),
+        new Vector(0.686, 0.933, 0.933),
+        5.0
+    );
+
+    Plan* plan5 = new Plan(
+        new Vector(0, 150, 0),
+        new Vector(0, -1, 0),
+        new Vector(0.686, 0.933, 0.933),
+        5.0
+    );
+
+    Mesh* mesh = Cube::create(
+        new Vector(0, -150, -165),
+        40,
+        new Vector(1.0, 0.078, 0.576),
+        5.0
+    );
+
+    Sphere* sphere = new Sphere(
+        5, new Vector(0.854, 0.647, 0.125),
+        new Vector(0, 95, -200), 5.0
+    );
+
+    Light* light = new PointLight(
         new Vector (0.7, 0.7, 0.7),
-        new Vector (0, -1, 0),
-        new Vector (0, 100, -170),
-        M_PI / 8
+        new Vector (-100, 140, -20)
+    );
+
+    Cone* cone = new Cone(
+        new Vector(0, -60, -200),
+        new Vector(0, 1, 0),
+        150, 90,
+        new Vector(0, 1, 0.498),
+        5.0
+    );
+
+    Cylinder* cylinder = new Cylinder(
+        new Vector(0, -150, -200),
+        new Vector(0, 1, 0),
+        90, 5,
+        new Vector(0.824, 0.706, 0.549),
+        5.0
     );
 
     Sp<Scene> scene = new Scene (
         60.0, 60.0,
-        800, 800,
+        500, 500,
         20,
-        new Color (0, 0, 0, 255)
+        new Color (100, 100, 100, 255)
     );
-
-    scene->setBackgroundImage(new Image("./assets/arca.jpg"));
 
     scene->setEnvironmentLight (
         new Vector (0.3, 0.3, 0.3)
     );
     
-    scene->addLightSource(spotLight);
+    scene->addLightSource(light);
+    scene->addObject(plan5);
+    scene->addObject(plan4);
+    scene->addObject(plan3);
+    scene->addObject(plan2);
     scene->addObject(plan1);
+    scene->addObject(cylinder);
     scene->addObject(sphere);
+    scene->addObject(cone);
+    scene->addObject(mesh);
 
     scene->lookAt(
-        new Vector(0, 150, 0),
-        new Vector(0, -70, -150),
+        new Vector(0, 100, 100),
+        new Vector(0, 0, 0),
         new Vector(0, 180, 0)
     );
 

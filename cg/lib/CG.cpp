@@ -408,7 +408,7 @@ double DirectionalLight::getDistanceFromPoint(Vector) {
 void DirectionalLight::applyWorldToCanvasConversion(LookAt* lookAt) {
     Vector newDirectionNotNormal = lookAt->convertWorldVectorToCanvas(
         *this->getDirection()
-    );
+    ) - lookAt->convertWorldVectorToCanvas(Vector(0, 0, 0));
     Vector* newDirection = new Vector(
         newDirectionNotNormal / newDirectionNotNormal.getMagnitude()
     );
@@ -468,7 +468,7 @@ void SpotLight::applyWorldToCanvasConversion(LookAt* lookAt) {
     Vector* newDirection = new Vector(
         lookAt->convertWorldVectorToCanvas(
             *this->getDirection()
-        )
+        ) - lookAt->convertWorldVectorToCanvas(Vector(0, 0, 0))
     );
     delete this->getDirection();
     this->setDirection(newDirection);

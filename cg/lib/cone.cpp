@@ -57,15 +57,6 @@ void Cone::setCos2Angle (double cos2angle) {
 }
 
 void Cone::applyWorldToCanvasConversion(LookAt* lookAt) {
-    Vector newDirectionNotUnitary = lookAt->convertWorldVectorToCanvas(
-        *this->getDirection()
-    );
-    Vector* newDirection = new Vector(
-        newDirectionNotUnitary / newDirectionNotUnitary.getMagnitude()
-    );
-    delete this->getDirection();
-    this->setDirection(newDirection);
-
     Vector* newBaseCenter = new Vector(
         lookAt->convertWorldVectorToCanvas(
             *this->getBaseCenter()
@@ -81,6 +72,12 @@ void Cone::applyWorldToCanvasConversion(LookAt* lookAt) {
     );
     delete this->getTop();
     this->setTop(newTop);
+    
+    Vector* newDirection = new Vector(
+        (*this->getTop() - *this->getBaseCenter()) / (*this->getTop() - *this->getBaseCenter()).getMagnitude()
+    );
+    delete this->getDirection();
+    this->setDirection(newDirection);
 }
 
 IntersectionResult* Cone::getIntersectionResult (Line* line) {

@@ -63,11 +63,8 @@ void Cylinder::applyWorldToCanvasConversion(LookAt* lookAt) {
     delete this->getTopCenter();
     this->setTopCenter(newTopCenter);
 
-    Vector newDirectionNotUnitary = lookAt->convertWorldVectorToCanvas(
-        *this->getDirection()
-    );
     Vector* newDirection = new Vector(
-        newDirectionNotUnitary / newDirectionNotUnitary.getMagnitude()
+        (*this->getTopCenter() - *this->getBaseCenter()) / (*this->getTopCenter() - *this->getBaseCenter()).getMagnitude()
     );
     delete this->getDirection();
     this->setDirection(newDirection);
