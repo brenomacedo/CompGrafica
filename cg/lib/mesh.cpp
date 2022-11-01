@@ -247,6 +247,7 @@ IntersectionResult* Mesh::getIntersectionResult (Line* line) {
         Vector r2 = P3 - P1;
 
         Vector normal = vectorProduct(r1, r2);
+
         Vector unitaryNormal = normal / normal.getMagnitude();
 
         Vector w = *(line->P0) - P1;
@@ -254,7 +255,7 @@ IntersectionResult* Mesh::getIntersectionResult (Line* line) {
         double dirScalarN = scalarProduct (*line->dir, unitaryNormal);
         double t;
 
-        if (dirScalarN != 0 && (t = (-scalarProduct (w, unitaryNormal)) / dirScalarN) > 0) {
+        if (dirScalarN != 0 && (t = (-scalarProduct (w, unitaryNormal)) / dirScalarN) > 0 && scalarProduct(normal, *line->dir) < 0) {
 
             Vector supposedIntersectionPoint = *line->P0 + *line->dir * t;
 

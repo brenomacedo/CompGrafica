@@ -18,7 +18,7 @@ int main () {
 
     Light* light = new PointLight(
         new Vector (0.7, 0.7, 0.7),
-        new Vector(350, 350, -250)
+        new Vector(350, 350, -150)
     );
 
     Mesh* column1 = Cube::createUnitaryWithBorderInCenaryCenter(new Vector(0.898, 0.898, 0), 5.0);
@@ -80,11 +80,11 @@ int main () {
 
     Mesh* tableFoot1 = Cube::createUnitaryWithBorderInCenaryCenter(new Vector(0, 0.898, 0.898), 5.0);
     tableFoot1->applyScale(150, 95, -5);
-    tableFoot1->applyTranslate(275, 0, -200);
+    tableFoot1->applyTranslate(275, 0, -195);
 
     Mesh* tableFoot2 = Cube::createUnitaryWithBorderInCenaryCenter(new Vector(0, 0.898, 0.898), 5.0);
     tableFoot2->applyScale(150, 95, -5);
-    tableFoot2->applyTranslate(275, 0, -450);
+    tableFoot2->applyTranslate(275, 0, -445);
 
     Mesh* tableTop = Cube::createUnitaryWithBorderInCenaryCenter(new Vector(0, 0.898, 0.898), 5.0);
     tableTop->applyScale(150, 5, -250);
