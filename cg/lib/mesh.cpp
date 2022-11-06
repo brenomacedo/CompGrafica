@@ -198,6 +198,33 @@ void Mesh::applyShearZY(double angle) {
     }
 }
 
+void Mesh::applyReflectXY() {
+    for (Vertex* vertex : this->getVertexesArray()) {
+        *vertex->point = reflectXY(
+            *vertex->point
+        );
+    }
+    this->reverseFacesVertexesOrder();
+}
+
+void Mesh::applyReflectXZ() {
+    for (Vertex* vertex : this->getVertexesArray()) {
+        *vertex->point = reflectXZ(
+            *vertex->point
+        );
+    }
+    this->reverseFacesVertexesOrder();
+}
+
+void Mesh::applyReflectYZ() {
+    for (Vertex* vertex : this->getVertexesArray()) {
+        *vertex->point = reflectYZ(
+            *vertex->point
+        );
+    }
+    this->reverseFacesVertexesOrder();
+}
+
 void Mesh::applyWorldToCanvasConversion(LookAt* lookAt) {
     for (Vertex* vertex : this->getVertexesArray()) {
         *vertex->point = lookAt->convertWorldVectorToCanvas(
@@ -210,7 +237,7 @@ IntersectionResult* Mesh::getIntersectionResult (Line* line) {
     MeshIntersectionResult* result = new MeshIntersectionResult ();
     result->setObjectRegion(ObjectRegion::PLAN);
     result->setHasIntersection(false);
-    
+
     Vector* intersectionPoint = new Vector();
     Vector* meshNormal = new Vector();
 
@@ -227,7 +254,7 @@ IntersectionResult* Mesh::getIntersectionResult (Line* line) {
         int v1, v2, v3;
 
         int n1 = (vertex11Id + 1) * (vertex12Id + 1);
-        int n = n1 / (vertex21Id + 1);
+        double n = ((double) n1) / ((double) vertex21Id + 1);
 
         if (n == (vertex11Id + 1) || n == (vertex12Id + 1)) {
             v1 = vertex21Id;
@@ -275,7 +302,6 @@ IntersectionResult* Mesh::getIntersectionResult (Line* line) {
                 *meshNormal = unitaryNormal;
             }
         }
-        
     }
 
     result->setIntersectionPoint(intersectionPoint);
@@ -303,4 +329,12 @@ Color* Mesh::getColorToBePainted (
         this->getReflectivity(),
         this->getShininess()
     );
+}
+
+void Mesh::reverseFacesVertexesOrder() {
+    for (Face* face : this->getFacesArray()) {
+        face->edge1Id ^= face->edge3Id;
+        face->edge3Id ^= face->edge1Id;
+        face->edge1Id ^= face->edge3Id;
+    }
 }

@@ -68,6 +68,8 @@ class Mesh : public Object {
         EdgesArray edgesArray;
         FacesArray facesArray;
 
+        void reverseFacesVertexesOrder();
+
     public:
         ObjectType getObjectType();
         
@@ -90,6 +92,9 @@ class Mesh : public Object {
         void applyShearXZ(double angle);
         void applyShearYZ(double angle);
         void applyShearZY(double angle);
+        void applyReflectXY();
+        void applyReflectXZ();
+        void applyReflectYZ();
 
         void applyWorldToCanvasConversion(LookAt* lookAt);
 
