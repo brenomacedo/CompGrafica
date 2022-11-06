@@ -144,6 +144,8 @@ int main () {
         new Vector(400, 400, 0)
     );
 
+    scene->setProjectionType(ProjectionType::PARALLEL);
+
     scene->render();
 
     return 0;

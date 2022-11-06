@@ -14,11 +14,12 @@ using LightsArray = std::vector<Light*>;
 
 enum class ObjectType { SPHERE, PLAN, CYLINDER, CONE, MESH };
 enum class ObjectRegion { SPHERE_SURFACE, CYLINDER_SURFACE, CYLINDER_BASE, CYLINDER_TOP, PLAN, CONE_SURFACE, CONE_BASE, UNKNOWN };
+enum class ProjectionType { PARALLEL, PERSPECTIVE };
 
 class Color {
     public:
         int r, g, b, a;
-        Color (int r, int g, int b, int a);
+        Color(int r, int g, int b, int a);
 };
 
 class IlluminationInfo {
@@ -35,14 +36,14 @@ class Light {
         Vector* intensity = nullptr;
 
     public:
-        void setIntensity (Vector* intensity);
-        Vector* getIntensity ();
-        virtual double getDistanceFromPoint (Vector point) = 0;
+        void setIntensity(Vector* intensity);
+        Vector* getIntensity();
+        virtual double getDistanceFromPoint(Vector point) = 0;
         virtual IlluminationInfo getIlluminationInfo(Vector intersectionPoint) = 0;
         virtual void applyWorldToCanvasConversion(LookAt* lookat) = 0;
 
-        Light ();
-        Light (Vector* intensity);
+        Light();
+        Light(Vector* intensity);
         virtual ~Light();
 };
 
@@ -53,7 +54,7 @@ class PointLight : public Light {
     public:
         void setPosition(Vector* position);
         Vector* getPosition();
-        double getDistanceFromPoint (Vector point);
+        double getDistanceFromPoint(Vector point);
         IlluminationInfo getIlluminationInfo(Vector intersectionPoint);
         virtual void applyWorldToCanvasConversion(LookAt* lookat);
 
@@ -69,7 +70,7 @@ class DirectionalLight : public Light {
     public:
         void setDirection(Vector* direction);
         Vector* getDirection();
-        double getDistanceFromPoint (Vector point);
+        double getDistanceFromPoint(Vector point);
         IlluminationInfo getIlluminationInfo(Vector intersectionPoint);
         virtual void applyWorldToCanvasConversion(LookAt* lookat);
 
@@ -92,7 +93,7 @@ class SpotLight : public Light {
         void setAngle(double angle);
         double getAngle();
         
-        double getDistanceFromPoint (Vector point);
+        double getDistanceFromPoint(Vector point);
         IlluminationInfo getIlluminationInfo(Vector intersectionPoint);
         virtual void applyWorldToCanvasConversion(LookAt* lookat);
 
@@ -109,21 +110,21 @@ class IntersectionResult {
         ObjectRegion region;
 
     public:
-        void setHasIntersection (bool hasIntersection);
-        void setIntersectionPoint (Vector* intersectionPoint);
-        bool getHasIntersection ();
-        Vector* getIntersectionPoint ();
-        void setDistanceFromP0 (double distanceFromP0);
-        double getDistanceFromP0 ();
-        void setObjectRegion (ObjectRegion region);
-        ObjectRegion getObjectRegion ();
+        void setHasIntersection(bool hasIntersection);
+        void setIntersectionPoint(Vector* intersectionPoint);
+        bool getHasIntersection();
+        Vector* getIntersectionPoint();
+        void setDistanceFromP0(double distanceFromP0);
+        double getDistanceFromP0();
+        void setObjectRegion(ObjectRegion region);
+        ObjectRegion getObjectRegion();
 
-        IntersectionResult operator = (const IntersectionResult& result);
+        IntersectionResult operator =(const IntersectionResult& result);
 
-        IntersectionResult ();
-        IntersectionResult (bool hasIntersection, Vector* intersectionPoint, double distanceFromP0, ObjectRegion region);
-        virtual ~IntersectionResult ();
-        IntersectionResult (const IntersectionResult& result);
+        IntersectionResult();
+        IntersectionResult(bool hasIntersection, Vector* intersectionPoint, double distanceFromP0, ObjectRegion region);
+        virtual ~IntersectionResult();
+        IntersectionResult(const IntersectionResult& result);
 
 };
 
@@ -132,7 +133,7 @@ class Line {
         Vector* P0;
         Vector* dir;
 
-        Line (Vector* P0, Vector* dir);
+        Line(Vector* P0, Vector* dir);
         ~Line();
 };
 
@@ -166,15 +167,15 @@ class Object {
         bool hasIntersectionWithOtherObjects(ObjectsArray objectsArray, Vector* intersectionPoint, Vector* l, Light* light);
         
     public:
-        virtual ObjectType getObjectType () = 0;
-        Vector* getReflectivity ();
-        double getShininess ();
+        virtual ObjectType getObjectType() = 0;
+        Vector* getReflectivity();
+        double getShininess();
 
-        void setReflectivity (Vector* reflectivity);
-        void setShininess (double shininess);
+        void setReflectivity(Vector* reflectivity);
+        void setShininess(double shininess);
 
-        virtual IntersectionResult* getIntersectionResult (Line* line) = 0;
-        virtual Color* getColorToBePainted (
+        virtual IntersectionResult* getIntersectionResult(Line* line) = 0;
+        virtual Color* getColorToBePainted(
             IntersectionResult* intersectionResult,
             LightsArray lightsArray,
             ObjectsArray objectsArray,
@@ -185,7 +186,7 @@ class Object {
 
         Object();
         Object(Vector* reflectivity);
-        virtual ~Object ();
+        virtual ~Object();
 };
 
 class LookAt {
@@ -220,6 +221,7 @@ class Scene {
         int canvasHeight = 400;
         int canvasWidth = 400;
         double windowDistance = 50.0;
+        ProjectionType projectionType = ProjectionType::PERSPECTIVE;
     
         ObjectsArray objects;
         LightsArray lights;
@@ -232,41 +234,43 @@ class Scene {
         void raycast(SDL_Renderer* renderer);
 
     public:
-        void setWindowHeight (double windowHeight);
-        void setWindowWidth (double windowWidth);
-        void setCanvasWidth (double canvasWidth);
-        void setCanvasHeight (double canvasHeight);
-        void setWindowDistance (double windowDistance);
-        void setBackgroundColor (Color* color);
-        void setBackgroundImage (Image* image);
+        void setWindowHeight(double windowHeight);
+        void setWindowWidth(double windowWidth);
+        void setCanvasWidth(double canvasWidth);
+        void setCanvasHeight(double canvasHeight);
+        void setWindowDistance(double windowDistance);
+        void setBackgroundColor(Color* color);
+        void setBackgroundImage(Image* image);
         void lookAt(
             Vector* eye,
             Vector* at,
             Vector* up
         );
+        void setProjectionType(ProjectionType projectionType);
 
-        void setEnvironmentLight (Vector* environmentLight);
-        void addLightSource (Light* lightSource);
-        void addObject (Object* object);
+        void setEnvironmentLight(Vector* environmentLight);
+        void addLightSource(Light* lightSource);
+        void addObject(Object* object);
 
-        double getWindowHeight ();
-        double getWindowWidth ();
-        double getCanvasWidth ();
-        double getCanvasHeight ();
-        double getWindowDistance ();
+        double getWindowHeight();
+        double getWindowWidth();
+        double getCanvasWidth();
+        double getCanvasHeight();
+        double getWindowDistance();
+        ProjectionType getProjectionType();
+
+        Color* getBackgroundColor();
+        Image* getBackgroundImage();
         
-        Color* getBackgroundColor ();
-        Image* getBackgroundImage ();
-        
-        Vector* getEnvironmentLight ();
-        LightsArray getLights ();
-        ObjectsArray getObjects ();
+        Vector* getEnvironmentLight();
+        LightsArray getLights();
+        ObjectsArray getObjects();
 
         // open window and render the scene
-        void render ();
+        void render();
 
-        Scene ();
-        Scene (
+        Scene();
+        Scene(
             double windowHeight,
             double windowWidth,
             int canvasHeight,
@@ -274,6 +278,6 @@ class Scene {
             double windowDistance,
             Color* backgroundColor = nullptr
         );
-        ~Scene ();
+        ~Scene();
 
 };

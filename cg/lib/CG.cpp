@@ -72,75 +72,83 @@ Vector LookAt::convertWorldVectorToCanvas(Vector worldVector) {
     return result;
 }
 
-void Scene::setWindowHeight (double windowHeight) {
+void Scene::setWindowHeight(double windowHeight) {
     this->windowHeight = windowHeight;
 }
 
-void Scene::setWindowWidth (double windowWidth) {
+void Scene::setWindowWidth(double windowWidth) {
     this->windowWidth = windowWidth;
 }
 
-void Scene::setCanvasWidth (double canvasWidth) {
+void Scene::setCanvasWidth(double canvasWidth) {
     this->canvasWidth = canvasWidth;
 }
 
-void Scene::setCanvasHeight (double canvasHeight) {
+void Scene::setCanvasHeight(double canvasHeight) {
     this->canvasHeight = canvasHeight;
 }
 
-void Scene::setWindowDistance (double windowDistance) {
+void Scene::setWindowDistance(double windowDistance) {
     this->windowDistance = windowDistance;
 }
 
-void Scene::setBackgroundColor (Color* color) {
+void Scene::setBackgroundColor(Color* color) {
     this->backgroundColor = color;
 }
 
-void Scene::setBackgroundImage (Image* image) {
+void Scene::setBackgroundImage(Image* image) {
     this->backgroundImage = image;
 }
 
-void Scene::setEnvironmentLight (Vector* environmentLight) {
+void Scene::setEnvironmentLight(Vector* environmentLight) {
     this->environmentLight = environmentLight;
 }
 
-void Scene::addLightSource (Light* lightSource) {
-    this->lights.push_back (lightSource);
+void Scene::setProjectionType(ProjectionType projectionType) {
+    this->projectionType = projectionType;
 }
 
-void Scene::addObject (Object* object) {
-    this->objects.push_back (object);
+void Scene::addLightSource(Light* lightSource) {
+    this->lights.push_back(lightSource);
 }
 
-double Scene::getWindowHeight () {
+void Scene::addObject(Object* object) {
+    this->objects.push_back(object);
+}
+
+double Scene::getWindowHeight() {
     return this->windowHeight;
 }
 
-double Scene::getWindowWidth () {
+double Scene::getWindowWidth() {
     return this->windowWidth;
 }
 
-double Scene::getCanvasWidth () {
+double Scene::getCanvasWidth() {
     return this->canvasWidth;
 }
 
-double Scene::getCanvasHeight () {
+double Scene::getCanvasHeight() {
     return this->canvasHeight;
 }
 
-double Scene::getWindowDistance () {
+double Scene::getWindowDistance() {
     return this->windowDistance;
 }
 
-Color* Scene::getBackgroundColor () {
+ProjectionType Scene::getProjectionType() {
+    return this->projectionType;
+}
+
+Color* Scene::getBackgroundColor() {
     return this->backgroundColor;
 }
 
-Image* Scene::getBackgroundImage () {
+Image* Scene::getBackgroundImage() {
     return this->backgroundImage;
 }
 
-Vector* Scene::getEnvironmentLight () {
+Vector* Scene::getEnvironmentLight() {
     return this->environmentLight;
 }
 
@@ -154,50 +162,55 @@ void Scene::lookAt(
         eye, at, up
     );
 
-    for (Object* object : this->getObjects()) {
+    for(Object* object : this->getObjects()) {
         object->applyWorldToCanvasConversion(this->eyeLookAt);
     }
 
-    for (Light* light : this->getLights()) {
+    for(Light* light : this->getLights()) {
         light->applyWorldToCanvasConversion(this->eyeLookAt);
     }
 }
 
-void Scene::raycast (SDL_Renderer* renderer) {
-    const double nLin = this->getCanvasHeight ();
-    const double nCol = this->getCanvasWidth ();
+void Scene::raycast(SDL_Renderer* renderer) {
+    const double nLin = this->getCanvasHeight();
+    const double nCol = this->getCanvasWidth();
 
-    const double hJanela = this->getWindowHeight ();
-    const double wJanela = this->getWindowWidth ();
+    const double hJanela = this->getWindowHeight();
+    const double wJanela = this->getWindowWidth();
 
     const double dx = wJanela / nCol;
     const double dy = hJanela / nLin;
 
-    Image* sceneBackgroundImage = this->getBackgroundImage ();
+    Image* sceneBackgroundImage = this->getBackgroundImage();
 
     int numberOfObjects = this->objects.size();
 
     const double z = -this->getWindowDistance();
 
-    for (int l = 0; l < nLin; l++) {
+    for(int l = 0; l < nLin; l++) {
         const double y = hJanela / 2.0 - dy / 2.0 - l * dy;
 
-        for (int c = 0; c < nCol; c++) {
+        for(int c = 0; c < nCol; c++) {
             const double x = -wJanela / 2.0 + dx / 2.0 + c * dx;
 
-            Vector* P0 = new Vector (0, 0, 0);
-            Vector* direction = new Vector (x, y, z);
-            Sp<Line> line = new Line (P0, direction);
+            bool isProjectionPerspective = this->getProjectionType() == ProjectionType::PERSPECTIVE;
+            Vector* P0 = new Vector(
+                isProjectionPerspective ? Vector(0, 0, 0) : Vector(x, y, 0)
+            );
+            Vector* direction = new Vector(
+                isProjectionPerspective ? Vector(x, y, z) : Vector(0, 0, -1)
+            );
+            Sp<Line> line = new Line(P0, direction);
 
             int nearestObjectIndex = 0;
-            Sp<IntersectionResult> nearestResult = new IntersectionResult (false, nullptr, 0, ObjectRegion::UNKNOWN);
+            Sp<IntersectionResult> nearestResult = new IntersectionResult(false, nullptr, 0, ObjectRegion::UNKNOWN);
 
-            for (int i = 0; i < numberOfObjects; i++) {
+            for(int i = 0; i < numberOfObjects; i++) {
 
-                Sp<IntersectionResult> result = this->objects[i]->getIntersectionResult (line.pointer);
+                Sp<IntersectionResult> result = this->objects[i]->getIntersectionResult(line.pointer);
                 
-                if (result->getHasIntersection() &&
-                (!nearestResult->getHasIntersection() || result->getDistanceFromP0() < nearestResult->getDistanceFromP0())) {
+                if(result->getHasIntersection() &&
+            (!nearestResult->getHasIntersection() || result->getDistanceFromP0() < nearestResult->getDistanceFromP0())) {
                     delete nearestResult.pointer;
                     nearestResult.pointer = result.pointer;
                     result.pointer = nullptr;
@@ -207,8 +220,8 @@ void Scene::raycast (SDL_Renderer* renderer) {
 
             }
 
-            if (nearestResult->getHasIntersection()) {
-                Sp<Color> colorToPaint = this->objects[nearestObjectIndex]->getColorToBePainted (
+            if(nearestResult->getHasIntersection()) {
+                Sp<Color> colorToPaint = this->objects[nearestObjectIndex]->getColorToBePainted(
                     nearestResult.pointer,
                     this->lights,
                     this->objects,
@@ -216,19 +229,19 @@ void Scene::raycast (SDL_Renderer* renderer) {
                     this->environmentLight
                 );
 
-                setPaintColor (renderer, colorToPaint->r, colorToPaint->g, colorToPaint->b, colorToPaint->a);
-                paintPixel (renderer, c, l);
-            } else if (sceneBackgroundImage != nullptr) {
+                setPaintColor(renderer, colorToPaint->r, colorToPaint->g, colorToPaint->b, colorToPaint->a);
+                paintPixel(renderer, c, l);
+            } else if(sceneBackgroundImage != nullptr) {
                 // if there is no intersection, verify if there is an background image and paint
                 // with the color of equivalent pixel in the image
 
-                double x = (double (c) * double (sceneBackgroundImage->getImageWidth())) / this->getCanvasWidth ();
-                double y = (double (l) * double (sceneBackgroundImage->getImageHeight())) / this->getCanvasHeight ();
+                double x =(double(c) * double(sceneBackgroundImage->getImageWidth())) / this->getCanvasWidth();
+                double y =(double(l) * double(sceneBackgroundImage->getImageHeight())) / this->getCanvasHeight();
 
-                Pixel pixelToPaint = sceneBackgroundImage->getPixel (x, y);
+                Pixel pixelToPaint = sceneBackgroundImage->getPixel(x, y);
 
-                setPaintColor (renderer, pixelToPaint.r, pixelToPaint.g, pixelToPaint.b, pixelToPaint.a);
-                paintPixel (renderer, c, l);
+                setPaintColor(renderer, pixelToPaint.r, pixelToPaint.g, pixelToPaint.b, pixelToPaint.a);
+                paintPixel(renderer, c, l);
 
             }
 
@@ -237,22 +250,22 @@ void Scene::raycast (SDL_Renderer* renderer) {
 
 }
 
-void Scene::render () {
+void Scene::render() {
     SDL_Renderer* renderer = nullptr;
     SDL_Window* window = nullptr;
 
-    initializeSDLAndWindow (&window, &renderer, this->getCanvasHeight(), this->getCanvasWidth());
+    initializeSDLAndWindow(&window, &renderer, this->getCanvasHeight(), this->getCanvasWidth());
     // SDL_RenderSetScale(renderer, 4, 4);
 
-    if (this->backgroundColor == nullptr) {
+    if(this->backgroundColor == nullptr) {
         std::cout << "backgroundColor is null" << std::endl;
 
-        setWindowBackground (
+        setWindowBackground(
             renderer,
             0, 0, 0, 255
         );
     } else {
-        setWindowBackground (
+        setWindowBackground(
             renderer,
             this->backgroundColor->r,
             this->backgroundColor->g,
@@ -263,21 +276,21 @@ void Scene::render () {
 
     this->raycast(renderer);
 
-    update (renderer);
-    listenEventQuit (window);
+    update(renderer);
+    listenEventQuit(window);
 }
 
-LightsArray Scene::getLights () {
+LightsArray Scene::getLights() {
     return this->lights;
 }
 
-ObjectsArray Scene::getObjects () {
+ObjectsArray Scene::getObjects() {
     return this->objects;
 }
 
-Scene::Scene () {}
+Scene::Scene() {}
 
-Scene::Scene (
+Scene::Scene(
     double windowHeight,
     double windowWidth,
     int canvasHeight,
@@ -285,61 +298,61 @@ Scene::Scene (
     double windowDistance,
     Color* color
 ) {
-    this->setWindowHeight (windowHeight);
-    this->setWindowWidth (windowWidth);
-    this->setCanvasHeight (canvasHeight);
-    this->setCanvasWidth (canvasWidth);
-    this->setWindowDistance (windowDistance);
+    this->setWindowHeight(windowHeight);
+    this->setWindowWidth(windowWidth);
+    this->setCanvasHeight(canvasHeight);
+    this->setCanvasWidth(canvasWidth);
+    this->setWindowDistance(windowDistance);
     this->lookAt(
         new Vector(0, 0, 0),
         new Vector(0, 0, -1),
         new Vector(0, 1, 0)
     );
     
-    if (color == nullptr) {
-        this->setBackgroundColor (new Color (0, 0, 0, 255));
+    if(color == nullptr) {
+        this->setBackgroundColor(new Color(0, 0, 0, 255));
     } else {
-        this->setBackgroundColor (color);
+        this->setBackgroundColor(color);
     }
 }
 
-Scene::~Scene () {
+Scene::~Scene() {
     delete this->getBackgroundImage();
     delete this->getEnvironmentLight();
     delete this->getBackgroundColor();
     delete this->eyeLookAt;
     
-    for (auto i = this->objects.begin(); i != this->objects.end(); i++) {
-        delete (*i);
+    for(auto i = this->objects.begin(); i != this->objects.end(); i++) {
+        delete(*i);
     }
 
-    for (auto i = this->lights.begin(); i != this->lights.end(); i++) {
-        delete (*i);
+    for(auto i = this->lights.begin(); i != this->lights.end(); i++) {
+        delete(*i);
     }
 }
 
-Color::Color (int r, int g, int b, int a) {
-    this->r = r > 255 ? 255 : r; // min (r, 255)
-    this->g = g > 255 ? 255 : g; // min (g, 255);
-    this->b = b > 255 ? 255 : b; // min (b, 255);
-    this->a = a > 255 ? 255 : a; // min (a, 255);
+Color::Color(int r, int g, int b, int a) {
+    this->r = r > 255 ? 255 : r; // min(r, 255)
+    this->g = g > 255 ? 255 : g; // min(g, 255);
+    this->b = b > 255 ? 255 : b; // min(b, 255);
+    this->a = a > 255 ? 255 : a; // min(a, 255);
 }
 
-void Light::setIntensity (Vector* intensity) {
+void Light::setIntensity(Vector* intensity) {
     this->intensity = intensity;
 }
 
-Vector* Light::getIntensity () {
+Vector* Light::getIntensity() {
     return this->intensity;
 }
 
-Light::Light () {}
+Light::Light() {}
 
-Light::Light (Vector* intensity) {
+Light::Light(Vector* intensity) {
     this->setIntensity(intensity);
 }
 
-Light::~Light () {
+Light::~Light() {
     delete this->getIntensity();
 }
 
@@ -359,7 +372,7 @@ Vector* PointLight::getPosition() {
 }
 
 double PointLight::getDistanceFromPoint(Vector point) {
-    return (*this->getPosition() - point).getMagnitude();
+    return(*this->getPosition() - point).getMagnitude();
 }
 
 void PointLight::applyWorldToCanvasConversion(LookAt* lookAt) {
@@ -373,7 +386,7 @@ void PointLight::applyWorldToCanvasConversion(LookAt* lookAt) {
 }
 
 IlluminationInfo PointLight::getIlluminationInfo(Vector intersectionPoint) {
-    Vector l = (*this->getPosition() - intersectionPoint) / (*this->getPosition()
+    Vector l =(*this->getPosition() - intersectionPoint) /(*this->getPosition()
         - intersectionPoint).getMagnitude();
 
     Vector intensity = *this->getIntensity();
@@ -461,7 +474,7 @@ double SpotLight::getAngle() {
 }
 
 double SpotLight::getDistanceFromPoint(Vector point) {
-    return (*this->getPosition() - point).getMagnitude();
+    return(*this->getPosition() - point).getMagnitude();
 }
 
 void SpotLight::applyWorldToCanvasConversion(LookAt* lookAt) {
@@ -483,15 +496,15 @@ void SpotLight::applyWorldToCanvasConversion(LookAt* lookAt) {
 }
 
 IlluminationInfo SpotLight::getIlluminationInfo(Vector intersectionPoint) {
-    Vector l = (*this->getPosition() - intersectionPoint) / (*this->getPosition()
+    Vector l =(*this->getPosition() - intersectionPoint) /(*this->getPosition()
         - intersectionPoint).getMagnitude();
-    double clds = scalarProduct(l, (*this->getDirection() * -1));
+    double clds = scalarProduct(l,(*this->getDirection() * -1));
 
     Vector spotIntensity = *this->getIntensity();
 
     Vector intensity;
 
-    if (clds < cos(angle)) {
+    if(clds < cos(angle)) {
         intensity = Vector(0, 0, 0);
     } else {
         intensity = spotIntensity * clds;
@@ -516,108 +529,108 @@ SpotLight::~SpotLight() {
     delete this->getPosition();
 }
 
-Line::Line (Vector* P0, Vector* dir) {
+Line::Line(Vector* P0, Vector* dir) {
     this->P0 = P0;
     this->dir = dir;
 }
 
-Line::~Line () {
+Line::~Line() {
     delete this->P0;
     delete this->dir;
 }
 
-void IntersectionResult::setHasIntersection (bool hasIntersection) {
+void IntersectionResult::setHasIntersection(bool hasIntersection) {
     this->hasIntersection = hasIntersection;
 }
 
-bool IntersectionResult::getHasIntersection () {
+bool IntersectionResult::getHasIntersection() {
     return this->hasIntersection;
 }
 
-void IntersectionResult::setIntersectionPoint (Vector* intersectionPoint) {
+void IntersectionResult::setIntersectionPoint(Vector* intersectionPoint) {
     this->intersectionPoint = intersectionPoint;
 }
 
-Vector* IntersectionResult::getIntersectionPoint () {
+Vector* IntersectionResult::getIntersectionPoint() {
     return this->intersectionPoint;
 }
 
-void IntersectionResult::setDistanceFromP0 (double distanceFromP0) {
+void IntersectionResult::setDistanceFromP0(double distanceFromP0) {
     this->distanceFromP0 = distanceFromP0;
 }
 
-double IntersectionResult::getDistanceFromP0 () {
+double IntersectionResult::getDistanceFromP0() {
     return this->distanceFromP0;
 }
 
-void IntersectionResult::setObjectRegion (ObjectRegion region) {
+void IntersectionResult::setObjectRegion(ObjectRegion region) {
     this->region = region;
 }
 
-ObjectRegion IntersectionResult::getObjectRegion () {
+ObjectRegion IntersectionResult::getObjectRegion() {
     return this->region;
 }
 
-IntersectionResult IntersectionResult::operator = (const IntersectionResult& result) {
+IntersectionResult IntersectionResult::operator =(const IntersectionResult& result) {
     this->setDistanceFromP0(result.distanceFromP0);
     this->setHasIntersection(result.hasIntersection);
     
-    if (this->getIntersectionPoint() != nullptr && result.intersectionPoint != nullptr) {
+    if(this->getIntersectionPoint() != nullptr && result.intersectionPoint != nullptr) {
         *this->getIntersectionPoint() = *result.intersectionPoint;
     }
 
     return *this;
 }
 
-IntersectionResult::IntersectionResult () {}
+IntersectionResult::IntersectionResult() {}
 
-IntersectionResult::IntersectionResult (bool hasIntersection, Vector* intersectionPoint, double distanceFromP0, ObjectRegion region) {
-    this->setHasIntersection (hasIntersection);
-    this->setIntersectionPoint (intersectionPoint);
-    this->setDistanceFromP0 (distanceFromP0);
-    this->setObjectRegion (region);
+IntersectionResult::IntersectionResult(bool hasIntersection, Vector* intersectionPoint, double distanceFromP0, ObjectRegion region) {
+    this->setHasIntersection(hasIntersection);
+    this->setIntersectionPoint(intersectionPoint);
+    this->setDistanceFromP0(distanceFromP0);
+    this->setObjectRegion(region);
 }
 
-IntersectionResult::IntersectionResult (const IntersectionResult& result) {
+IntersectionResult::IntersectionResult(const IntersectionResult& result) {
     this->distanceFromP0 = result.distanceFromP0;
     this->hasIntersection = result.hasIntersection;
     
-    if (result.intersectionPoint != nullptr) {
-        this->intersectionPoint = new Vector (*result.intersectionPoint);
+    if(result.intersectionPoint != nullptr) {
+        this->intersectionPoint = new Vector(*result.intersectionPoint);
     }
 }
 
-IntersectionResult::~IntersectionResult () {
+IntersectionResult::~IntersectionResult() {
     delete this->getIntersectionPoint();
 }
 
-void Object::setReflectivity (Vector* reflectivity) {
+void Object::setReflectivity(Vector* reflectivity) {
     this->reflectivity = reflectivity;
 }
 
-Vector* Object::getReflectivity () {
+Vector* Object::getReflectivity() {
     return this->reflectivity;
 }
 
-void Object::setShininess (double shininess) {
+void Object::setShininess(double shininess) {
     this->shininess = shininess;
 }
 
-double Object::getShininess () {
+double Object::getShininess() {
     return this->shininess;
 }
 
-Object::Object () {}
+Object::Object() {}
 
-Object::Object (Vector* reflectivity) {
+Object::Object(Vector* reflectivity) {
     this->reflectivity = reflectivity;
 }
 
-Object::~Object () {
+Object::~Object() {
     delete this->getReflectivity();
 }
 
-Color* Object::calculateColorToBePainted (
+Color* Object::calculateColorToBePainted(
     IntersectionResult* intersectionResult,
     LightsArray lightsArray,
     ObjectsArray objectsArray,
@@ -638,11 +651,11 @@ Color* Object::calculateColorToBePainted (
         shininess
     );
 
-    if (environmentLight != nullptr) {
-        resultColorRate = resultColorRate + ((*environmentLight) * (*reflectivity));
+    if(environmentLight != nullptr) {
+        resultColorRate = resultColorRate +((*environmentLight) *(*reflectivity));
     }
 
-    return new Color (
+    return new Color(
         resultColorRate[0] * 255,
         resultColorRate[1] * 255,
         resultColorRate[2] * 255,
@@ -661,17 +674,17 @@ Vector Object::calculateResultColorRate(
     double shininess
 ) {
 
-    Vector resultColorRate (0, 0, 0);
+    Vector resultColorRate(0, 0, 0);
 
-    Vector v = ((*line->dir) * -1) / line->dir->getMagnitude();
+    Vector v =((*line->dir) * -1) / line->dir->getMagnitude();
 
     Vector* intersectionPoint = intersectionResult->getIntersectionPoint();
 
     // verify if the lights intercepts any other object
 
-    for (auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
+    for(auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
 
-        IlluminationInfo illuminationInfo = (*i)->getIlluminationInfo(*intersectionPoint);
+        IlluminationInfo illuminationInfo =(*i)->getIlluminationInfo(*intersectionPoint);
         Vector l = illuminationInfo.l;
         Vector intensity = illuminationInfo.intensity;
         
@@ -680,25 +693,25 @@ Vector Object::calculateResultColorRate(
         );
 
         // calculate the color to be painted
-        if (!hasIntersectionWithOtherObjects) {    
-            Vector r = (*normal) * (2 * scalarProduct (l, *normal)) -  l;
+        if(!hasIntersectionWithOtherObjects) {    
+            Vector r =(*normal) *(2 * scalarProduct(l, *normal)) -  l;
 
-            double fDifusa = max (
-                scalarProduct (l, *normal),
+            double fDifusa = max(
+                scalarProduct(l, *normal),
                 0.0
             );
 
-            double fEspeculada = pow (
-                max (
-                    scalarProduct (r, v),
+            double fEspeculada = pow(
+                max(
+                    scalarProduct(r, v),
                     0.0
                 ),
                 shininess
             );
 
-            Vector iDifusa = intensity * (*reflectivity) * fDifusa;
+            Vector iDifusa = intensity *(*reflectivity) * fDifusa;
 
-            Vector iEspeculada = intensity * (*reflectivity) * fEspeculada;
+            Vector iEspeculada = intensity *(*reflectivity) * fEspeculada;
 
             resultColorRate = resultColorRate + iDifusa + iEspeculada;
         }
@@ -709,23 +722,23 @@ Vector Object::calculateResultColorRate(
 
 bool Object::hasIntersectionWithOtherObjects(ObjectsArray objectsArray, Vector* intersectionPoint, Vector* l, Light* light) {
 
-    Sp<Line> verifyShadowLine = new Line (
-        new Vector (
-            (*intersectionPoint)
+    Sp<Line> verifyShadowLine = new Line(
+        new Vector(
+        (*intersectionPoint)
         ),
         l
     );
 
     bool hasIntersectionWithOtherObjects = false;
 
-    for (auto j = objectsArray.begin(); (j != objectsArray.end() && !hasIntersectionWithOtherObjects); j++) {
+    for(auto j = objectsArray.begin();(j != objectsArray.end() && !hasIntersectionWithOtherObjects); j++) {
         
-        if ((*j) != this) {
-            Sp<IntersectionResult> intersectionShadow = (*j)->getIntersectionResult (verifyShadowLine.pointer);
+        if((*j) != this) {
+            Sp<IntersectionResult> intersectionShadow =(*j)->getIntersectionResult(verifyShadowLine.pointer);
 
             hasIntersectionWithOtherObjects =
                 intersectionShadow->getHasIntersection() &&
-                (intersectionShadow->getDistanceFromP0() < (light->getDistanceFromPoint(*intersectionPoint)));
+            (intersectionShadow->getDistanceFromP0() <(light->getDistanceFromPoint(*intersectionPoint)));
         }
 
     }
