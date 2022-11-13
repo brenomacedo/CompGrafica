@@ -81,14 +81,13 @@ IntersectionResult* Sphere::getIntersectionResult (Line* line) {
         result->setHasIntersection (true);
 
         double t1 = (-b + sqrt(discriminant)) / (2 * a);
+        double t2 = (-b - sqrt(discriminant)) / (2 * a);
 
         // verify if dir is forward (to remove, just remove this condition)
-        if (t1 < 0) {
+        if (t1 < 0 && t2 < 0) {
             result->setHasIntersection (false);
             return result;
         }
-
-        double t2 = (-b - sqrt(discriminant)) / (2 * a);
 
         Vector intersectionPoint1 = (*line->P0) + (*line->dir) * t1;
         Vector intersectionPoint2 = (*line->P0) + (*line->dir) * t2;

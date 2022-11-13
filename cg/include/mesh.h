@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "./CG.h"
+#include "./sphere.h"
 
 using std::string;
 
@@ -59,6 +60,15 @@ class Vertex {
         ~Vertex();
 };
 
+class Wrapper : public Sphere {
+    public:
+        bool intersects(Line* line);
+
+        Wrapper();
+        Wrapper(double radius, Vector* center);
+        virtual ~Wrapper();
+};
+
 class Mesh : public Object {
 
     private:
@@ -67,6 +77,7 @@ class Mesh : public Object {
         VertexesArray vertexesArray;
         EdgesArray edgesArray;
         FacesArray facesArray;
+        Wrapper* wrapper = nullptr;
 
         void reverseFacesVertexesOrder();
 
@@ -80,6 +91,7 @@ class Mesh : public Object {
         void addVertex(Vertex* vertex);
         void addEdge(Edge* edge);
         void addFace(Face* face);
+        void setWrapper(Wrapper* wrapper);
 
         void applyScale(double sx, double sy, double sz);
         void applyTranslate(double x, double y, double z);

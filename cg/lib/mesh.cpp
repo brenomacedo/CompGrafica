@@ -50,6 +50,19 @@ Vertex::~Vertex() {
     delete this->normal;
 }
 
+bool Wrapper::intersects(Line* line) {
+    IntersectionResult* result = Sphere::getIntersectionResult(line);
+    bool hasIntersection = result->getHasIntersection();
+    delete result;
+    return hasIntersection;
+}
+
+Wrapper::Wrapper() : Sphere() {}
+
+Wrapper::Wrapper(double radius, Vector* center) : Sphere(radius, nullptr, center, 0) {}
+
+Wrapper::~Wrapper() {}
+
 ObjectType Mesh::getObjectType() {
     return this->type;
 }
@@ -78,6 +91,10 @@ void Mesh::addFace(Face* face) {
     this->facesArray.push_back(face);
 }
 
+void Mesh::setWrapper(Wrapper* wrapper) {
+    this->wrapper = wrapper;
+}
+
 Mesh::Mesh() {}
 
 Mesh::Mesh(double shininess, Vector* reflectivity) {
@@ -97,6 +114,8 @@ Mesh::~Mesh() {
     for (Vertex* vertex: this->getVertexesArray()) {
         delete vertex;
     }
+
+    delete this->wrapper;
 }
 
 void Mesh::applyScale(double sx, double sy, double sz) {
@@ -105,6 +124,12 @@ void Mesh::applyScale(double sx, double sy, double sz) {
             *vertex->point,
             sx, sy, sz
         );
+    }
+
+    if (this->wrapper != nullptr) {
+        Vector* wrapperCenter = this->wrapper->getCenter();
+        *wrapperCenter = scale(*wrapperCenter, sx, sy, sz);
+        this->wrapper->setRadius(this->wrapper->getRadius()*2);
     }
 }
 
@@ -115,12 +140,25 @@ void Mesh::applyTranslate(double x, double y, double z) {
             x, y, z
         );
     }
+
+    if (this->wrapper != nullptr) {
+        Vector* wrapperCenter = this->wrapper->getCenter();
+        *wrapperCenter = translate(*wrapperCenter, x, y, z);
+    }
 }
 
 void Mesh::applyRotateX(double angle) {
     for (Vertex* vertex : this->getVertexesArray()) {
         *vertex->point = rotateX(
             *vertex->point,
+            angle
+        );
+    }
+
+    if (this->wrapper != nullptr) {
+        Vector* wrapperCenter = this->wrapper->getCenter();
+        *wrapperCenter = rotateX(
+            *wrapperCenter,
             angle
         );
     }
@@ -133,12 +171,28 @@ void Mesh::applyRotateY(double angle) {
             angle
         );
     }
+
+    if (this->wrapper != nullptr) {
+        Vector* wrapperCenter = this->wrapper->getCenter();
+        *wrapperCenter = rotateY(
+            *wrapperCenter,
+            angle
+        );
+    }
 }
 
 void Mesh::applyRotateZ(double angle) {
     for (Vertex* vertex : this->getVertexesArray()) {
         *vertex->point = rotateZ(
             *vertex->point,
+            angle
+        );
+    }
+
+    if (this->wrapper != nullptr) {
+        Vector* wrapperCenter = this->wrapper->getCenter();
+        *wrapperCenter = rotateZ(
+            *wrapperCenter,
             angle
         );
     }
@@ -150,6 +204,10 @@ void Mesh::applyShearXY(double angle) {
             *vertex->point,
             angle
         );
+    }
+
+    if (this->wrapper != nullptr) {
+        this->wrapper->setRadius(this->wrapper->getRadius() * (1 + sin(angle)));
     }
 }
 
@@ -205,6 +263,13 @@ void Mesh::applyReflectXY() {
         );
     }
     this->reverseFacesVertexesOrder();
+
+    if (this->wrapper != nullptr) {
+        Vector* wrapperCenter = this->wrapper->getCenter();
+        *wrapperCenter = reflectXY(
+            *wrapperCenter
+        );
+    }
 }
 
 void Mesh::applyReflectXZ() {
@@ -214,6 +279,13 @@ void Mesh::applyReflectXZ() {
         );
     }
     this->reverseFacesVertexesOrder();
+
+    if (this->wrapper != nullptr) {
+        Vector* wrapperCenter = this->wrapper->getCenter();
+        *wrapperCenter = reflectXZ(
+            *wrapperCenter
+        );
+    }
 }
 
 void Mesh::applyReflectYZ() {
@@ -223,6 +295,13 @@ void Mesh::applyReflectYZ() {
         );
     }
     this->reverseFacesVertexesOrder();
+
+    if (this->wrapper != nullptr) {
+        Vector* wrapperCenter = this->wrapper->getCenter();
+        *wrapperCenter = reflectYZ(
+            *wrapperCenter
+        );
+    }
 }
 
 void Mesh::applyWorldToCanvasConversion(LookAt* lookAt) {
@@ -234,9 +313,19 @@ void Mesh::applyWorldToCanvasConversion(LookAt* lookAt) {
 }
 
 IntersectionResult* Mesh::getIntersectionResult (Line* line) {
-    MeshIntersectionResult* result = new MeshIntersectionResult ();
+    MeshIntersectionResult* result = new MeshIntersectionResult();
     result->setObjectRegion(ObjectRegion::PLAN);
     result->setHasIntersection(false);
+
+    if (this->wrapper != nullptr) {
+        IntersectionResult* wrapperIntersection = this->wrapper->getIntersectionResult(line);
+        bool hasIntersectionWithWrapper = wrapperIntersection->getHasIntersection();
+        delete wrapperIntersection;
+
+        if (!hasIntersectionWithWrapper) {
+            return result;
+        }
+    }
 
     Vector* intersectionPoint = new Vector();
     Vector* meshNormal = new Vector();
