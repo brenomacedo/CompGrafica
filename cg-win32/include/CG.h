@@ -184,6 +184,15 @@ class Object {
         ) = 0;
         virtual void applyWorldToCanvasConversion(LookAt* lookat) = 0;
 
+        virtual void applyScale(double sx, double sy, double sz) = 0;
+        virtual void applyTranslate(double x, double y, double z) = 0;
+        virtual void applyRotateX(double angle) = 0;
+        virtual void applyRotateY(double angle) = 0;
+        virtual void applyRotateZ(double angle) = 0;
+        virtual void applyReflectXY() = 0;
+        virtual void applyReflectXZ() = 0;
+        virtual void applyReflectYZ() = 0;
+
         Object();
         Object(Vector* reflectivity);
         virtual ~Object();

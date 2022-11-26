@@ -34,8 +34,19 @@ class Cylinder : public Object {
         void setTopCenter (Vector* topCenter);
         void setHeight (double height);
         void setDirection (Vector* vector);
+        void updateDirection();
+
+        void applyScale(double sx, double sy, double sz);
+        void applyTranslate(double x, double y, double z);
+        void applyRotateX(double angle);
+        void applyRotateY(double angle);
+        void applyRotateZ(double angle);
+        void applyReflectXY();
+        void applyReflectXZ();
+        void applyReflectYZ();
 
         Cylinder ();
+        Cylinder (Vector* baseCenter, Vector* direction, double height, double radius);
         Cylinder (Vector* baseCenter, Vector* topCenter, double radius, Vector* reflectivity, double shininess = 1.0);
         Cylinder (Vector* baseCenter, Vector* direction, double height, double radius, Vector* reflectivity, double shininess = 1.0);
         ~Cylinder ();

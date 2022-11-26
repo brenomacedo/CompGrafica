@@ -30,6 +30,23 @@ Plan::Plan (Vector* initialPoint, Vector* normal, Vector* reflectivity, double s
     this->setShininess (shininess);
 }
 
+void Plan::applyScale(double, double, double) {}
+void Plan::applyTranslate(double x, double y, double z) {
+    *this->initialPoint = translate(*this->initialPoint, x, y, z);
+}
+void Plan::applyRotateX(double angle) {
+    *this->normal = rotateX(*this->normal, angle);
+}
+void Plan::applyRotateY(double angle) {
+    *this->normal = rotateY(*this->normal, angle);
+}
+void Plan::applyRotateZ(double angle) {
+    *this->normal = rotateZ(*this->normal, angle);
+}
+void Plan::applyReflectXY() {}
+void Plan::applyReflectXZ() {}
+void Plan::applyReflectYZ() {}
+
 Plan::~Plan () {
     delete this->getInitialPoint();
     delete this->getNormal();

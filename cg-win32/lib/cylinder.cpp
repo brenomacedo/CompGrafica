@@ -547,7 +547,72 @@ Color* Cylinder::getColorToBePainted (
 
 }
 
+void Cylinder::updateDirection() {
+    Vector directionNotNormal = *this->topCenter - *this->baseCenter;
+    Vector directionNormal = directionNotNormal / directionNotNormal.getMagnitude();
+    *this->direction = directionNormal;
+}
+
+void Cylinder::applyScale(double sx, double sy, double sz) {
+    *this->baseCenter = scale((*this->baseCenter), sx, sy, sz);
+    *this->topCenter = scale((*this->topCenter), sx, sy, sz);
+    this->updateDirection();
+    this->setRadius(Vector(sx, sy, sz).getMagnitude() * this->getRadius());
+}
+
+void Cylinder::applyTranslate(double x, double y, double z) {
+    *this->baseCenter = translate((*this->baseCenter), x, y, z);
+    *this->topCenter = translate((*this->topCenter), x, y, z);
+}
+
+void Cylinder::applyRotateX(double angle) {
+    *this->baseCenter = rotateX((*this->baseCenter), angle);
+    *this->topCenter = rotateX((*this->topCenter), angle);
+    this->updateDirection();
+}
+
+void Cylinder::applyRotateY(double angle) {
+    *this->baseCenter = rotateY((*this->baseCenter), angle);
+    *this->topCenter = rotateY((*this->topCenter), angle);
+    this->updateDirection();
+}
+
+void Cylinder::applyRotateZ(double angle) {
+    *this->baseCenter = rotateZ((*this->baseCenter), angle);
+    *this->topCenter = rotateZ((*this->topCenter), angle);
+    this->updateDirection();
+}
+
+void Cylinder::applyReflectXY() {
+    *this->baseCenter = reflectXY((*this->baseCenter));
+    *this->topCenter = reflectXY((*this->topCenter));
+    this->updateDirection();
+}
+
+void Cylinder::applyReflectXZ() {
+    *this->baseCenter = reflectXZ((*this->baseCenter));
+    *this->topCenter = reflectXZ((*this->topCenter));
+    this->updateDirection();
+}
+
+void Cylinder::applyReflectYZ() {
+    *this->baseCenter = reflectYZ((*this->baseCenter));
+    *this->topCenter = reflectYZ((*this->topCenter));
+    this->updateDirection();
+}
+
 Cylinder::Cylinder () {}
+
+Cylinder::Cylinder (Vector* baseCenter, Vector* direction, double height, double radius) {
+    this->setBaseCenter (baseCenter);
+    this->setRadius (radius);
+    this->setHeight (height);
+    *direction = *direction / (*direction).getMagnitude ();
+    this->setDirection (direction);
+    this->setTopCenter (
+        new Vector (*this->getBaseCenter() + *this->getDirection () * this->getHeight ())
+    );
+}
 
 Cylinder::Cylinder (Vector* baseCenter, Vector* topCenter, double radius, Vector* reflectivity, double shininess) {
     this->setBaseCenter (baseCenter);

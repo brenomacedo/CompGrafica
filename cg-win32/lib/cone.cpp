@@ -389,6 +389,60 @@ Color* Cone::getColorToBePainted (
     );
 }
 
+void Cone::updateDirection() {
+    Vector directionNotNormal = *this->top - *this->baseCenter;
+    Vector directionNormal = directionNotNormal / directionNotNormal.getMagnitude();
+    *this->direction = directionNormal;
+}
+
+void Cone::applyScale(double sx, double sy, double sz) {
+    *this->baseCenter = scale((*this->baseCenter), sx, sy, sz);
+    *this->top = scale((*this->top), sx, sy, sz);
+    this->updateDirection();
+    this->setRadius(Vector(sx, sy, sz).getMagnitude() * this->getRadius());
+}
+
+void Cone::applyTranslate(double x, double y, double z) {
+    *this->baseCenter = translate((*this->baseCenter), x, y, z);
+    *this->top = translate((*this->top), x, y, z);
+}
+
+void Cone::applyRotateX(double angle) {
+    *this->baseCenter = rotateX((*this->baseCenter), angle);
+    *this->top = rotateX((*this->top), angle);
+    this->updateDirection();
+}
+
+void Cone::applyRotateY(double angle) {
+    *this->baseCenter = rotateY((*this->baseCenter), angle);
+    *this->top = rotateY((*this->top), angle);
+    this->updateDirection();
+}
+
+void Cone::applyRotateZ(double angle) {
+    *this->baseCenter = rotateZ((*this->baseCenter), angle);
+    *this->top = rotateZ((*this->top), angle);
+    this->updateDirection();
+}
+
+void Cone::applyReflectXY() {
+    *this->baseCenter = reflectXY((*this->baseCenter));
+    *this->top = reflectXY((*this->top));
+    this->updateDirection();
+}
+
+void Cone::applyReflectXZ() {
+    *this->baseCenter = reflectXZ((*this->baseCenter));
+    *this->top = reflectXZ((*this->top));
+    this->updateDirection();
+}
+
+void Cone::applyReflectYZ() {
+    *this->baseCenter = reflectYZ((*this->baseCenter));
+    *this->top = reflectYZ((*this->top));
+    this->updateDirection();
+}
+
 Cone::Cone () {}
 
 Cone::Cone (Vector* baseCenter, Vector* top, double radius, Vector* reflectivity, double shininess) {

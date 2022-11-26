@@ -23,7 +23,45 @@ Vector* Sphere::getCenter () {
     return this->center;
 }
 
+void Sphere::applyScale(double sx, double sy, double sz) {
+    *this->center = scale((*this->center), sx, sy, sz);
+    this->setRadius(max(max(sx, sy), sz) * this->getRadius());
+}
+
+void Sphere::applyTranslate(double x, double y, double z) {
+    *this->center = translate((*this->center), x, y, z);
+}
+
+void Sphere::applyRotateX(double angle) {
+    *this->center = rotateX((*this->center), angle);
+}
+
+void Sphere::applyRotateY(double angle) {
+    *this->center = rotateY((*this->center), angle);
+}
+
+void Sphere::applyRotateZ(double angle) {
+    *this->center = rotateZ((*this->center), angle);
+}
+
+void Sphere::applyReflectXY() {
+    *this->center = reflectXY((*this->center));
+}
+
+void Sphere::applyReflectXZ() {
+    *this->center = reflectXZ((*this->center));
+}
+
+void Sphere::applyReflectYZ() {
+    *this->center = reflectYZ((*this->center));
+}
+
 Sphere::Sphere () {}
+
+Sphere::Sphere (double radius, Vector* center) {
+    this->setRadius (radius);
+    this->setCenter (center);
+}
 
 Sphere::Sphere (double radius, Vector* reflectivity, Vector* center, double shininess) {
     this->setRadius (radius);

@@ -25,7 +25,17 @@ class Sphere : public Object {
         void setRadius (double radius);
         void setCenter (Vector* center);
 
+        void applyScale(double sx, double sy, double sz);
+        void applyTranslate(double x, double y, double z);
+        void applyRotateX(double angle);
+        void applyRotateY(double angle);
+        void applyRotateZ(double angle);
+        void applyReflectXY();
+        void applyReflectXZ();
+        void applyReflectYZ();
+
         Sphere ();
+        Sphere (double radius, Vector* center);
         Sphere (double radius, Vector* reflectivity, Vector* center, double shininess = 1.0);
         ~Sphere ();
         

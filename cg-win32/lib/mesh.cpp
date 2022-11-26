@@ -51,19 +51,6 @@ Vertex::~Vertex() {
     delete this->normal;
 }
 
-bool Wrapper::intersects(Line* line) {
-    IntersectionResult* result = Sphere::getIntersectionResult(line);
-    bool hasIntersection = result->getHasIntersection();
-    delete result;
-    return hasIntersection;
-}
-
-Wrapper::Wrapper() : Sphere() {}
-
-Wrapper::Wrapper(double radius, Vector* center) : Sphere(radius, nullptr, center, 0) {}
-
-Wrapper::~Wrapper() {}
-
 ObjectType Mesh::getObjectType() {
     return this->type;
 }
@@ -92,7 +79,7 @@ void Mesh::addFace(Face* face) {
     this->facesArray.push_back(face);
 }
 
-void Mesh::setWrapper(Wrapper* wrapper) {
+void Mesh::setWrapper(Object* wrapper) {
     this->wrapper = wrapper;
 }
 
@@ -128,9 +115,7 @@ void Mesh::applyScale(double sx, double sy, double sz) {
     }
 
     if (this->wrapper != nullptr) {
-        Vector* wrapperCenter = this->wrapper->getCenter();
-        *wrapperCenter = scale(*wrapperCenter, sx, sy, sz);
-        this->wrapper->setRadius(this->wrapper->getRadius()*2);
+        this->wrapper->applyScale(sx, sy, sz);
     }
 }
 
@@ -143,8 +128,7 @@ void Mesh::applyTranslate(double x, double y, double z) {
     }
 
     if (this->wrapper != nullptr) {
-        Vector* wrapperCenter = this->wrapper->getCenter();
-        *wrapperCenter = translate(*wrapperCenter, x, y, z);
+        this->wrapper->applyTranslate(x, y, z);
     }
 }
 
@@ -157,11 +141,7 @@ void Mesh::applyRotateX(double angle) {
     }
 
     if (this->wrapper != nullptr) {
-        Vector* wrapperCenter = this->wrapper->getCenter();
-        *wrapperCenter = rotateX(
-            *wrapperCenter,
-            angle
-        );
+        this->wrapper->applyRotateX(angle);
     }
 }
 
@@ -174,11 +154,7 @@ void Mesh::applyRotateY(double angle) {
     }
 
     if (this->wrapper != nullptr) {
-        Vector* wrapperCenter = this->wrapper->getCenter();
-        *wrapperCenter = rotateY(
-            *wrapperCenter,
-            angle
-        );
+        this->wrapper->applyRotateY(angle);
     }
 }
 
@@ -191,11 +167,7 @@ void Mesh::applyRotateZ(double angle) {
     }
 
     if (this->wrapper != nullptr) {
-        Vector* wrapperCenter = this->wrapper->getCenter();
-        *wrapperCenter = rotateZ(
-            *wrapperCenter,
-            angle
-        );
+        this->wrapper->applyRotateZ(angle);
     }
 }
 
@@ -207,9 +179,7 @@ void Mesh::applyShearXY(double angle) {
         );
     }
 
-    if (this->wrapper != nullptr) {
-        this->wrapper->setRadius(this->wrapper->getRadius() * (1 + sin(angle)));
-    }
+    this->wrapper = nullptr;
 }
 
 void Mesh::applyShearYX(double angle) {
@@ -219,6 +189,8 @@ void Mesh::applyShearYX(double angle) {
             angle
         );
     }
+
+    this->wrapper = nullptr;
 }
 
 void Mesh::applyShearZX(double angle) {
@@ -228,6 +200,8 @@ void Mesh::applyShearZX(double angle) {
             angle
         );
     }
+
+    this->wrapper = nullptr;
 }
 
 void Mesh::applyShearXZ(double angle) {
@@ -237,6 +211,8 @@ void Mesh::applyShearXZ(double angle) {
             angle
         );
     }
+
+    this->wrapper = nullptr;
 }
 
 void Mesh::applyShearYZ(double angle) {
@@ -246,6 +222,8 @@ void Mesh::applyShearYZ(double angle) {
             angle
         );
     }
+
+    this->wrapper = nullptr;
 }
 
 void Mesh::applyShearZY(double angle) {
@@ -255,6 +233,8 @@ void Mesh::applyShearZY(double angle) {
             angle
         );
     }
+
+    this->wrapper = nullptr;
 }
 
 void Mesh::applyReflectXY() {
@@ -266,10 +246,7 @@ void Mesh::applyReflectXY() {
     this->reverseFacesVertexesOrder();
 
     if (this->wrapper != nullptr) {
-        Vector* wrapperCenter = this->wrapper->getCenter();
-        *wrapperCenter = reflectXY(
-            *wrapperCenter
-        );
+        this->wrapper->applyReflectXY();
     }
 }
 
@@ -282,10 +259,7 @@ void Mesh::applyReflectXZ() {
     this->reverseFacesVertexesOrder();
 
     if (this->wrapper != nullptr) {
-        Vector* wrapperCenter = this->wrapper->getCenter();
-        *wrapperCenter = reflectXZ(
-            *wrapperCenter
-        );
+        this->wrapper->applyReflectXZ();
     }
 }
 
@@ -298,10 +272,7 @@ void Mesh::applyReflectYZ() {
     this->reverseFacesVertexesOrder();
 
     if (this->wrapper != nullptr) {
-        Vector* wrapperCenter = this->wrapper->getCenter();
-        *wrapperCenter = reflectYZ(
-            *wrapperCenter
-        );
+        this->wrapper->applyReflectYZ();
     }
 }
 

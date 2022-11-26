@@ -25,6 +25,15 @@ class Plan : public Object {
         void setNormal (Vector* normal);
         void applyWorldToCanvasConversion(LookAt* lookAt);
 
+        void applyScale(double sx, double sy, double sz);
+        void applyTranslate(double x, double y, double z);
+        void applyRotateX(double angle);
+        void applyRotateY(double angle);
+        void applyRotateZ(double angle);
+        void applyReflectXY();
+        void applyReflectXZ();
+        void applyReflectYZ();
+
         Plan ();
         Plan (Vector* initialPoint, Vector* normal, Vector* reflectivity, double shininess = 1.0);
         virtual ~Plan ();

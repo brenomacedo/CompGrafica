@@ -22,6 +22,7 @@ class Cone : public Object {
         Vector* getDirection ();
         double getCos2Angle ();
         void applyWorldToCanvasConversion(LookAt* lookAt);
+        void updateDirection();
 
         Vector* getBaseCenter ();
         void setTop (Vector* top);
@@ -38,6 +39,15 @@ class Cone : public Object {
             Line* line,
             Vector* environmentLight
         );
+
+        void applyScale(double sx, double sy, double sz);
+        void applyTranslate(double x, double y, double z);
+        void applyRotateX(double angle);
+        void applyRotateY(double angle);
+        void applyRotateZ(double angle);
+        void applyReflectXY();
+        void applyReflectXZ();
+        void applyReflectYZ();
 
         Cone ();
         Cone (Vector* baseCenter, Vector* top, double radius, Vector* reflectivity, double shininess);
