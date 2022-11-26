@@ -311,6 +311,8 @@ void Mesh::applyWorldToCanvasConversion(LookAt* lookAt) {
             *vertex->point
         );
     }
+
+    this->wrapper->applyWorldToCanvasConversion(lookAt);
 }
 
 IntersectionResult* Mesh::getIntersectionResult (Line* line) {

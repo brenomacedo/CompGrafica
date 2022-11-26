@@ -94,9 +94,9 @@ int main (int, char**) {
     scene->addObject(cube13);
 
     scene->lookAt(
-        new Vector(0, 0, 0),
+        new Vector(0, 100, 0),
         new Vector(0, 0, -1),
-        new Vector(0, 1, 0)
+        new Vector(0, 101, 0)
     );
 
     // scene->setProjectionType(ProjectionType::PARALLEL);
