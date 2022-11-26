@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <iostream>
 #include "../include/pixels.h"
 
 void paintPixel (SDL_Renderer* renderer, int x, int y) {
@@ -16,24 +17,6 @@ void setPaintColor (SDL_Renderer* renderer, int r, int g, int b, int a) {
 void setWindowBackground (SDL_Renderer* renderer, int r, int g, int b, int a) {
     SDL_SetRenderDrawColor (renderer, r, g, b, a);
     SDL_RenderClear (renderer);
-}
-
-void listenEventQuit (SDL_Window* window) {
-    SDL_Event event;
-    bool isRunning = true;
-
-
-    while (isRunning) {
-        while (SDL_PollEvent (&event) != 0) {
-            if(event.type == SDL_QUIT)
-                isRunning = false;
-        }
-
-        SDL_UpdateWindowSurface (window);
-    }
-
-    SDL_DestroyWindow (window);
-    SDL_Quit ();
 }
 
 void initializeSDLAndWindow (

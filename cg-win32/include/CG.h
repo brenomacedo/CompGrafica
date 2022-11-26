@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include "./image.h"
 #include "./algebra.h"
+#include "./interface.h"
 
 class Object;
 class Light;
@@ -249,6 +250,7 @@ class Scene {
         Color* backgroundColor = nullptr;
         Image* backgroundImage = nullptr;
         
+        Interface* interface = nullptr;
         LookAt* eyeLookAt = nullptr;
         void raycast(SDL_Renderer* renderer);
 

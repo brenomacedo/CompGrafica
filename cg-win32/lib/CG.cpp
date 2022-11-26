@@ -6,6 +6,7 @@
 #include "../include/CG.h"
 #include "../include/pixels.h"
 #include "../include/image.h"
+#include "../include/interface.h"
 
 void LookAt::setAt(Vector* at) {
     this->at = at;
@@ -277,7 +278,7 @@ void Scene::render() {
     this->raycast(renderer);
 
     update(renderer);
-    listenEventQuit(window);
+    this->interface->listenEvents(window, this);
 }
 
 LightsArray Scene::getLights() {
@@ -308,6 +309,7 @@ Scene::Scene(
         new Vector(0, 0, -1),
         new Vector(0, 1, 0)
     );
+    this->interface = new Interface();
     
     if(color == nullptr) {
         this->setBackgroundColor(new Color(0, 0, 0, 255));
@@ -321,6 +323,7 @@ Scene::~Scene() {
     delete this->getEnvironmentLight();
     delete this->getBackgroundColor();
     delete this->eyeLookAt;
+    delete this->interface;
     
     for(auto i = this->objects.begin(); i != this->objects.end(); i++) {
         delete(*i);

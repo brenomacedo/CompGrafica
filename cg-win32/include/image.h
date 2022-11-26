@@ -1,8 +1,8 @@
+#pragma once
+
 #include <SDL2/SDL_image.h>
 #include <iostream>
 #include <string>
-
-#pragma once
 
 using std::string;
 
