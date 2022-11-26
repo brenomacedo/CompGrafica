@@ -476,7 +476,9 @@ Color* Cylinder::getColorToBePainted (
             line,
             environmentLight,
             this->getDirection (),
-            this->getReflectivity (),
+            this->getKd (),
+            this->getKa (),
+            this->getKe (),
             this->getShininess ()
         );
 
@@ -491,7 +493,9 @@ Color* Cylinder::getColorToBePainted (
             line,
             environmentLight,
             normal.pointer,
-            this->getReflectivity (),
+            this->getKd (),
+            this->getKa (),
+            this->getKe (),
             this->getShininess ()
         );
 
@@ -539,7 +543,9 @@ Color* Cylinder::getColorToBePainted (
             line,
             environmentLight,
             normal.pointer,
-            this->getReflectivity (),
+            this->getKd (),
+            this->getKa (),
+            this->getKe (),
             this->getShininess ()
         );
 

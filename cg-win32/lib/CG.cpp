@@ -605,11 +605,9 @@ IntersectionResult::~IntersectionResult() {
 }
 
 void Object::setReflectivity(Vector* reflectivity) {
-    this->reflectivity = reflectivity;
-}
-
-Vector* Object::getReflectivity() {
-    return this->reflectivity;
+    this->setKa(reflectivity);
+    this->setKd(new Vector(*reflectivity));
+    this->setKe(new Vector(*reflectivity));
 }
 
 void Object::setShininess(double shininess) {
@@ -620,14 +618,42 @@ double Object::getShininess() {
     return this->shininess;
 }
 
+void Object::setKa(Vector* ka) {
+    this->ka = ka;
+}
+
+void Object::setKd(Vector* kd) {
+    this->kd = kd;
+}
+
+void Object::setKe(Vector* ke) {
+    this->ke = ke;
+}
+
+Vector* Object::getKa() {
+    return this->ka;
+}
+
+Vector* Object::getKd() {
+    return this->kd;
+}
+
+Vector* Object::getKe() {
+    return this->ke;
+}
+
 Object::Object() {}
 
 Object::Object(Vector* reflectivity) {
-    this->reflectivity = reflectivity;
+    this->setKa(reflectivity);
+    this->setKd(new Vector(*reflectivity));
+    this->setKe(new Vector(*reflectivity));
 }
 
 Object::~Object() {
-    delete this->getReflectivity();
+    delete this->getKd();
+    delete this->getKa();
+    delete this->getKe();
 }
 
 Color* Object::calculateColorToBePainted(
@@ -637,7 +663,9 @@ Color* Object::calculateColorToBePainted(
     Line* line,
     Vector* environmentLight,
     Vector* normal,
-    Vector* reflectivity,
+    Vector* kd,
+    Vector* ka,
+    Vector* ke,
     double shininess
 ) {
 
@@ -647,12 +675,13 @@ Color* Object::calculateColorToBePainted(
         lightsArray,
         objectsArray,
         normal,
-        reflectivity,
+        kd,
+        ke,
         shininess
     );
 
     if(environmentLight != nullptr) {
-        resultColorRate = resultColorRate +((*environmentLight) *(*reflectivity));
+        resultColorRate = resultColorRate +((*environmentLight) *(*ka));
     }
 
     return new Color(
@@ -670,7 +699,8 @@ Vector Object::calculateResultColorRate(
     LightsArray lightsArray,
     ObjectsArray objectsArray,
     Vector* normal,
-    Vector* reflectivity,
+    Vector* kd,
+    Vector* ke,
     double shininess
 ) {
 
@@ -709,9 +739,9 @@ Vector Object::calculateResultColorRate(
                 shininess
             );
 
-            Vector iDifusa = intensity *(*reflectivity) * fDifusa;
+            Vector iDifusa = intensity *(*kd) * fDifusa;
 
-            Vector iEspeculada = intensity *(*reflectivity) * fEspeculada;
+            Vector iEspeculada = intensity *(*ke) * fEspeculada;
 
             resultColorRate = resultColorRate + iDifusa + iEspeculada;
         }

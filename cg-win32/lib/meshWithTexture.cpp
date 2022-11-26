@@ -82,6 +82,7 @@ Color* MeshWithTexture::getColorToBePainted(
         objectsArray,
         meshIntersectionResult->getNormal(),
         pixelReflectivity.pointer,
+        pixelReflectivity.pointer,
         this->getShininess()
     );
 

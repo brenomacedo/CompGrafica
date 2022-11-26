@@ -356,7 +356,9 @@ Color* Cone::getColorToBePainted (
             line,
             environmentLight,
             normal.pointer,
-            this->getReflectivity (),
+            this->getKd(),
+            this->getKa(),
+            this->getKe(),
             this->getShininess ()
         );
 
@@ -384,7 +386,9 @@ Color* Cone::getColorToBePainted (
         line,
         environmentLight,
         normal.pointer,
-        this->getReflectivity (),
+        this->getKd (),
+        this->getKa (),
+        this->getKe (),
         this->getShininess ()
     );
 }

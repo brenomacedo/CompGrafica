@@ -98,7 +98,7 @@ Mesh::Mesh() {}
 
 Mesh::Mesh(double shininess, Vector* reflectivity) {
     this->shininess = shininess;
-    this->reflectivity = reflectivity;
+    this->setReflectivity(reflectivity);
 }
 
 Mesh::~Mesh() {
@@ -400,7 +400,9 @@ Color* Mesh::getColorToBePainted (
         line,
         environmentLight,
         meshIntersectionResult->getNormal(),
-        this->getReflectivity(),
+        this->getKd(),
+        this->getKa(),
+        this->getKe(),
         this->getShininess()
     );
 }

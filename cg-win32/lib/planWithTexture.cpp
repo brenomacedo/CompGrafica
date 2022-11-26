@@ -82,6 +82,7 @@ Color* PlanWithTexture::getColorToBePainted(
         objectsArray,
         this->getNormal(),
         pixelReflectivity.pointer,
+        pixelReflectivity.pointer,
         this->getShininess()
     );
 

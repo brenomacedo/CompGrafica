@@ -123,7 +123,9 @@ Color* Plan::getColorToBePainted (
         line,
         environmentLight,
         this->getNormal (),
-        this->getReflectivity (),
+        this->getKd (),
+        this->getKa (),
+        this->getKe (),
         this->getShininess ()
     );
     

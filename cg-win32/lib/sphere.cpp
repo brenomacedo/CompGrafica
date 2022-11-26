@@ -176,7 +176,9 @@ Color* Sphere::getColorToBePainted (
         line,
         environmentLight,
         normal.pointer,
-        this->getReflectivity(),
+        this->getKd(),
+        this->getKa(),
+        this->getKe(),
         this->getShininess()
     );
 

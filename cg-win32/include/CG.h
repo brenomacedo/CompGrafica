@@ -140,7 +140,9 @@ class Line {
 class Object {
     protected:
         ObjectType type;
-        Vector* reflectivity = nullptr;
+        Vector* kd = nullptr;
+        Vector* ka = nullptr;
+        Vector* ke = nullptr;
         double shininess = 1.0;
 
         Color* calculateColorToBePainted(
@@ -150,7 +152,9 @@ class Object {
             Line* line,
             Vector* environmentLight,
             Vector* normal,
-            Vector* reflectivity,
+            Vector* kd,
+            Vector* ka,
+            Vector* ke,
             double shininess
         );
 
@@ -160,7 +164,8 @@ class Object {
             LightsArray lightsArray,
             ObjectsArray objectsArray,
             Vector* normal,
-            Vector* reflectivity,
+            Vector* kd,
+            Vector* ke,
             double shininess
         );
 
@@ -168,10 +173,15 @@ class Object {
         
     public:
         virtual ObjectType getObjectType() = 0;
-        Vector* getReflectivity();
+        Vector* getKd();
+        Vector* getKa();
+        Vector* getKe();
         double getShininess();
 
         void setReflectivity(Vector* reflectivity);
+        void setKd(Vector* kd);
+        void setKa(Vector* ka);
+        void setKe(Vector* ke);
         void setShininess(double shininess);
 
         virtual IntersectionResult* getIntersectionResult(Line* line) = 0;
