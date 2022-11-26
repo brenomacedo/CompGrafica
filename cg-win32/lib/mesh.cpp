@@ -32,6 +32,17 @@ Face::Face(int edge1, int edge2, int edge3) {
     this->edge3Id = edge3;
 }
 
+Face::Face(int edge1, int edge2, int edge3, Vector* initialPoint) {
+    this->edge1Id = edge1;
+    this->edge2Id = edge2;
+    this->edge3Id = edge3;
+    this->initialPoint = initialPoint;
+}
+
+Face::~Face() {
+    delete this->initialPoint;
+}
+
 Edge::Edge() {}
 
 Edge::Edge(int vertex1Id, int vertex2Id) {

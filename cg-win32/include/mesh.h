@@ -37,8 +37,12 @@ class Face {
         int edge2Id;
         int edge3Id;
 
+        Vector* initialPoint = nullptr;
+
         Face();
         Face(int edge1, int edge2, int edge3);
+        Face(int edge1, int edge2, int edge3, Vector* initialPoint);
+        ~Face();
 };
 
 class Edge {
