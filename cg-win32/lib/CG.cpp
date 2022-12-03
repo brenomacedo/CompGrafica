@@ -172,7 +172,7 @@ void Scene::lookAt(
     }
 }
 
-void Scene::raycast(SDL_Renderer* renderer) {
+void Scene::raycast() {
     const double nLin = this->getCanvasHeight();
     const double nCol = this->getCanvasWidth();
 
@@ -251,6 +251,10 @@ void Scene::raycast(SDL_Renderer* renderer) {
 
 }
 
+void Scene::update() {
+    _update(this->renderer);
+}
+
 void Scene::render() {
     SDL_Renderer* renderer = nullptr;
     SDL_Window* window = nullptr;
@@ -278,10 +282,10 @@ void Scene::render() {
     this->window = window;
     this->renderer = renderer;
 
-    this->raycast(renderer);
+    this->raycast();
 
-    update(renderer);
-    this->interface->listenEvents(window, this);
+    this->update();
+    this->interface->listenEvents(this);
 }
 
 LightsArray Scene::getLights() {
@@ -342,6 +346,14 @@ Color::Color(int r, int g, int b, int a) {
     this->g = g > 255 ? 255 : g; // min(g, 255);
     this->b = b > 255 ? 255 : b; // min(b, 255);
     this->a = a > 255 ? 255 : a; // min(a, 255);
+}
+
+void Light::setActive(bool active) {
+    this->active = active;
+}
+
+bool Light::isActive() {
+    return this->active;
 }
 
 void Light::setIntensity(Vector* intensity) {
@@ -726,37 +738,38 @@ Vector Object::calculateResultColorRate(
     // verify if the lights intercepts any other object
 
     for(auto i = lightsArray.begin(); i != lightsArray.end(); i++) {
-
-        IlluminationInfo illuminationInfo =(*i)->getIlluminationInfo(*intersectionPoint);
-        Vector l = illuminationInfo.l;
-        Vector intensity = illuminationInfo.intensity;
-        
-        bool hasIntersectionWithOtherObjects = this->hasIntersectionWithOtherObjects(
-            objectsArray, intersectionPoint, new Vector(l), *i
-        );
-
-        // calculate the color to be painted
-        if(!hasIntersectionWithOtherObjects) {    
-            Vector r =(*normal) *(2 * scalarProduct(l, *normal)) -  l;
-
-            double fDifusa = max(
-                scalarProduct(l, *normal),
-                0.0
+        if ((*i)->isActive()) {
+            IlluminationInfo illuminationInfo =(*i)->getIlluminationInfo(*intersectionPoint);
+            Vector l = illuminationInfo.l;
+            Vector intensity = illuminationInfo.intensity;
+            
+            bool hasIntersectionWithOtherObjects = this->hasIntersectionWithOtherObjects(
+                objectsArray, intersectionPoint, new Vector(l), *i
             );
 
-            double fEspeculada = pow(
-                max(
-                    scalarProduct(r, v),
+            // calculate the color to be painted
+            if(!hasIntersectionWithOtherObjects) {    
+                Vector r =(*normal) *(2 * scalarProduct(l, *normal)) -  l;
+
+                double fDifusa = max(
+                    scalarProduct(l, *normal),
                     0.0
-                ),
-                shininess
-            );
+                );
 
-            Vector iDifusa = intensity *(*kd) * fDifusa;
+                double fEspeculada = pow(
+                    max(
+                        scalarProduct(r, v),
+                        0.0
+                    ),
+                    shininess
+                );
 
-            Vector iEspeculada = intensity *(*ke) * fEspeculada;
+                Vector iDifusa = intensity *(*kd) * fDifusa;
 
-            resultColorRate = resultColorRate + iDifusa + iEspeculada;
+                Vector iEspeculada = intensity *(*ke) * fEspeculada;
+
+                resultColorRate = resultColorRate + iDifusa + iEspeculada;
+            }
         }
     }
 

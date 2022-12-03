@@ -6,7 +6,7 @@ void paintPixel (SDL_Renderer* renderer, int x, int y) {
     SDL_RenderDrawPoint (renderer, x, y);
 }
 
-void update (SDL_Renderer* renderer) {
+void _update (SDL_Renderer* renderer) {
     SDL_RenderPresent (renderer);
 }
 

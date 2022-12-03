@@ -35,8 +35,11 @@ class IlluminationInfo {
 class Light {
     private:
         Vector* intensity = nullptr;
-
+        bool active = true;
     public:
+        void setActive(bool active);
+        bool isActive();
+
         void setIntensity(Vector* intensity);
         Vector* getIntensity();
         virtual double getDistanceFromPoint(Vector point) = 0;
@@ -256,7 +259,7 @@ class Scene {
     public:
         SDL_Window* window = nullptr;
         SDL_Renderer* renderer = nullptr;
-        
+
         void setWindowHeight(double windowHeight);
         void setWindowWidth(double windowWidth);
         void setCanvasWidth(double canvasWidth);
@@ -291,7 +294,8 @@ class Scene {
 
         // open window and render the scene
         void render();
-        void raycast(SDL_Renderer* renderer);
+        void raycast();
+        void update();
 
         Scene();
         Scene(

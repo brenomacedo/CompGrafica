@@ -1,12 +1,14 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <fcntl.h>
+#include <io.h>
+#include <wchar.h>
 #include "./include/CGI.h"
 
 using std::string;
 
 int main (int, char**) {
-
     Image* fundo = new Image("./assets/fundo.jpg");
     // Image* floorTexture = new Image("./assets/grama.jpg");
 

@@ -8,5 +8,8 @@ class Interface {
   private:
     void mouseEvent(SDL_MouseButtonEvent& event, Scene* renderer);
   public:
-    void listenEvents (SDL_Window* window, Scene* renderer);
+    void listenEvents(Scene* renderer);
+    int showMenu();
+    void actionChosen(int optionChosen, Scene* scene);
+    void changeCameraProperties(Scene* scene);
 };
