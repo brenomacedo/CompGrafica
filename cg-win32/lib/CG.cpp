@@ -275,6 +275,9 @@ void Scene::render() {
         );
     }
 
+    this->window = window;
+    this->renderer = renderer;
+
     this->raycast(renderer);
 
     update(renderer);
@@ -608,6 +611,10 @@ IntersectionResult::~IntersectionResult() {
 }
 
 void Object::setReflectivity(Vector* reflectivity) {
+    delete this->getKa();
+    delete this->getKd();
+    delete this->getKe();
+
     this->setKa(reflectivity);
     this->setKd(new Vector(*reflectivity));
     this->setKe(new Vector(*reflectivity));
@@ -622,14 +629,17 @@ double Object::getShininess() {
 }
 
 void Object::setKa(Vector* ka) {
+    delete this->getKa();
     this->ka = ka;
 }
 
 void Object::setKd(Vector* kd) {
+    delete this->getKd();
     this->kd = kd;
 }
 
 void Object::setKe(Vector* ke) {
+    delete this->getKe();
     this->ke = ke;
 }
 

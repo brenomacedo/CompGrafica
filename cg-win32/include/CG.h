@@ -252,9 +252,11 @@ class Scene {
         
         Interface* interface = nullptr;
         LookAt* eyeLookAt = nullptr;
-        void raycast(SDL_Renderer* renderer);
 
     public:
+        SDL_Window* window = nullptr;
+        SDL_Renderer* renderer = nullptr;
+        
         void setWindowHeight(double windowHeight);
         void setWindowWidth(double windowWidth);
         void setCanvasWidth(double canvasWidth);
@@ -289,6 +291,7 @@ class Scene {
 
         // open window and render the scene
         void render();
+        void raycast(SDL_Renderer* renderer);
 
         Scene();
         Scene(

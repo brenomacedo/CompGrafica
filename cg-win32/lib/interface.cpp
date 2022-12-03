@@ -1,6 +1,8 @@
 #include <SDL2/SDL.h>
 #include <iostream>
+#include "../include/pixels.h"
 #include "../include/interface.h"
+#include "../include/CG.h"
 
 void Interface::mouseEvent(SDL_MouseButtonEvent& event, Scene*) {
   if (event.button == SDL_BUTTON_LEFT) {
@@ -16,6 +18,13 @@ void Interface::listenEvents(SDL_Window* window, Scene* scene) {
   SDL_Event event;
   bool isRunning = true;
 
+  scene->lookAt(
+    new Vector(400, 400, 400),
+    new Vector(400, 250, 0),
+    new Vector(400, 400, 0)
+  );
+  scene->raycast(scene->renderer);
+  update(scene->renderer);
 
   while (isRunning) {
       while (SDL_PollEvent (&event) != 0) {
