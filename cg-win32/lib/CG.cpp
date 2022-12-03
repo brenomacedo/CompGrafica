@@ -285,7 +285,8 @@ void Scene::render() {
     this->raycast();
 
     this->update();
-    this->interface->listenEvents(this);
+    this->interface->scene = this;
+    this->interface->listenEvents();
 }
 
 LightsArray Scene::getLights() {
