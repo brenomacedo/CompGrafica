@@ -27,8 +27,20 @@ int main (int, char**) {
     );
 
     Light* light = new PointLight(
-        new Vector (0.7, 0.7, 0.7),
+        new Vector (0.3, 0.3, 0.3),
         new Vector(350, 350, -150)
+    );
+
+    Light* slight = new SpotLight(
+        new Vector(0.3, 0.3, 0.3),
+        new Vector(0, -1, 0),
+        new Vector(0, 100, 0),
+        M_PI / 4
+    );
+
+    Light* dlight = new DirectionalLight(
+        new Vector(0.3, 0.3, 0.3),
+        new Vector(1, -1, 1)
     );
 
     Sp<Scene> scene = new Scene (
@@ -43,6 +55,8 @@ int main (int, char**) {
     );
     
     scene->addLightSource(light);
+    scene->addLightSource(dlight);
+    scene->addLightSource(slight);
     scene->addObject(plan1);
     scene->addObject(sphere);
 

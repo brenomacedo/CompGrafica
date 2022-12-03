@@ -16,6 +16,7 @@ using LightsArray = std::vector<Light*>;
 enum class ObjectType { SPHERE, PLAN, CYLINDER, CONE, MESH };
 enum class ObjectRegion { SPHERE_SURFACE, CYLINDER_SURFACE, CYLINDER_BASE, CYLINDER_TOP, PLAN, CONE_SURFACE, CONE_BASE, UNKNOWN };
 enum class ProjectionType { PARALLEL, PERSPECTIVE };
+enum class LightType { SPOT, DIRECTIONAL, POINT };
 
 class Color {
     public:
@@ -40,6 +41,8 @@ class Light {
         void setActive(bool active);
         bool isActive();
 
+        virtual LightType getLightType() = 0;
+
         void setIntensity(Vector* intensity);
         Vector* getIntensity();
         virtual double getDistanceFromPoint(Vector point) = 0;
@@ -54,9 +57,10 @@ class Light {
 class PointLight : public Light {
     private:
         Vector* position = nullptr;
-    
+        LightType type = LightType::POINT;
     public:
         Vector* initialPosition = nullptr;
+        LightType getLightType();
 
         void setPosition(Vector* position);
         Vector* getPosition();
@@ -72,9 +76,10 @@ class PointLight : public Light {
 class DirectionalLight : public Light {
     private:
         Vector* direction = nullptr;
-
+        LightType type = LightType::DIRECTIONAL;
     public:
         Vector* initialDirection = nullptr;
+        LightType getLightType();
 
         void setDirection(Vector* direction);
         Vector* getDirection();
@@ -92,8 +97,9 @@ class SpotLight : public Light {
         Vector* direction = nullptr;
         Vector* position = nullptr;
         double angle;
-
+        LightType type = LightType::SPOT;
     public:
+        LightType getLightType();
         Vector* initialDirection = nullptr;
         Vector* initialPosition = nullptr;
 
@@ -261,11 +267,11 @@ class Scene {
         Image* backgroundImage = nullptr;
         
         Interface* interface = nullptr;
-        LookAt* eyeLookAt = nullptr;
 
     public:
         SDL_Window* window = nullptr;
         SDL_Renderer* renderer = nullptr;
+        LookAt* eyeLookAt = nullptr;
 
         void setWindowHeight(double windowHeight);
         void setWindowWidth(double windowWidth);

@@ -404,6 +404,10 @@ void PointLight::applyWorldToCanvasConversion(LookAt* lookAt) {
     this->setPosition(newPosition);
 }
 
+LightType PointLight::getLightType() {
+    return this->type;
+}
+
 IlluminationInfo PointLight::getIlluminationInfo(Vector intersectionPoint) {
     Vector l =(*this->getPosition() - intersectionPoint) /(*this->getPosition()
         - intersectionPoint).getMagnitude();
@@ -437,6 +441,10 @@ Vector* DirectionalLight::getDirection() {
 
 double DirectionalLight::getDistanceFromPoint(Vector) {
     return std::numeric_limits<double>::infinity();
+}
+
+LightType DirectionalLight::getLightType() {
+    return this->type;
 }
 
 void DirectionalLight::applyWorldToCanvasConversion(LookAt* lookAt) {
@@ -494,6 +502,10 @@ void SpotLight::setAngle(double angle) {
 
 double SpotLight::getAngle() {
     return this->angle;
+}
+
+LightType SpotLight::getLightType() {
+    return this->type;
 }
 
 double SpotLight::getDistanceFromPoint(Vector point) {
