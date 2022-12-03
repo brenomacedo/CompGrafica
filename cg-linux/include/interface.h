@@ -17,4 +17,5 @@ class Interface {
     void actionChosen(int optionChosen);
     void changeCameraProperties();
     void modifyLightFonts();
+    void changeProjectionType();
 };

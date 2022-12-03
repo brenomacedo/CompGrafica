@@ -62,6 +62,8 @@ void Interface::listenEvents() {
       isRunning = false;
     } else {
       this->actionChosen(opt);
+      this->scene->raycast();
+      this->scene->update();
     }
   }
 
@@ -75,6 +77,7 @@ int Interface::showMenu() {
   cout << "0 - Sair" << endl;
   cout << "1 - Modificar parametros da camera" << endl;
   cout << "2 - Modificar fontes luminosas" << endl;
+  cout << "3 - Mudar tipo de projecao" << endl;
   cout << "Escolha a opcao desejada: ";
   cin >> opcao;
 
@@ -88,6 +91,9 @@ void Interface::actionChosen(int opcaoEscolhida) {
       break;
     case 2:
       this->modifyLightFonts();
+      break;
+    case 3:
+      this->changeProjectionType();
       break;
   }
 }
@@ -151,9 +157,6 @@ void Interface::changeCameraProperties() {
       this->scene->setWindowDistance(distance);
       break;
   }
-
-  this->scene->raycast();
-  this->scene->update();
 }
 
 void Interface::modifyLightFonts() {
@@ -281,7 +284,22 @@ void Interface::modifyLightFonts() {
       }
       break;
   }
+}
 
-  this->scene->raycast();
-  this->scene->update();
+void Interface::changeProjectionType() {
+  cout << "1 - Projecao perspectiva" << endl;
+  cout << "2 - Projecao paralela" << endl;
+  cout << "Digite a opcao: ";
+  
+  int opt;
+  cin >> opt;
+
+  switch(opt) {
+    case 1:
+      this->scene->setProjectionType(ProjectionType::PERSPECTIVE);
+      break;
+    case 2:
+      this->scene->setProjectionType(ProjectionType::PARALLEL);
+      break;
+  }
 }
