@@ -259,7 +259,7 @@ void Scene::render() {
     SDL_Renderer* renderer = nullptr;
     SDL_Window* window = nullptr;
 
-    initializeSDLAndWindow(&window, &renderer, this->getCanvasHeight(), this->getCanvasWidth());
+    initializeSDLAndWindow(&window, &renderer, this->getCanvasWidth(), this->getCanvasHeight());
     // SDL_RenderSetScale(renderer, 4, 4);
 
     if(this->backgroundColor == nullptr) {

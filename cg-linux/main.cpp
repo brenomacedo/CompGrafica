@@ -3,8 +3,6 @@
 #include <cmath>
 #include "./include/CGI.h"
 
-using std::string;
-
 int main (int, char**) {
     Image* fundo = new Image("./assets/fundo.jpg");
     // Image* floorTexture = new Image("./assets/grama.jpg");
@@ -35,7 +33,7 @@ int main (int, char**) {
 
     Sp<Scene> scene = new Scene (
         60.0, 60.0,
-        500, 500,
+        400, 400,
         20,
         new Color (100, 100, 100, 255)
     );

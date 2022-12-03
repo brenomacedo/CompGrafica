@@ -10,22 +10,6 @@ using std::cin;
 using std::endl;
 using std::string;
 
-SDL_atomic_t active;
-
-int inputThread(void *a)
-{
-    Interface* interface = (Interface*) a;
-    int in = 1;
-
-    int opt = interface->showMenu();
-    interface->actionChosen(opt);
-
-    if (in == 0)
-        SDL_AtomicSet(&active, 0);
-
-    return in;
-}
-
 void Interface::mouseEvent(SDL_MouseButtonEvent& event) {
   if (event.button == SDL_BUTTON_LEFT) {
     int x;
@@ -67,9 +51,14 @@ void Interface::listenEvents() {
   //     SDL_UpdateWindowSurface (this->scene->window);
   // }
 
-  while (true) {
+  while (isRunning) {
     int opt = this->showMenu();
-    this->actionChosen(opt);
+
+    if (opt == 0) {
+      isRunning = false;
+    } else {
+      this->actionChosen(opt);
+    }
   }
 
   SDL_DestroyWindow (this->scene->window);
@@ -79,6 +68,7 @@ void Interface::listenEvents() {
 int Interface::showMenu() {
   int opcao;
 
+  cout << "0 - Sair" << endl;
   cout << "1 - Modificar parametros da camera" << endl;
   cout << "Escolha a opcao desejada: ";
   cin >> opcao;
@@ -101,24 +91,58 @@ void Interface::changeCameraProperties() {
   cout << "3 - Mudar distancia focal" << endl;
   cout << "Digite a opção: ";
   cin >> chosenOption;
-  double eyeX, eyeY, eyeZ;
-  double atX, atY, atZ;
-  double upX, upY, upZ;
+  
+  switch(chosenOption) {
+    case 1:
+      double eyeX, eyeY, eyeZ;
+      double atX, atY, atZ;
+      double upX, upY, upZ;
 
-  cout << "Digite, separado por espaços, os valores do vetor eye: ";
-  cin >> eyeX >> eyeY >> eyeZ;
+      cout << "Digite, separado por espaços, os valores do vetor eye: ";
+      cin >> eyeX >> eyeY >> eyeZ;
 
-  cout << "Digite, separado por espaços, os valores do vetor at: ";
-  cin >> atX >> atY >> atZ;
+      cout << "Digite, separado por espaços, os valores do vetor at: ";
+      cin >> atX >> atY >> atZ;
 
-  cout << "Digite, separado por espaços, os valores do vetor up: ";
-  cin >> upX >> upY >> upZ;
+      cout << "Digite, separado por espaços, os valores do vetor up: ";
+      cin >> upX >> upY >> upZ;
 
-  this->scene->lookAt(
-    new Vector(eyeX, eyeY, eyeZ),
-    new Vector(atX, atY, atZ),
-    new Vector(upX, upY, upZ)
-  );
+      this->scene->lookAt(
+        new Vector(eyeX, eyeY, eyeZ),
+        new Vector(atX, atY, atZ),
+        new Vector(upX, upY, upZ)
+      );
+      break;
+    case 2:
+      double windowWidth;
+      double windowHeight;
+
+      cout << "Digite o tamanho da largura da janela: ";
+      cin >> windowWidth;
+      cout << "Digite o tamanho da altura da janela: ";
+      cin >> windowHeight;
+
+      this->scene->setWindowWidth(windowWidth);
+      this->scene->setWindowHeight(windowHeight);
+      this->scene->setCanvasHeight((windowHeight / 100) * 400);
+      this->scene->setCanvasWidth((windowWidth / 100) * 400);
+
+      cout << this->scene->getCanvasWidth() << endl;
+      cout << this->scene->getCanvasHeight() << endl;
+
+      SDL_DestroyRenderer(this->scene->renderer);
+      SDL_DestroyWindow(this->scene->window);
+
+      initializeSDLAndWindow(&this->scene->window, &this->scene->renderer, this->scene->getCanvasWidth(), this->scene->getCanvasHeight());
+      break;
+    case 3:
+      double distance;
+      cout << "Digite a nova distancia da janela: ";
+      cin >> distance;
+
+      this->scene->setWindowDistance(distance);
+      break;
+  }
 
   this->scene->raycast();
   this->scene->update();
