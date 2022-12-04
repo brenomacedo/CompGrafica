@@ -21,9 +21,23 @@ int main (int, char**) {
         5.0
     );
 
-    Sphere* sphere = new Sphere(
-        25, new Vector(0.9, 0, 0),
-        new Vector(0, 25, 0), 5.0
+    // Sphere* sphere = new Sphere(
+    //     25, new Vector(0.9, 0, 0),
+    //     new Vector(0, 25, 0), 5.0
+    // );
+
+    // Cylinder* sphere = new Cylinder(
+    //     new Vector(0, 0, 0),
+    //     new Vector(0, 1, 0),
+    //     50, 25, new Vector(0.9, 0, 0),
+    //     5.0
+    // );
+
+    Cone* sphere = new Cone(
+        new Vector(0, 0, 0),
+        new Vector(0, 1, 0),
+        50, 25, new Vector(0.9, 0, 0),
+        5.0
     );
 
     Light* light = new PointLight(
@@ -66,8 +80,6 @@ int main (int, char**) {
         new Vector(0, 25, 0),
         new Vector(400, 500, 400)
     );
-
-    // scene->setProjectionType(ProjectionType::PARALLEL);
 
     scene->render();
 

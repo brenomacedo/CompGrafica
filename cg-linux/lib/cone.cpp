@@ -394,56 +394,56 @@ Color* Cone::getColorToBePainted (
 }
 
 void Cone::updateDirection() {
-    Vector directionNotNormal = *this->top - *this->baseCenter;
+    Vector directionNotNormal = *this->initialTop - *this->initialBaseCenter;
     Vector directionNormal = directionNotNormal / directionNotNormal.getMagnitude();
     *this->direction = directionNormal;
 }
 
 void Cone::applyScale(double sx, double sy, double sz) {
-    *this->baseCenter = scale((*this->baseCenter), sx, sy, sz);
-    *this->top = scale((*this->top), sx, sy, sz);
+    *this->initialBaseCenter = scale((*this->initialBaseCenter), sx, sy, sz);
+    *this->initialTop = scale((*this->initialTop), sx, sy, sz);
     this->updateDirection();
     this->setRadius(Vector(sx, sy, sz).getMagnitude() * this->getRadius());
 }
 
 void Cone::applyTranslate(double x, double y, double z) {
-    *this->baseCenter = translate((*this->baseCenter), x, y, z);
-    *this->top = translate((*this->top), x, y, z);
+    *this->initialBaseCenter = translate((*this->initialBaseCenter), x, y, z);
+    *this->initialTop = translate((*this->initialTop), x, y, z);
 }
 
 void Cone::applyRotateX(double angle) {
-    *this->baseCenter = rotateX((*this->baseCenter), angle);
-    *this->top = rotateX((*this->top), angle);
+    *this->initialBaseCenter = rotateX((*this->initialBaseCenter), angle);
+    *this->initialTop = rotateX((*this->initialTop), angle);
     this->updateDirection();
 }
 
 void Cone::applyRotateY(double angle) {
-    *this->baseCenter = rotateY((*this->baseCenter), angle);
-    *this->top = rotateY((*this->top), angle);
+    *this->initialBaseCenter = rotateY((*this->initialBaseCenter), angle);
+    *this->initialTop = rotateY((*this->initialTop), angle);
     this->updateDirection();
 }
 
 void Cone::applyRotateZ(double angle) {
-    *this->baseCenter = rotateZ((*this->baseCenter), angle);
-    *this->top = rotateZ((*this->top), angle);
+    *this->initialBaseCenter = rotateZ((*this->initialBaseCenter), angle);
+    *this->initialTop = rotateZ((*this->initialTop), angle);
     this->updateDirection();
 }
 
 void Cone::applyReflectXY() {
-    *this->baseCenter = reflectXY((*this->baseCenter));
-    *this->top = reflectXY((*this->top));
+    *this->initialBaseCenter = reflectXY((*this->initialBaseCenter));
+    *this->initialTop = reflectXY((*this->initialTop));
     this->updateDirection();
 }
 
 void Cone::applyReflectXZ() {
-    *this->baseCenter = reflectXZ((*this->baseCenter));
-    *this->top = reflectXZ((*this->top));
+    *this->initialBaseCenter = reflectXZ((*this->initialBaseCenter));
+    *this->initialTop = reflectXZ((*this->initialTop));
     this->updateDirection();
 }
 
 void Cone::applyReflectYZ() {
-    *this->baseCenter = reflectYZ((*this->baseCenter));
-    *this->top = reflectYZ((*this->top));
+    *this->initialBaseCenter = reflectYZ((*this->initialBaseCenter));
+    *this->initialTop = reflectYZ((*this->initialTop));
     this->updateDirection();
 }
 

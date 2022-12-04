@@ -4,6 +4,12 @@
 #include "../include/pixels.h"
 #include "../include/interface.h"
 #include "../include/CG.h"
+#include "../include/utils.h"
+#include "../include/cone.h"
+#include "../include/cylinder.h"
+#include "../include/plan.h"
+#include "../include/mesh.h"
+#include "../include/sphere.h"
 
 using std::cout;
 using std::cin;
@@ -16,44 +22,162 @@ string Interface::lightStatus(Light* light) {
 
 void Interface::mouseEvent(SDL_MouseButtonEvent& event) {
   if (event.button == SDL_BUTTON_LEFT) {
-    int x;
-    int y;
-    SDL_GetMouseState(&x, &y);
+    int c;
+    int l;
+    SDL_GetMouseState(&c, &l);
 
-    cout << "x: " << x << " y: " << y << endl;
+    const double nLin = this->scene->getCanvasHeight();
+    const double nCol = this->scene->getCanvasWidth();
+
+    const double hJanela = this->scene->getWindowHeight();
+    const double wJanela = this->scene->getWindowWidth();
+
+    const double dx = wJanela / nCol;
+    const double dy = hJanela / nLin;
+
+    int numberOfObjects = this->scene->getObjects().size();
+
+    const double z = -this->scene->getWindowDistance();
+
+    const double y = hJanela / 2.0 - dy / 2.0 - l * dy;
+    const double x = -wJanela / 2.0 + dx / 2.0 + c * dx;
+
+    bool isProjectionPerspective = this->scene->getProjectionType() == ProjectionType::PERSPECTIVE;
+    Vector* P0 = new Vector(
+        isProjectionPerspective ? Vector(0, 0, 0) : Vector(x, y, 0)
+    );
+    Vector* direction = new Vector(
+        isProjectionPerspective ? Vector(x, y, z) : Vector(0, 0, -1)
+    );
+    Sp<Line> line = new Line(P0, direction);
+
+    int nearestObjectIndex = 0;
+    Sp<IntersectionResult> nearestResult = new IntersectionResult(false, nullptr, 0, ObjectRegion::UNKNOWN);
+
+    for(int i = 0; i < numberOfObjects; i++) {
+
+        Sp<IntersectionResult> result = this->scene->getObjects()[i]->getIntersectionResult(line.pointer);
+        
+        if(result->getHasIntersection() &&
+    (!nearestResult->getHasIntersection() || result->getDistanceFromP0() < nearestResult->getDistanceFromP0())) {
+            delete nearestResult.pointer;
+            nearestResult.pointer = result.pointer;
+            result.pointer = nullptr;
+
+            nearestObjectIndex = i;
+        }
+
+    }
+
+    Object* nearestObject = this->scene->getObjects()[nearestObjectIndex];
+
+    ObjectType nearestObjectType = nearestObject->getObjectType();
+
+    switch(nearestObjectType) {
+      case ObjectType::CONE:
+        Cone* selectedCone;
+        selectedCone = (Cone*) nearestObject;
+        cout << "====== Objeto selecionado: CONE ======" << endl;
+        cout << "Topo: " << *selectedCone->initialTop << endl;
+        cout << "Base: " << *selectedCone->initialBaseCenter << endl;
+        cout << "1 - Mudar reflectividade (Kd, Ke, Ka)" << endl;
+        cout << "2 - Mudar shininess" << endl;
+        cout << "3 - Transladar" << endl;
+        cout << "4 - Rotacionar no eixo X" << endl;
+        cout << "5 - Rotacionar no eixo Y" << endl;
+        cout << "6 - Rotacionar no eixo Z" << endl;
+        cout << "7 - Refletir no plano XY" << endl;
+        cout << "8 - Refletir no plano XZ" << endl;
+        cout << "9 - Refletir no plano YZ" << endl;
+        cout << "Digite a opcao desejada: ";
+
+        int opcaoCone;
+        cin >> opcaoCone;
+
+        switch(opcaoCone) {
+          case 1:
+            double coneKd_R, coneKd_G, coneKd_B;
+            double coneKe_R, coneKe_G, coneKe_B;
+            double coneKa_R, coneKa_G, coneKa_B;
+            cout << "Digite, separado por espacos, os valores do Kd do cone (0 a 1): ";
+            cin >> coneKd_R >> coneKd_G >> coneKd_B;
+            cout << "Digite, separado por espacos, os valores do Ke do cone (0 a 1): ";
+            cin >> coneKe_R >> coneKe_G >> coneKe_B;
+            cout << "Digite, separado por espacos, os valores do Ka do cone (0 a 1): ";
+            cin >> coneKa_R >> coneKa_G >> coneKa_B;
+
+            *selectedCone->getKd() = Vector(coneKd_R, coneKd_G, coneKd_B);
+            *selectedCone->getKe() = Vector(coneKe_R, coneKe_G, coneKe_B);
+            *selectedCone->getKa() = Vector(coneKa_R, coneKa_G, coneKa_B);
+            break;
+          case 2:
+            double newShineness;
+            cout << "Digite o novo valor do shininess: ";
+            cin >> newShineness;
+            selectedCone->setShininess(newShineness);
+            break;
+          case 3:
+            double cone_Tx, cone_Ty, cone_Tz;
+            cout << "Digite, separado por espacos, a translacao do cone Tx, Ty e Tz: ";
+            cin >> cone_Tx >> cone_Ty >> cone_Tz;
+            selectedCone->applyTranslate(cone_Tx, cone_Ty, cone_Tz);
+            selectedCone->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 4:
+            double cone_Rx;
+            cout << "Digite o angulo de rotacao em torno do eixo X: ";
+            cin >> cone_Rx;
+            selectedCone->applyRotateX(cone_Rx);
+            selectedCone->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 5:
+            double cone_Ry;
+            cout << "Digite o angulo de rotacao em torno do eixo Y: ";
+            cin >> cone_Ry;
+            selectedCone->applyRotateY(cone_Ry);
+            selectedCone->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 6:
+            double cone_Rz;
+            cout << "Digite o angulo de rotacao em torno do eixo Z: ";
+            cin >> cone_Rz;
+            selectedCone->applyRotateZ(cone_Rz);
+            selectedCone->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 7:
+            selectedCone->applyReflectXY();
+            selectedCone->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 8:
+            selectedCone->applyReflectXZ();
+            selectedCone->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 9:
+            selectedCone->applyReflectYZ();
+            selectedCone->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+        }
+        break;
+
+      case ObjectType::MESH:
+        cout << "mesh" << endl;
+        break;
+      case ObjectType::PLAN:
+        cout << "plan" << endl;
+        break;
+      case ObjectType::CYLINDER:
+        cout << "cylinder" << endl;
+        break;
+      case ObjectType::SPHERE:
+        cout << "sphere" << endl;
+        break;
+    }
+
   }
 }
 
 void Interface::listenEvents() {
-  SDL_Event event;
   bool isRunning = true;
-  bool isPicking = false;
-
-  // scene->lookAt(
-  //       new Vector(100, 100, 100),
-  //       new Vector(0, 25, 0),
-  //       new Vector(100, 400, 100)
-  //     );
-  // scene->raycast();
-  // scene->update();
-
-  // SDL_AtomicSet(&active, 1);
-  // SDL_CreateThread(inputThread, "InputThread", this);
-
-  // while (SDL_AtomicGet(&active)) {
-  //     while (SDL_PollEvent (&event) != 0) {
-  //       switch(event.type) {
-  //         case SDL_QUIT:
-  //           isRunning = false;
-  //           break;
-  //         case SDL_MOUSEBUTTONDOWN:
-  //           this->mouseEvent(event.button);
-  //           break;
-  //         }
-  //     }
-
-  //     SDL_UpdateWindowSurface (this->scene->window);
-  // }
 
   while (isRunning) {
     int opt = this->showMenu();
@@ -78,6 +202,7 @@ int Interface::showMenu() {
   cout << "1 - Modificar parametros da camera" << endl;
   cout << "2 - Modificar fontes luminosas" << endl;
   cout << "3 - Mudar tipo de projecao" << endl;
+  cout << "4 - Picking" << endl;
   cout << "Escolha a opcao desejada: ";
   cin >> opcao;
 
@@ -94,6 +219,9 @@ void Interface::actionChosen(int opcaoEscolhida) {
       break;
     case 3:
       this->changeProjectionType();
+      break;
+    case 4:
+      this->picking();
       break;
   }
 }
@@ -140,9 +268,6 @@ void Interface::changeCameraProperties() {
       this->scene->setWindowHeight(windowHeight);
       this->scene->setCanvasHeight((windowHeight / 100) * 400);
       this->scene->setCanvasWidth((windowWidth / 100) * 400);
-
-      cout << this->scene->getCanvasWidth() << endl;
-      cout << this->scene->getCanvasHeight() << endl;
 
       SDL_DestroyRenderer(this->scene->renderer);
       SDL_DestroyWindow(this->scene->window);
@@ -301,5 +426,21 @@ void Interface::changeProjectionType() {
     case 2:
       this->scene->setProjectionType(ProjectionType::PARALLEL);
       break;
+  }
+}
+
+void Interface::picking() {
+  bool isPicking = true;
+  SDL_Event event;
+
+  while (isPicking) {
+    while (SDL_PollEvent (&event) != 0) {
+      switch(event.type) {
+        case SDL_MOUSEBUTTONDOWN:
+          this->mouseEvent(event.button);
+          isPicking = false;
+          break;
+      }
+    }
   }
 }

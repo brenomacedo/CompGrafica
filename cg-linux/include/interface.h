@@ -18,4 +18,5 @@ class Interface {
     void changeCameraProperties();
     void modifyLightFonts();
     void changeProjectionType();
+    void picking();
 };
