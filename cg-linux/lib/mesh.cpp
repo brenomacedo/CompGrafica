@@ -122,8 +122,8 @@ Mesh::~Mesh() {
 
 void Mesh::applyScale(double sx, double sy, double sz) {
     for (Vertex* vertex : this->getVertexesArray()) {
-        *vertex->point = scale(
-            *vertex->point,
+        *vertex->initialPoint = scale(
+            *vertex->initialPoint,
             sx, sy, sz
         );
     }
@@ -135,8 +135,8 @@ void Mesh::applyScale(double sx, double sy, double sz) {
 
 void Mesh::applyTranslate(double x, double y, double z) {
     for (Vertex* vertex : this->getVertexesArray()) {
-        *vertex->point = translate(
-            *vertex->point,
+        *vertex->initialPoint = translate(
+            *vertex->initialPoint,
             x, y, z
         );
     }
@@ -148,8 +148,8 @@ void Mesh::applyTranslate(double x, double y, double z) {
 
 void Mesh::applyRotateX(double angle) {
     for (Vertex* vertex : this->getVertexesArray()) {
-        *vertex->point = rotateX(
-            *vertex->point,
+        *vertex->initialPoint = rotateX(
+            *vertex->initialPoint,
             angle
         );
     }
@@ -161,8 +161,8 @@ void Mesh::applyRotateX(double angle) {
 
 void Mesh::applyRotateY(double angle) {
     for (Vertex* vertex : this->getVertexesArray()) {
-        *vertex->point = rotateY(
-            *vertex->point,
+        *vertex->initialPoint = rotateY(
+            *vertex->initialPoint,
             angle
         );
     }
@@ -174,8 +174,8 @@ void Mesh::applyRotateY(double angle) {
 
 void Mesh::applyRotateZ(double angle) {
     for (Vertex* vertex : this->getVertexesArray()) {
-        *vertex->point = rotateZ(
-            *vertex->point,
+        *vertex->initialPoint = rotateZ(
+            *vertex->initialPoint,
             angle
         );
     }
@@ -187,8 +187,8 @@ void Mesh::applyRotateZ(double angle) {
 
 void Mesh::applyShearXY(double angle) {
     for (Vertex* vertex : this->getVertexesArray()) {
-        *vertex->point = shearXY(
-            *vertex->point,
+        *vertex->initialPoint = shearXY(
+            *vertex->initialPoint,
             angle
         );
     }
@@ -198,8 +198,8 @@ void Mesh::applyShearXY(double angle) {
 
 void Mesh::applyShearYX(double angle) {
     for (Vertex* vertex : this->getVertexesArray()) {
-        *vertex->point = shearYX(
-            *vertex->point,
+        *vertex->initialPoint = shearYX(
+            *vertex->initialPoint,
             angle
         );
     }
@@ -209,8 +209,8 @@ void Mesh::applyShearYX(double angle) {
 
 void Mesh::applyShearZX(double angle) {
     for (Vertex* vertex : this->getVertexesArray()) {
-        *vertex->point = shearZX(
-            *vertex->point,
+        *vertex->initialPoint = shearZX(
+            *vertex->initialPoint,
             angle
         );
     }
@@ -220,8 +220,8 @@ void Mesh::applyShearZX(double angle) {
 
 void Mesh::applyShearXZ(double angle) {
     for (Vertex* vertex : this->getVertexesArray()) {
-        *vertex->point = shearXZ(
-            *vertex->point,
+        *vertex->initialPoint = shearXZ(
+            *vertex->initialPoint,
             angle
         );
     }
@@ -231,8 +231,8 @@ void Mesh::applyShearXZ(double angle) {
 
 void Mesh::applyShearYZ(double angle) {
     for (Vertex* vertex : this->getVertexesArray()) {
-        *vertex->point = shearYZ(
-            *vertex->point,
+        *vertex->initialPoint = shearYZ(
+            *vertex->initialPoint,
             angle
         );
     }
@@ -242,8 +242,8 @@ void Mesh::applyShearYZ(double angle) {
 
 void Mesh::applyShearZY(double angle) {
     for (Vertex* vertex : this->getVertexesArray()) {
-        *vertex->point = shearZY(
-            *vertex->point,
+        *vertex->initialPoint = shearZY(
+            *vertex->initialPoint,
             angle
         );
     }
@@ -253,8 +253,8 @@ void Mesh::applyShearZY(double angle) {
 
 void Mesh::applyReflectXY() {
     for (Vertex* vertex : this->getVertexesArray()) {
-        *vertex->point = reflectXY(
-            *vertex->point
+        *vertex->initialPoint = reflectXY(
+            *vertex->initialPoint
         );
     }
     this->reverseFacesVertexesOrder();
@@ -266,8 +266,8 @@ void Mesh::applyReflectXY() {
 
 void Mesh::applyReflectXZ() {
     for (Vertex* vertex : this->getVertexesArray()) {
-        *vertex->point = reflectXZ(
-            *vertex->point
+        *vertex->initialPoint = reflectXZ(
+            *vertex->initialPoint
         );
     }
     this->reverseFacesVertexesOrder();
@@ -279,8 +279,8 @@ void Mesh::applyReflectXZ() {
 
 void Mesh::applyReflectYZ() {
     for (Vertex* vertex : this->getVertexesArray()) {
-        *vertex->point = reflectYZ(
-            *vertex->point
+        *vertex->initialPoint = reflectYZ(
+            *vertex->initialPoint
         );
     }
     this->reverseFacesVertexesOrder();
@@ -297,7 +297,9 @@ void Mesh::applyWorldToCanvasConversion(LookAt* lookAt) {
         );
     }
 
-    this->wrapper->applyWorldToCanvasConversion(lookAt);
+    if (this->wrapper) {
+        this->wrapper->applyWorldToCanvasConversion(lookAt);
+    }
 }
 
 IntersectionResult* Mesh::getIntersectionResult (Line* line) {

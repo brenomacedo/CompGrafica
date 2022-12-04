@@ -40,8 +40,8 @@ int main (int, char**) {
     //     5.0
     // );
 
-    Mesh* sphere = Cube::createUnitaryWithBorderInCenaryCenter(
-        // new Vector(0, 0, 0), 25,
+    Mesh* sphere = Cube::create(
+        new Vector(0, 0, 0), 25,
         new Vector(0.9, 0, 0), 5.0
     );
 
