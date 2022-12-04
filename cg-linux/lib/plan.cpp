@@ -35,20 +35,32 @@ Plan::Plan (Vector* initialPoint, Vector* normal, Vector* reflectivity, double s
 
 void Plan::applyScale(double, double, double) {}
 void Plan::applyTranslate(double x, double y, double z) {
-    *this->initialPoint = translate(*this->initialPoint, x, y, z);
+    *this->initialInitialPoint = translate(*this->initialInitialPoint, x, y, z);
 }
 void Plan::applyRotateX(double angle) {
-    *this->normal = rotateX(*this->normal, angle);
+    *this->initialNormal = rotateX(*this->initialNormal, angle);
+    *this->initialInitialPoint = rotateX(*this->initialInitialPoint, angle);
 }
 void Plan::applyRotateY(double angle) {
-    *this->normal = rotateY(*this->normal, angle);
+    *this->initialNormal = rotateY(*this->initialNormal, angle);
+    *this->initialInitialPoint = rotateY(*this->initialInitialPoint, angle);
 }
 void Plan::applyRotateZ(double angle) {
-    *this->normal = rotateZ(*this->normal, angle);
+    *this->initialNormal = rotateZ(*this->initialNormal, angle);
+    *this->initialInitialPoint = rotateZ(*this->initialInitialPoint, angle);
 }
-void Plan::applyReflectXY() {}
-void Plan::applyReflectXZ() {}
-void Plan::applyReflectYZ() {}
+void Plan::applyReflectXY() {
+    *this->initialNormal = reflectXY(*this->initialNormal);
+    *this->initialInitialPoint = reflectXY(*this->initialInitialPoint);
+}
+void Plan::applyReflectXZ() {
+    *this->initialNormal = reflectXZ(*this->initialNormal);
+    *this->initialInitialPoint = reflectXZ(*this->initialInitialPoint);
+}
+void Plan::applyReflectYZ() {
+    *this->initialNormal = reflectYZ(*this->initialNormal);
+    *this->initialInitialPoint = reflectYZ(*this->initialInitialPoint);
+}
 
 Plan::~Plan () {
     delete this->getInitialPoint();

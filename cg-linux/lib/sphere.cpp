@@ -24,36 +24,36 @@ Vector* Sphere::getCenter () {
 }
 
 void Sphere::applyScale(double sx, double sy, double sz) {
-    *this->center = scale((*this->center), sx, sy, sz);
+    *this->initialCenter = scale((*this->initialCenter), sx, sy, sz);
     this->setRadius(max(max(sx, sy), sz) * this->getRadius());
 }
 
 void Sphere::applyTranslate(double x, double y, double z) {
-    *this->center = translate((*this->center), x, y, z);
+    *this->initialCenter = translate((*this->initialCenter), x, y, z);
 }
 
 void Sphere::applyRotateX(double angle) {
-    *this->center = rotateX((*this->center), angle);
+    *this->initialCenter = rotateX((*this->initialCenter), angle);
 }
 
 void Sphere::applyRotateY(double angle) {
-    *this->center = rotateY((*this->center), angle);
+    *this->initialCenter = rotateY((*this->initialCenter), angle);
 }
 
 void Sphere::applyRotateZ(double angle) {
-    *this->center = rotateZ((*this->center), angle);
+    *this->initialCenter = rotateZ((*this->initialCenter), angle);
 }
 
 void Sphere::applyReflectXY() {
-    *this->center = reflectXY((*this->center));
+    *this->initialCenter = reflectXY((*this->initialCenter));
 }
 
 void Sphere::applyReflectXZ() {
-    *this->center = reflectXZ((*this->center));
+    *this->initialCenter = reflectXZ((*this->initialCenter));
 }
 
 void Sphere::applyReflectYZ() {
-    *this->center = reflectYZ((*this->center));
+    *this->initialCenter = reflectYZ((*this->initialCenter));
 }
 
 Sphere::Sphere () {}

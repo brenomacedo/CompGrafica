@@ -554,56 +554,56 @@ Color* Cylinder::getColorToBePainted (
 }
 
 void Cylinder::updateDirection() {
-    Vector directionNotNormal = *this->topCenter - *this->baseCenter;
+    Vector directionNotNormal = *this->initialTopCenter - *this->initialBaseCenter;
     Vector directionNormal = directionNotNormal / directionNotNormal.getMagnitude();
     *this->direction = directionNormal;
 }
 
 void Cylinder::applyScale(double sx, double sy, double sz) {
-    *this->baseCenter = scale((*this->baseCenter), sx, sy, sz);
-    *this->topCenter = scale((*this->topCenter), sx, sy, sz);
+    *this->initialBaseCenter = scale((*this->initialBaseCenter), sx, sy, sz);
+    *this->initialTopCenter = scale((*this->initialTopCenter), sx, sy, sz);
     this->updateDirection();
-    this->setRadius(Vector(sx, sy, sz).getMagnitude() * this->getRadius());
+    this->setRadius(max(max(sx, sy), sz) * this->getRadius());
 }
 
 void Cylinder::applyTranslate(double x, double y, double z) {
-    *this->baseCenter = translate((*this->baseCenter), x, y, z);
-    *this->topCenter = translate((*this->topCenter), x, y, z);
+    *this->initialBaseCenter = translate((*this->initialBaseCenter), x, y, z);
+    *this->initialTopCenter = translate((*this->initialTopCenter), x, y, z);
 }
 
 void Cylinder::applyRotateX(double angle) {
-    *this->baseCenter = rotateX((*this->baseCenter), angle);
-    *this->topCenter = rotateX((*this->topCenter), angle);
+    *this->initialBaseCenter = rotateX((*this->initialBaseCenter), angle);
+    *this->initialTopCenter = rotateX((*this->initialTopCenter), angle);
     this->updateDirection();
 }
 
 void Cylinder::applyRotateY(double angle) {
-    *this->baseCenter = rotateY((*this->baseCenter), angle);
-    *this->topCenter = rotateY((*this->topCenter), angle);
+    *this->initialBaseCenter = rotateY((*this->initialBaseCenter), angle);
+    *this->initialTopCenter = rotateY((*this->initialTopCenter), angle);
     this->updateDirection();
 }
 
 void Cylinder::applyRotateZ(double angle) {
-    *this->baseCenter = rotateZ((*this->baseCenter), angle);
-    *this->topCenter = rotateZ((*this->topCenter), angle);
+    *this->initialBaseCenter = rotateZ((*this->initialBaseCenter), angle);
+    *this->initialTopCenter = rotateZ((*this->initialTopCenter), angle);
     this->updateDirection();
 }
 
 void Cylinder::applyReflectXY() {
-    *this->baseCenter = reflectXY((*this->baseCenter));
-    *this->topCenter = reflectXY((*this->topCenter));
+    *this->initialBaseCenter = reflectXY((*this->initialBaseCenter));
+    *this->initialTopCenter = reflectXY((*this->initialTopCenter));
     this->updateDirection();
 }
 
 void Cylinder::applyReflectXZ() {
-    *this->baseCenter = reflectXZ((*this->baseCenter));
-    *this->topCenter = reflectXZ((*this->topCenter));
+    *this->initialBaseCenter = reflectXZ((*this->initialBaseCenter));
+    *this->initialTopCenter = reflectXZ((*this->initialTopCenter));
     this->updateDirection();
 }
 
 void Cylinder::applyReflectYZ() {
-    *this->baseCenter = reflectYZ((*this->baseCenter));
-    *this->topCenter = reflectYZ((*this->topCenter));
+    *this->initialBaseCenter = reflectYZ((*this->initialBaseCenter));
+    *this->initialTopCenter = reflectYZ((*this->initialTopCenter));
     this->updateDirection();
 }
 
