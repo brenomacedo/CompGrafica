@@ -9,3 +9,4 @@
 #include "../include/cube.h"
 #include "../include/planWithTexture.h"
 #include "../include/interface.h"
+#include "../include/cup.h"

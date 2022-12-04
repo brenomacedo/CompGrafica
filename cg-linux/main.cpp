@@ -33,17 +33,25 @@ int main (int, char**) {
     //     5.0
     // );
 
-    Cone* sphere = new Cone(
-        new Vector(0, 0, 0),
-        new Vector(0, 1, 0),
-        50, 25, new Vector(0.9, 0, 0),
-        5.0
-    );
+    // Cone* sphere = new Cone(
+    //     new Vector(0, 0, 0),
+    //     new Vector(0, 1, 0),
+    //     50, 25, new Vector(0.9, 0, 0),
+    //     5.0
+    // );
 
     // Mesh* sphere = Cube::create(
     //     new Vector(0, 0, 0), 25,
     //     new Vector(0.9, 0, 0), 5.0
     // );
+
+    Mesh* sphere = Cup::createWithBorderInCenaryCenter(
+        new Vector(0.9, 0, 0), 5.0
+    );
+
+    sphere->setWrapper(
+        new Sphere(20, new Vector(5, 5, 5))
+    );
 
     Light* light = new PointLight(
         new Vector (0.3, 0.3, 0.3),
@@ -65,7 +73,7 @@ int main (int, char**) {
     Sp<Scene> scene = new Scene (
         60.0, 60.0,
         400, 400,
-        20,
+        400,
         new Color (100, 100, 100, 255)
     );
 
@@ -76,14 +84,14 @@ int main (int, char**) {
     scene->addLightSource(light);
     scene->addLightSource(dlight);
     scene->addLightSource(slight);
-    scene->addObject(plan1);
+    // scene->addObject(plan1);
     scene->addObject(sphere);
 
-    scene->setBackgroundImage(fundo);
+    // scene->setBackgroundImage(fundo);
     scene->lookAt(
-        new Vector(400, 400, 400),
+        new Vector(300, -50, 300),
         new Vector(0, 25, 0),
-        new Vector(400, 500, 400)
+        new Vector(0, 500, 0)
     );
 
     scene->render();
