@@ -33,17 +33,17 @@ int main (int, char**) {
     //     5.0
     // );
 
-    // Cone* sphere = new Cone(
-    //     new Vector(0, 0, 0),
-    //     new Vector(0, 1, 0),
-    //     50, 25, new Vector(0.9, 0, 0),
-    //     5.0
-    // );
-
-    Mesh* sphere = Cube::create(
-        new Vector(0, 0, 0), 25,
-        new Vector(0.9, 0, 0), 5.0
+    Cone* sphere = new Cone(
+        new Vector(0, 0, 0),
+        new Vector(0, 1, 0),
+        50, 25, new Vector(0.9, 0, 0),
+        5.0
     );
+
+    // Mesh* sphere = Cube::create(
+    //     new Vector(0, 0, 0), 25,
+    //     new Vector(0.9, 0, 0), 5.0
+    // );
 
     Light* light = new PointLight(
         new Vector (0.3, 0.3, 0.3),

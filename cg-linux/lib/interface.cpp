@@ -703,10 +703,11 @@ void Interface::modifyLightFonts() {
       break;
 
     case LightType::SPOT:
-      cout << "1 - Mudar a direcao" << endl;
-      cout << "2 - Mudar o angulo" << endl;
-      cout << "3 - Mudar a posicao" << endl;
-      cout << "4 - Ligar/Desligar - Status atual: " << (lightToModify->isActive() ? "Ligada" : "Desligada") << endl;
+      cout << "1 - Mudar intensidade" << endl;
+      cout << "2 - Mudar a direcao" << endl;
+      cout << "3 - Mudar o angulo" << endl;
+      cout << "4 - Mudar a posicao" << endl;
+      cout << "5 - Ligar/Desligar - Status atual: " << (lightToModify->isActive() ? "Ligada" : "Desligada") << endl;
       cout << "Digite a opcao: ";
 
       int opt3;
@@ -714,26 +715,33 @@ void Interface::modifyLightFonts() {
 
       switch(opt3) {
         case 1:
+          double r2, g2, b2;
+          cout << "Digite, separado por espacos, a nova intensidade (0 a 1): ";
+          cin >> r2 >> g2 >> b2;
+
+          *((SpotLight*) lightToModify)->getIntensity() = Vector(r2, g2, b2);
+          break;
+        case 2:
           double x3, y3, z3;
           cout << "Digite, separado por espacos, a nova direcao: ";
           cin >> x3 >> y3 >> z3;
           *((SpotLight*) lightToModify)->initialDirection = Vector(x3, y3, z3);
           ((SpotLight*) lightToModify)->applyWorldToCanvasConversion(this->scene->eyeLookAt);
           break;
-        case 2:
+        case 3:
           double angle;
           cout << "Digite o novo angulo (em radianos): ";
           cin >> angle;
           ((SpotLight*) lightToModify)->setAngle(angle);
           break;
-        case 3:
+        case 4:
           double x4, y4, z4;
           cout << "Digite, separado por espacos, a nova posicao: ";
           cin >> x4 >> y4 >> z4;
           *((SpotLight*) lightToModify)->initialPosition = Vector(x4, y4, z4);
           ((SpotLight*) lightToModify)->applyWorldToCanvasConversion(this->scene->eyeLookAt);
           break;
-        case 4:
+        case 5:
           (lightToModify->setActive(!lightToModify->isActive()));
           break;
       }
