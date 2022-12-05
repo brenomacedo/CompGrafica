@@ -218,7 +218,7 @@ Mesh* Cup::createWithBorderInCenaryCenter(Vector* reflectivity, double shininnes
     ); // 18
     mesh->addEdge(
         new Edge(
-            9, 12
+            9, 11
         )
     ); // 19
     mesh->addEdge(
