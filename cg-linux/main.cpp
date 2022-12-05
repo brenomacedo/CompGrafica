@@ -40,17 +40,18 @@ int main (int, char**) {
     //     5.0
     // );
 
-    // Mesh* sphere = Cube::create(
-    //     new Vector(0, 0, 0), 25,
+    Mesh* sphere = Cube::create(
+        new Vector(0, 0, 0), 30,
+        new Vector(0.9, 0, 0), 5.0
+    );
+    sphere->applyReflectYZ();
+
+    // Mesh* sphere = Cup::createWithBorderInCenaryCenter(
     //     new Vector(0.9, 0, 0), 5.0
     // );
 
-    Mesh* sphere = Cup::createWithBorderInCenaryCenter(
-        new Vector(0.9, 0, 0), 5.0
-    );
-
     sphere->setWrapper(
-        new Sphere(20, new Vector(5, 5, 5))
+        new Sphere(26, new Vector(0, 15, 0))
     );
 
     Light* light = new PointLight(
@@ -89,7 +90,7 @@ int main (int, char**) {
 
     // scene->setBackgroundImage(fundo);
     scene->lookAt(
-        new Vector(300, -50, 300),
+        new Vector(-300, -300, -300),
         new Vector(0, 25, 0),
         new Vector(0, 500, 0)
     );

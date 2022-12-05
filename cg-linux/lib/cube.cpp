@@ -159,7 +159,7 @@ Mesh* Cube::create(Vector* baseCenter, double edgeSize, Vector* reflectivity, do
         new Face(1, 16, 2)
     );
     mesh->addFace(
-        new Face(3, 16, 10)
+        new Face(3, 16, 0)
     );
     mesh->addFace(
         new Face(11, 17, 7)
@@ -296,7 +296,7 @@ Mesh* Cube::createUnitaryWithBorderInCenaryCenter(Vector* reflectivity, double s
         new Face(1, 16, 2)
     );
     mesh->addFace(
-        new Face(3, 16, 10)
+        new Face(3, 16, 0)
     );
     mesh->addFace(
         new Face(11, 17, 7)
@@ -467,7 +467,7 @@ Mesh* Cube::createWithTexture(Vector* baseCenter, double edgeSize, Image* image,
         new Face(1, 16, 2)
     );
     mesh->addFace(
-        new Face(3, 16, 10)
+        new Face(3, 16, 0)
     );
     mesh->addFace(
         new Face(11, 17, 7)
