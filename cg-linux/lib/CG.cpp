@@ -662,6 +662,10 @@ double Object::getShininess() {
     return this->shininess;
 }
 
+bool Object::isInside(Vector*) {
+    return false;
+}
+
 void Object::setKa(Vector* ka) {
     delete this->getKa();
     this->ka = ka;

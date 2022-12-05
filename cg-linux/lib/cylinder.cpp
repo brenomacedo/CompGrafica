@@ -607,6 +607,14 @@ void Cylinder::applyReflectYZ() {
     this->updateDirection();
 }
 
+bool Cylinder::isInside(Vector* point) {
+    double scalar = scalarProduct((*point - *this->getBaseCenter()), *this->getDirection());
+    Vector projection = *this->getDirection() * scalar;
+    return (
+        (projection - *point).getMagnitude() < this->getRadius() && (scalar >= 0 && scalar <= this->getHeight())
+    );
+}
+
 Cylinder::Cylinder () {}
 
 Cylinder::Cylinder (Vector* baseCenter, Vector* direction, double height, double radius) {
@@ -618,6 +626,9 @@ Cylinder::Cylinder (Vector* baseCenter, Vector* direction, double height, double
     this->setTopCenter (
         new Vector (*this->getBaseCenter() + *this->getDirection () * this->getHeight ())
     );
+
+    this->initialBaseCenter = new Vector(*this->getBaseCenter());
+    this->initialTopCenter = new Vector(*this->getTopCenter());
 }
 
 Cylinder::Cylinder (Vector* baseCenter, Vector* topCenter, double radius, Vector* reflectivity, double shininess) {

@@ -48,6 +48,8 @@ class Cylinder : public Object {
         void applyReflectXZ();
         void applyReflectYZ();
 
+        bool isInside(Vector* point);
+
         Cylinder ();
         Cylinder (Vector* baseCenter, Vector* direction, double height, double radius);
         Cylinder (Vector* baseCenter, Vector* topCenter, double radius, Vector* reflectivity, double shininess = 1.0);

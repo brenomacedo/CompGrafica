@@ -56,6 +56,11 @@ void Sphere::applyReflectYZ() {
     *this->initialCenter = reflectYZ((*this->initialCenter));
 }
 
+bool Sphere::isInside(Vector* point) {
+    double distance = (*point - *this->getCenter()).getMagnitude();
+    return distance < this->getRadius();
+}
+
 Sphere::Sphere () {}
 
 Sphere::Sphere (double radius, Vector* center) {

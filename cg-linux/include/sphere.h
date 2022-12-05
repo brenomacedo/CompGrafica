@@ -36,6 +36,8 @@ class Sphere : public Object {
         void applyReflectXZ();
         void applyReflectYZ();
 
+        bool isInside(Vector* point);
+
         Sphere ();
         Sphere (double radius, Vector* center);
         Sphere (double radius, Vector* reflectivity, Vector* center, double shininess = 1.0);

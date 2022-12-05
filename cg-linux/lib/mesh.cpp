@@ -312,7 +312,7 @@ IntersectionResult* Mesh::getIntersectionResult (Line* line) {
         bool hasIntersectionWithWrapper = wrapperIntersection->getHasIntersection();
         delete wrapperIntersection;
 
-        if (!hasIntersectionWithWrapper) {
+        if (!this->wrapper->isInside(line->P0) && !hasIntersectionWithWrapper) {
             return result;
         }
     }

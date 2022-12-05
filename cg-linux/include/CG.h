@@ -195,6 +195,8 @@ class Object {
         Vector* getKe();
         double getShininess();
 
+        virtual bool isInside(Vector* point);
+
         void setReflectivity(Vector* reflectivity);
         void setKd(Vector* kd);
         void setKa(Vector* ka);
