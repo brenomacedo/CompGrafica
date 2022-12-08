@@ -26,12 +26,12 @@ int main (int, char**) {
     //     new Vector(0, 25, 0), 5.0
     // );
 
-    // Cylinder* sphere = new Cylinder(
-    //     new Vector(0, 0, 0),
-    //     new Vector(0, 1, 0),
-    //     50, 25, new Vector(0.9, 0, 0),
-    //     5.0
-    // );
+    Cylinder* sphere = new Cylinder(
+        new Vector(0, 0, 0),
+        new Vector(0, 1, 0),
+        50, 25, new Vector(0.9, 0, 0),
+        5.0
+    );
 
     // Cone* sphere = new Cone(
     //     new Vector(0, 0, 0),
@@ -40,21 +40,21 @@ int main (int, char**) {
     //     5.0
     // );
 
-    Mesh* sphere = Cube::create(
-        new Vector(0, 0, 0), 30,
-        new Vector(0.9, 0, 0), 5.0
-    );
-    sphere->setWrapper(
-        new Cylinder(
-            new Vector(0, 0, 0),
-            new Vector(0, 1, 0),
-            50,
-            50
-        )
-    );
-    Sphere* sp = new Sphere(
-        5, new Vector(0.8, 0.8, 0.8), new Vector(0, 35, 0), 5.0
-    );
+    // Mesh* sphere = Cube::create(
+    //     new Vector(0, 0, 0), 30,
+    //     new Vector(0.9, 0, 0), 5.0
+    // );
+    // sphere->setWrapper(
+    //     new Cylinder(
+    //         new Vector(0, 0, 0),
+    //         new Vector(0, 1, 0),
+    //         50,
+    //         50
+    //     )
+    // );
+    // Sphere* sp = new Sphere(
+    //     5, new Vector(0.8, 0.8, 0.8), new Vector(0, 35, 0), 5.0
+    // );
 
     // Mesh* sphere = Cup::createWithBorderInCenaryCenter(
     //     new Vector(0.9, 0, 0), 5.0
@@ -103,7 +103,6 @@ int main (int, char**) {
     scene->addLightSource(slight);
     // scene->addObject(plan1);
     scene->addObject(sphere);
-    scene->addObject(sp);
 
     // scene->setBackgroundImage(fundo);
     scene->lookAt(
