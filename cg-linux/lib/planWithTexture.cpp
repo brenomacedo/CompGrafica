@@ -105,6 +105,9 @@ PlanWithTexture::PlanWithTexture(Image* texture, Vector* initialPoint, Vector* n
     this->setInitialPoint(initialPoint);
     this->setNormal(normal);
     this->setShininess(shininess);
+
+    this->initialInitialPoint = new Vector(*this->getInitialPoint());
+    this->initialNormal = new Vector(*this->getNormal());
 }
 
 PlanWithTexture::~PlanWithTexture() {
