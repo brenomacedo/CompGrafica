@@ -9,4 +9,5 @@ class Cube {
         static Mesh* create(Vector* baseCenter, double edgeSize, Vector* reflectivity, double shininness);
         static Mesh* createUnitaryWithBorderInCenaryCenter(Vector* reflectivity, double shininness);
         static MeshWithTexture* createWithTexture(Vector* baseCenter, double edgeSize, Image* image, double shininness);
+        static MeshWithTexture* createUnitaryWithBorderInCenaryCenterWithTexture(Image* texture, double shininness);
 };

@@ -12,6 +12,7 @@
 #include "../include/sphere.h"
 #include "../include/planWithTexture.h"
 #include "../include/meshWithTexture.h"
+#include "../include/cylinderWithTextureOnTop.h"
 
 using std::cout;
 using std::cin;
@@ -687,6 +688,96 @@ void Interface::mouseEvent(SDL_MouseButtonEvent& event) {
               !selectedMeshWithTexture->isActive()
             );
             break;
+        }
+        break;
+      case ObjectType::CYLINDER_WITH_TEXTURE_ON_TOP:
+        CylinderWithTextureOnTop* selectedCylinderWithTextureOnTop;
+        selectedCylinderWithTextureOnTop = (CylinderWithTextureOnTop*) nearestObject;
+        cout << "====== Objeto selecionado: CILINDRO COM TEXTURA [Textura: " << this->printStatus(selectedCylinderWithTextureOnTop->isActive()) << "] ======" << endl;
+        cout << "Topo: " << *selectedCylinderWithTextureOnTop->initialTopCenter << endl;
+        cout << "Base: " << *selectedCylinderWithTextureOnTop->initialBaseCenter << endl;
+        cout << "1 - Mudar reflectividade (Kd, Ke, Ka)" << endl;
+        cout << "2 - Mudar shininess" << endl;
+        cout << "3 - Transladar" << endl;
+        cout << "4 - Rotacionar no eixo X" << endl;
+        cout << "5 - Rotacionar no eixo Y" << endl;
+        cout << "6 - Rotacionar no eixo Z" << endl;
+        cout << "7 - Refletir no plano XY" << endl;
+        cout << "8 - Refletir no plano XZ" << endl;
+        cout << "9 - Refletir no plano YZ" << endl;
+        cout << "9 - Refletir no plano YZ" << endl;
+        cout << "10 - Ativar/Desativar Textura" << endl;
+        cout << "Digite a opcao desejada: ";
+
+        int opcaoCilindroComTexturaNoTopo;
+        cin >> opcaoCilindroComTexturaNoTopo;
+
+        switch(opcaoCilindroComTexturaNoTopo) {
+          case 1:
+            double cilindroKd_R, cilindroKd_G, cilindroKd_B;
+            double cilindroKe_R, cilindroKe_G, cilindroKe_B;
+            double cilindroKa_R, cilindroKa_G, cilindroKa_B;
+            cout << "Digite, separado por espacos, os valores do Kd do cilindro (0 a 1): ";
+            cin >> cilindroKd_R >> cilindroKd_G >> cilindroKd_B;
+            cout << "Digite, separado por espacos, os valores do Ke do cilindro (0 a 1): ";
+            cin >> cilindroKe_R >> cilindroKe_G >> cilindroKe_B;
+            cout << "Digite, separado por espacos, os valores do Ka do cilindro (0 a 1): ";
+            cin >> cilindroKa_R >> cilindroKa_G >> cilindroKa_B;
+
+            *selectedCylinderWithTextureOnTop->getKd() = Vector(cilindroKd_R, cilindroKd_G, cilindroKd_B);
+            *selectedCylinderWithTextureOnTop->getKe() = Vector(cilindroKe_R, cilindroKe_G, cilindroKe_B);
+            *selectedCylinderWithTextureOnTop->getKa() = Vector(cilindroKa_R, cilindroKa_G, cilindroKa_B);
+            break;
+          case 2:
+            double newShineness;
+            cout << "Digite o novo valor do shininess: ";
+            cin >> newShineness;
+            selectedCylinderWithTextureOnTop->setShininess(newShineness);
+            break;
+          case 3:
+            double cilindro_Tx, cilindro_Ty, cilindro_Tz;
+            cout << "Digite, separado por espacos, a translacao do cilindro Tx, Ty e Tz: ";
+            cin >> cilindro_Tx >> cilindro_Ty >> cilindro_Tz;
+            selectedCylinderWithTextureOnTop->applyTranslate(cilindro_Tx, cilindro_Ty, cilindro_Tz);
+            selectedCylinderWithTextureOnTop->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 4:
+            double cilindro_Rx;
+            cout << "Digite o angulo de rotacao em torno do eixo X: ";
+            cin >> cilindro_Rx;
+            selectedCylinderWithTextureOnTop->applyRotateX(cilindro_Rx);
+            selectedCylinderWithTextureOnTop->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 5:
+            double cilindro_Ry;
+            cout << "Digite o angulo de rotacao em torno do eixo Y: ";
+            cin >> cilindro_Ry;
+            selectedCylinderWithTextureOnTop->applyRotateY(cilindro_Ry);
+            selectedCylinderWithTextureOnTop->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 6:
+            double cilindro_Rz;
+            cout << "Digite o angulo de rotacao em torno do eixo Z: ";
+            cin >> cilindro_Rz;
+            selectedCylinderWithTextureOnTop->applyRotateZ(cilindro_Rz);
+            selectedCylinderWithTextureOnTop->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 7:
+            selectedCylinderWithTextureOnTop->applyReflectXY();
+            selectedCylinderWithTextureOnTop->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 8:
+            selectedCylinderWithTextureOnTop->applyReflectXZ();
+            selectedCylinderWithTextureOnTop->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 9:
+            selectedCylinderWithTextureOnTop->applyReflectYZ();
+            selectedCylinderWithTextureOnTop->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 10:
+            selectedCylinderWithTextureOnTop->setActive(
+              !selectedCylinderWithTextureOnTop->isActive()
+            );
             break;
         }
         break;

@@ -8,5 +8,7 @@
 #include "../include/mesh.h"
 #include "../include/cube.h"
 #include "../include/planWithTexture.h"
+#include "../include/meshWithTexture.h"
+#include "../include/cylinderWithTextureOnTop.h"
 #include "../include/interface.h"
 #include "../include/cup.h"
