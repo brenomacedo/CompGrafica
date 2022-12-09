@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -10,8 +11,11 @@
 class Object;
 class Light;
 class LookAt;
+class Link;
+using std::string;
 using ObjectsArray = std::vector<Object*>;
 using LightsArray = std::vector<Light*>;
+using LinksArray = std::vector<Link*>;
 
 enum class ObjectType { SPHERE, PLAN, CYLINDER, CONE, MESH };
 enum class ObjectRegion { SPHERE_SURFACE, CYLINDER_SURFACE, CYLINDER_BASE, CYLINDER_TOP, PLAN, CONE_SURFACE, CONE_BASE, UNKNOWN };
@@ -252,6 +256,23 @@ class LookAt {
         ~LookAt();
 };
 
+class Link {
+    public:
+        string name;
+        ObjectsArray objects;
+        void addObject(Object* object);
+
+        void applyTranslate(double x, double y, double z, LookAt* lookAt);
+        void applyRotateX(double angle, LookAt* lookAt);
+        void applyRotateY(double angle, LookAt* lookAt);
+        void applyRotateZ(double angle, LookAt* lookAt);
+        void applyReflectXY(LookAt* lookAt);
+        void applyReflectXZ(LookAt* lookAt);
+        void applyReflectYZ(LookAt* lookAt);
+
+        Link(string name);
+};
+
 class Scene {
     private:
         double windowHeight = 100.0;
@@ -263,6 +284,7 @@ class Scene {
     
         ObjectsArray objects;
         LightsArray lights;
+        LinksArray links;
         
         Vector* environmentLight = nullptr;
         Color* backgroundColor = nullptr;
@@ -292,6 +314,7 @@ class Scene {
         void setEnvironmentLight(Vector* environmentLight);
         void addLightSource(Light* lightSource);
         void addObject(Object* object);
+        void addLink(Link* link);
 
         double getWindowHeight();
         double getWindowWidth();
@@ -306,6 +329,7 @@ class Scene {
         Vector* getEnvironmentLight();
         LightsArray getLights();
         ObjectsArray getObjects();
+        LinksArray getLinks();
 
         // open window and render the scene
         void render();

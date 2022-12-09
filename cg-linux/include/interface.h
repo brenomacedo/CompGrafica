@@ -19,4 +19,5 @@ class Interface {
     void modifyLightFonts();
     void changeProjectionType();
     void picking();
+    void transformLinks();
 };

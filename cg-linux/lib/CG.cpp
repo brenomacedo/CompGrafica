@@ -117,6 +117,10 @@ void Scene::addObject(Object* object) {
     this->objects.push_back(object);
 }
 
+void Scene::addLink(Link* link) {
+    this->links.push_back(link);
+}
+
 double Scene::getWindowHeight() {
     return this->windowHeight;
 }
@@ -297,6 +301,10 @@ ObjectsArray Scene::getObjects() {
     return this->objects;
 }
 
+LinksArray Scene::getLinks() {
+    return this->links;
+}
+
 Scene::Scene() {}
 
 Scene::Scene(
@@ -338,6 +346,10 @@ Scene::~Scene() {
     }
 
     for(auto i = this->lights.begin(); i != this->lights.end(); i++) {
+        delete(*i);
+    }
+
+    for(auto i = this->links.begin(); i != this->links.end(); i++) {
         delete(*i);
     }
 }
@@ -826,4 +838,61 @@ bool Object::hasIntersectionWithOtherObjects(ObjectsArray objectsArray, Vector* 
     }
 
     return hasIntersectionWithOtherObjects;
+}
+
+void Link::addObject(Object* object) {
+    this->objects.push_back(object);
+}
+
+void Link::applyTranslate(double x, double y, double z, LookAt* lookAt) {
+    for (Object* object : this->objects) {
+        object->applyTranslate(x, y, z);
+        object->applyWorldToCanvasConversion(lookAt);
+    }
+}
+
+void Link::applyReflectXY(LookAt* lookAt) {
+    for (Object* object : this->objects) {
+        object->applyReflectXY();
+        object->applyWorldToCanvasConversion(lookAt);
+    }
+}
+
+void Link::applyReflectXZ(LookAt* lookAt) {
+    for (Object* object : this->objects) {
+        object->applyReflectXZ();
+        object->applyWorldToCanvasConversion(lookAt);
+    }
+}
+
+void Link::applyReflectYZ(LookAt* lookAt) {
+    for (Object* object : this->objects) {
+        object->applyReflectYZ();
+        object->applyWorldToCanvasConversion(lookAt);
+    }
+}
+
+void Link::applyRotateX(double angle, LookAt* lookAt) {
+    for (Object* object : this->objects) {
+        object->applyRotateX(angle);
+        object->applyWorldToCanvasConversion(lookAt);
+    }
+}
+
+void Link::applyRotateY(double angle, LookAt* lookAt) {
+    for (Object* object : this->objects) {
+        object->applyRotateY(angle);
+        object->applyWorldToCanvasConversion(lookAt);
+    }
+}
+
+void Link::applyRotateZ(double angle, LookAt* lookAt) {
+    for (Object* object : this->objects) {
+        object->applyRotateZ(angle);
+        object->applyWorldToCanvasConversion(lookAt);
+    }
+}
+
+Link::Link(string name) {
+    this->name = name;
 }

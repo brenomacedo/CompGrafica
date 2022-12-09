@@ -533,6 +533,7 @@ int Interface::showMenu() {
   cout << "2 - Modificar fontes luminosas" << endl;
   cout << "3 - Mudar tipo de projecao" << endl;
   cout << "4 - Picking" << endl;
+  cout << "5 - Transformar links (objetos complexos)" << endl;
   cout << "Escolha a opcao desejada: ";
   cin >> opcao;
 
@@ -552,6 +553,9 @@ void Interface::actionChosen(int opcaoEscolhida) {
       break;
     case 4:
       this->picking();
+      break;
+    case 5:
+      this->transformLinks();
       break;
   }
 }
@@ -780,5 +784,72 @@ void Interface::picking() {
           break;
       }
     }
+  }
+}
+
+void Interface::transformLinks() {
+  int i = 0;
+
+  cout << "============== LISTA DE LINKS ==============" << endl;
+  for (Link* link : this->scene->getLinks()) {
+    cout << "[" << i << "] " << link->name << endl;
+
+    i++;
+  }
+
+  int linkId;
+  cout << "Digite o link a ser transformado: ";
+  cin >> linkId;
+
+  Link* selectedLink = this->scene->getLinks()[linkId];
+
+  int opcao;
+
+  cout << "Link selecionado: " << selectedLink->name << endl;
+  cout << "1 - Transladar" << endl;
+  cout << "2 - Rotacionar no eixo X" << endl;
+  cout << "3 - Rotacionar no eixo Y" << endl;
+  cout << "4 - Rotacionar no eixo Z" << endl;
+  cout << "5 - Refletir no plano XY" << endl;
+  cout << "6 - Refletir no plano XZ" << endl;
+  cout << "7 - Refletir no plano YZ" << endl;
+  cout << "Digite a opcao desejada: ";
+
+  cin >> opcao;
+
+  switch(opcao) {
+    case 1:
+      double link_Tx, link_Ty, link_Tz;
+      cout << "Digite, separado por espacos, a translacao do link Tx, Ty e Tz: ";
+      cin >> link_Tx >> link_Ty >> link_Tz;
+      selectedLink->applyTranslate(link_Tx, link_Ty, link_Tz, this->scene->eyeLookAt);
+      break;
+    case 2:
+      double link_Rx;
+      cout << "Digite o angulo de rotacao em torno do eixo X: ";
+      cin >> link_Rx;
+      selectedLink->applyRotateX(link_Rx, this->scene->eyeLookAt);
+      break;
+    case 3:
+      double link_Ry;
+      cout << "Digite o angulo de rotacao em torno do eixo Y: ";
+      cin >> link_Ry;
+      selectedLink->applyRotateY(link_Ry, this->scene->eyeLookAt);
+      break;
+    case 4:
+      double link_Rz;
+      cout << "Digite o angulo de rotacao em torno do eixo Z: ";
+      cin >> link_Rz;
+      selectedLink->applyRotateZ(link_Rz, this->scene->eyeLookAt);
+      break;
+    case 5:
+      selectedLink->applyReflectXY(this->scene->eyeLookAt);
+      break;
+    case 6:
+      selectedLink->applyReflectXZ(this->scene->eyeLookAt);
+      break;
+    case 7:
+      selectedLink->applyReflectYZ(this->scene->eyeLookAt);
+      break;
   }
 }
