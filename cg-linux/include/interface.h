@@ -9,7 +9,7 @@ class Light;
 class Interface {
   private:
     void mouseEvent(SDL_MouseButtonEvent& event);
-    std::string lightStatus(Light* light);
+    std::string printStatus(bool status);
   public:
     Scene* scene = nullptr;
     void listenEvents();

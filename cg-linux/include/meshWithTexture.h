@@ -5,11 +5,17 @@
 
 class MeshWithTexture : public Mesh {
     private:
+        ObjectType type = ObjectType::MESH_WITH_TEXTURE;
         Image* texture = nullptr;
+        bool active = true;
 
     public:
         void setTexture(Image* texture);
         Image* getTexture();
+
+        bool isActive();
+        void setActive(bool active);
+        ObjectType getObjectType();
 
         Color* getColorToBePainted(
             IntersectionResult* intersectionResult,

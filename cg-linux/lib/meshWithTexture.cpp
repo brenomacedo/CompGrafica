@@ -16,11 +16,26 @@ Color* MeshWithTexture::getColorToBePainted(
     ObjectsArray objectsArray,
     Line* line,
     Vector* environmentLight
-) {
+) { 
     MeshIntersectionResult* meshIntersectionResult = (MeshIntersectionResult*) intersectionResult;
     Vector planNormal = *meshIntersectionResult->getNormal();
     Vector intersectionPoint = *intersectionResult->getIntersectionPoint();
     Vector intersectionPointMinusPlanP0 = intersectionPoint - Vector(0, 0, 0);
+
+    if (!this->isActive()) {
+        return MeshWithTexture::calculateColorToBePainted(
+            intersectionResult,
+            lightsArray,
+            objectsArray,
+            line,
+            environmentLight,
+            meshIntersectionResult->getNormal(),
+            this->getKd(),
+            this->getKa(),
+            this->getKe(),
+            this->getShininess()
+        );
+    }
 
     Vector planRotatedToNormalInYAxes = intersectionPointMinusPlanP0;
 
@@ -98,11 +113,27 @@ Color* MeshWithTexture::getColorToBePainted(
     );
 }
 
+bool MeshWithTexture::isActive() {
+    return this->active;
+}
+
+void MeshWithTexture::setActive(bool active) {
+    this->active = active;
+}
+
+ObjectType MeshWithTexture::getObjectType() {
+    return this->type;
+}
+
 MeshWithTexture::MeshWithTexture() {}
 
 MeshWithTexture::MeshWithTexture(Image* texture, double shininess) {
     this->setTexture(texture);
     this->setShininess(shininess);
+    
+    this->setKd(new Vector(0, 1, 0));
+    this->setKa(new Vector(0, 1, 0));
+    this->setKe(new Vector(0, 1, 0));
 }
 
 MeshWithTexture::~MeshWithTexture() {

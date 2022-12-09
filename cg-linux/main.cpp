@@ -5,21 +5,22 @@
 
 int main (int, char**) {
     Image* fundo = new Image("./assets/fundo.jpg");
-    // Image* floorTexture = new Image("./assets/grama.jpg");
+    Image* floorTexture = new Image("./assets/grama.jpg");
+    Image* floorTexture2 = new Image("./assets/grama.jpg");
 
-    // PlanWithTexture* plan1 = new PlanWithTexture(
-    //     floorTexture,
-    //     new Vector(0, -150, 0),
-    //     new Vector(0, 1, 0),
-    //     5.0
-    // );
-
-    Plan* plan1 = new Plan(
+    PlanWithTexture* plan1 = new PlanWithTexture(
+        floorTexture2,
         new Vector(0, 0, 0),
         new Vector(0, 1, 0),
-        new Vector(0.2, 0.7, 0.7),
         5.0
     );
+
+    // Plan* plan1 = new Plan(
+    //     new Vector(0, 0, 0),
+    //     new Vector(0, 1, 0),
+    //     new Vector(0.2, 0.7, 0.7),
+    //     5.0
+    // );
 
     // Sphere* sphere = new Sphere(
     //     25, new Vector(0.9, 0, 0),
@@ -40,9 +41,9 @@ int main (int, char**) {
     //     5.0
     // );
 
-    Mesh* sphere = Cube::create(
+    Mesh* sphere = Cube::createWithTexture(
         new Vector(0, 0, 0), 30,
-        new Vector(0.9, 0, 0), 5.0
+        floorTexture, 5.0
     );
     sphere->setWrapper(
         new Cylinder(
@@ -105,7 +106,7 @@ int main (int, char**) {
     scene->addLightSource(light);
     scene->addLightSource(dlight);
     scene->addLightSource(slight);
-    // scene->addObject(plan1);
+    scene->addObject(plan1);
     scene->addObject(sphere);
     scene->addObject(sp);
 

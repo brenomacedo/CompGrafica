@@ -308,8 +308,8 @@ Mesh* Cube::createUnitaryWithBorderInCenaryCenter(Vector* reflectivity, double s
     return mesh;
 }
 
-Mesh* Cube::createWithTexture(Vector* baseCenter, double edgeSize, Image* image, double shininness) {
-    Mesh* mesh = new MeshWithTexture (image, shininness);
+MeshWithTexture* Cube::createWithTexture(Vector* baseCenter, double edgeSize, Image* image, double shininness) {
+    MeshWithTexture* mesh = new MeshWithTexture (image, shininness);
     mesh->addVertex(
         new Vertex(
             new Vector(

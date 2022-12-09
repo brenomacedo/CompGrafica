@@ -18,6 +18,21 @@ Color* PlanWithTexture::getColorToBePainted(
     Vector* environmentLight
 ) {
 
+    if (!this->isActive()) {
+        return Plan::calculateColorToBePainted(
+            intersectionResult,
+            lightsArray,
+            objectsArray,
+            line,
+            environmentLight,
+            this->getNormal(),
+            this->getKd(),
+            this->getKa(),
+            this->getKe(),
+            this->getShininess()
+        );
+    }
+
     Vector planNormal = *this->getNormal();
     Vector intersectionPoint = *intersectionResult->getIntersectionPoint();
     Vector intersectionPointMinusPlanP0 = intersectionPoint - *this->getInitialPoint();
@@ -98,6 +113,18 @@ Color* PlanWithTexture::getColorToBePainted(
     );
 }
 
+bool PlanWithTexture::isActive() {
+    return this->active;
+}
+
+void PlanWithTexture::setActive(bool active) {
+    this->active = active;
+}
+
+ObjectType PlanWithTexture::getObjectType() {
+    return this->type;
+}
+
 PlanWithTexture::PlanWithTexture() {}
 
 PlanWithTexture::PlanWithTexture(Image* texture, Vector* initialPoint, Vector* normal, double shininess) {
@@ -105,6 +132,10 @@ PlanWithTexture::PlanWithTexture(Image* texture, Vector* initialPoint, Vector* n
     this->setInitialPoint(initialPoint);
     this->setNormal(normal);
     this->setShininess(shininess);
+
+    this->setKd(new Vector(0, 1, 0));
+    this->setKa(new Vector(0, 1, 0));
+    this->setKe(new Vector(0, 1, 0));
 
     this->initialInitialPoint = new Vector(*this->getInitialPoint());
     this->initialNormal = new Vector(*this->getNormal());

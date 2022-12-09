@@ -4,11 +4,17 @@
 
 class PlanWithTexture : public Plan {
     private:
+        ObjectType type = ObjectType::PLAN_WITH_TEXTURE;
         Image* texture = nullptr;
+        bool active = true;
 
     public:
         void setTexture(Image* texture);
         Image* getTexture();
+
+        bool isActive();
+        void setActive(bool active);
+        ObjectType getObjectType();
 
         Color* getColorToBePainted(
             IntersectionResult* intersectionResult,

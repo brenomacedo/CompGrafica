@@ -118,7 +118,6 @@ class Mesh : public Object {
 
         Mesh();
         Mesh(double shininess, Vector* reflectivity);
-        Mesh(double shininess, Vector* reflectivity, string file);
         ~Mesh();
 
 };

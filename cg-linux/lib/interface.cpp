@@ -10,14 +10,16 @@
 #include "../include/plan.h"
 #include "../include/mesh.h"
 #include "../include/sphere.h"
+#include "../include/planWithTexture.h"
+#include "../include/meshWithTexture.h"
 
 using std::cout;
 using std::cin;
 using std::endl;
 using std::string;
 
-string Interface::lightStatus(Light* light) {
-  return (light->isActive() ? "Ligada" : "Desligada");
+string Interface::printStatus(bool status) {
+  return (status ? "Ligada" : "Desligada");
 }
 
 void Interface::mouseEvent(SDL_MouseButtonEvent& event) {
@@ -501,6 +503,193 @@ void Interface::mouseEvent(SDL_MouseButtonEvent& event) {
             break;
         }
         break;
+      case ObjectType::PLAN_WITH_TEXTURE:
+        PlanWithTexture* selectedPlanWithTexture;
+        selectedPlanWithTexture = (PlanWithTexture*) nearestObject;
+        cout << "====== Objeto selecionado: PLANO COM TEXTURA [Textura: " << this->printStatus(selectedPlanWithTexture->isActive()) << "] ======" << endl;
+        cout << "Ponto inicial: " << *selectedPlanWithTexture->initialInitialPoint << endl;
+        cout << "Normal: " << *selectedPlanWithTexture->initialNormal << endl;
+        cout << "1 - Mudar reflectividade (Kd, Ke, Ka)" << endl;
+        cout << "2 - Mudar shininess" << endl;
+        cout << "3 - Transladar" << endl;
+        cout << "4 - Rotacionar no eixo X" << endl;
+        cout << "5 - Rotacionar no eixo Y" << endl;
+        cout << "6 - Rotacionar no eixo Z" << endl;
+        cout << "7 - Refletir no plano XY" << endl;
+        cout << "8 - Refletir no plano XZ" << endl;
+        cout << "9 - Refletir no plano YZ" << endl;
+        cout << "10 - Ativar/Desativar Textura" << endl;
+        cout << "Digite a opcao desejada: ";
+
+        int opcaoPlanoComTextura;
+        cin >> opcaoPlanoComTextura;
+
+        switch(opcaoPlanoComTextura) {
+          case 1:
+            double planoKd_R, planoKd_G, planoKd_B;
+            double planoKe_R, planoKe_G, planoKe_B;
+            double planoKa_R, planoKa_G, planoKa_B;
+            cout << "Digite, separado por espacos, os valores do Kd do plano (0 a 1): ";
+            cin >> planoKd_R >> planoKd_G >> planoKd_B;
+            cout << "Digite, separado por espacos, os valores do Ke do plano (0 a 1): ";
+            cin >> planoKe_R >> planoKe_G >> planoKe_B;
+            cout << "Digite, separado por espacos, os valores do Ka do plano (0 a 1): ";
+            cin >> planoKa_R >> planoKa_G >> planoKa_B;
+
+            *selectedPlanWithTexture->getKd() = Vector(planoKd_R, planoKd_G, planoKd_B);
+            *selectedPlanWithTexture->getKe() = Vector(planoKe_R, planoKe_G, planoKe_B);
+            *selectedPlanWithTexture->getKa() = Vector(planoKa_R, planoKa_G, planoKa_B);
+            break;
+          case 2:
+            double newShineness;
+            cout << "Digite o novo valor do shininess: ";
+            cin >> newShineness;
+            selectedPlanWithTexture->setShininess(newShineness);
+            break;
+          case 3:
+            double plano_Tx, plano_Ty, plano_Tz;
+            cout << "Digite, separado por espacos, a translacao do plano Tx, Ty e Tz: ";
+            cin >> plano_Tx >> plano_Ty >> plano_Tz;
+            selectedPlanWithTexture->applyTranslate(plano_Tx, plano_Ty, plano_Tz);
+            selectedPlanWithTexture->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 4:
+            double plano_Rx;
+            cout << "Digite o angulo de rotacao em torno do eixo X: ";
+            cin >> plano_Rx;
+            selectedPlanWithTexture->applyRotateX(plano_Rx);
+            selectedPlanWithTexture->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 5:
+            double plano_Ry;
+            cout << "Digite o angulo de rotacao em torno do eixo Y: ";
+            cin >> plano_Ry;
+            selectedPlanWithTexture->applyRotateY(plano_Ry);
+            selectedPlanWithTexture->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 6:
+            double plano_Rz;
+            cout << "Digite o angulo de rotacao em torno do eixo Z: ";
+            cin >> plano_Rz;
+            selectedPlanWithTexture->applyRotateZ(plano_Rz);
+            selectedPlanWithTexture->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 7:
+            selectedPlanWithTexture->applyReflectXY();
+            selectedPlanWithTexture->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 8:
+            selectedPlanWithTexture->applyReflectXZ();
+            selectedPlanWithTexture->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 9:
+            selectedPlanWithTexture->applyReflectYZ();
+            selectedPlanWithTexture->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 10:
+            selectedPlanWithTexture->setActive(
+              !selectedPlanWithTexture->isActive()
+            );
+            break;
+        }
+        break;
+      case ObjectType::MESH_WITH_TEXTURE:
+        MeshWithTexture* selectedMeshWithTexture;
+        selectedMeshWithTexture = (MeshWithTexture*) nearestObject;
+        cout << "====== Objeto selecionado: MALHA COM TEXTURA [Textura: " << this->printStatus(selectedMeshWithTexture->isActive()) << "] ======" << endl;
+        cout << "1 - Mudar reflectividade (Kd, Ke, Ka)" << endl;
+        cout << "2 - Mudar shininess" << endl;
+        cout << "3 - Transladar" << endl;
+        cout << "4 - Rotacionar no eixo X" << endl;
+        cout << "5 - Rotacionar no eixo Y" << endl;
+        cout << "6 - Rotacionar no eixo Z" << endl;
+        cout << "7 - Refletir no plano XY" << endl;
+        cout << "8 - Refletir no plano XZ" << endl;
+        cout << "9 - Refletir no plano YZ" << endl;
+        cout << "10 - Escalar" << endl;
+        cout << "11 - Ativar/Desativar Textura" << endl;
+        cout << "Digite a opcao desejada: ";
+
+        int opcaoMalhaComTextura;
+        cin >> opcaoMalhaComTextura;
+
+        switch(opcaoMalhaComTextura) {
+          case 1:
+            double malhaKd_R, malhaKd_G, malhaKd_B;
+            double malhaKe_R, malhaKe_G, malhaKe_B;
+            double malhaKa_R, malhaKa_G, malhaKa_B;
+            cout << "Digite, separado por espacos, os valores do Kd da malha (0 a 1): ";
+            cin >> malhaKd_R >> malhaKd_G >> malhaKd_B;
+            cout << "Digite, separado por espacos, os valores do Ke da malha (0 a 1): ";
+            cin >> malhaKe_R >> malhaKe_G >> malhaKe_B;
+            cout << "Digite, separado por espacos, os valores do Ka da malha (0 a 1): ";
+            cin >> malhaKa_R >> malhaKa_G >> malhaKa_B;
+
+            *selectedMeshWithTexture->getKd() = Vector(malhaKd_R, malhaKd_G, malhaKd_B);
+            *selectedMeshWithTexture->getKe() = Vector(malhaKe_R, malhaKe_G, malhaKe_B);
+            *selectedMeshWithTexture->getKa() = Vector(malhaKa_R, malhaKa_G, malhaKa_B);
+            break;
+          case 2:
+            double newShineness;
+            cout << "Digite o novo valor do shininess: ";
+            cin >> newShineness;
+            selectedMeshWithTexture->setShininess(newShineness);
+            break;
+          case 3:
+            double malha_Tx, malha_Ty, malha_Tz;
+            cout << "Digite, separado por espacos, a translacao da malha Tx, Ty e Tz: ";
+            cin >> malha_Tx >> malha_Ty >> malha_Tz;
+            selectedMeshWithTexture->applyTranslate(malha_Tx, malha_Ty, malha_Tz);
+            selectedMeshWithTexture->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 4:
+            double malha_Rx;
+            cout << "Digite o angulo de rotacao em torno do eixo X: ";
+            cin >> malha_Rx;
+            selectedMeshWithTexture->applyRotateX(malha_Rx);
+            selectedMeshWithTexture->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 5:
+            double malha_Ry;
+            cout << "Digite o angulo de rotacao em torno do eixo Y: ";
+            cin >> malha_Ry;
+            selectedMeshWithTexture->applyRotateY(malha_Ry);
+            selectedMeshWithTexture->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 6:
+            double malha_Rz;
+            cout << "Digite o angulo de rotacao em torno do eixo Z: ";
+            cin >> malha_Rz;
+            selectedMeshWithTexture->applyRotateZ(malha_Rz);
+            selectedMeshWithTexture->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 7:
+            selectedMeshWithTexture->applyReflectXY();
+            selectedMeshWithTexture->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 8:
+            selectedMeshWithTexture->applyReflectXZ();
+            selectedMeshWithTexture->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 9:
+            selectedMeshWithTexture->applyReflectYZ();
+            selectedMeshWithTexture->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 10:
+            double malha_Sx, malha_Sy, malha_Sz;
+            cout << "Digite, separado por espacos, as escalas da malha Sx, Sy e Sz: ";
+            cin >> malha_Sx >> malha_Sy >> malha_Sz;
+            selectedMeshWithTexture->applyScale(malha_Sx, malha_Sy, malha_Sz);
+            selectedMeshWithTexture->applyWorldToCanvasConversion(this->scene->eyeLookAt);
+            break;
+          case 11:
+            selectedMeshWithTexture->setActive(
+              !selectedMeshWithTexture->isActive()
+            );
+            break;
+            break;
+        }
+        break;
     }
 
   }
@@ -626,13 +815,13 @@ void Interface::modifyLightFonts() {
     LightType type = light->getLightType();
     switch(type) {
       case LightType::POINT:
-        cout << "[" << i << "] Luz Pontual em: " << *((PointLight*) light)->initialPosition << " [" << this->lightStatus(light) << "]" << endl;
+        cout << "[" << i << "] Luz Pontual em: " << *((PointLight*) light)->initialPosition << " [" << this->printStatus(light->isActive()) << "]" << endl;
         break;
       case LightType::SPOT:
-        cout << "[" << i << "] Luz Spot em: " << *((SpotLight*) light)->initialPosition << " [" << this->lightStatus(light) << "]" << endl;
+        cout << "[" << i << "] Luz Spot em: " << *((SpotLight*) light)->initialPosition << " [" << this->printStatus(light->isActive()) << "]" << endl;
         break;
       case LightType::DIRECTIONAL:
-        cout << "[" << i << "] Luz Direcional com direcao: " << *((DirectionalLight*) light)->initialDirection << " [" << this->lightStatus(light) << "]" << endl;
+        cout << "[" << i << "] Luz Direcional com direcao: " << *((DirectionalLight*) light)->initialDirection << " [" << this->printStatus(light->isActive()) << "]" << endl;
         break;
     }
 

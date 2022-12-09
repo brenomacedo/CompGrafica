@@ -8,5 +8,5 @@ class Cube {
     public:
         static Mesh* create(Vector* baseCenter, double edgeSize, Vector* reflectivity, double shininness);
         static Mesh* createUnitaryWithBorderInCenaryCenter(Vector* reflectivity, double shininness);
-        static Mesh* createWithTexture(Vector* baseCenter, double edgeSize, Image* image, double shininness);
+        static MeshWithTexture* createWithTexture(Vector* baseCenter, double edgeSize, Image* image, double shininness);
 };

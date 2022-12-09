@@ -17,7 +17,7 @@ using ObjectsArray = std::vector<Object*>;
 using LightsArray = std::vector<Light*>;
 using LinksArray = std::vector<Link*>;
 
-enum class ObjectType { SPHERE, PLAN, CYLINDER, CONE, MESH };
+enum class ObjectType { SPHERE, PLAN, CYLINDER, CONE, MESH, PLAN_WITH_TEXTURE, MESH_WITH_TEXTURE };
 enum class ObjectRegion { SPHERE_SURFACE, CYLINDER_SURFACE, CYLINDER_BASE, CYLINDER_TOP, PLAN, CONE_SURFACE, CONE_BASE, UNKNOWN };
 enum class ProjectionType { PARALLEL, PERSPECTIVE };
 enum class LightType { SPOT, DIRECTIONAL, POINT };
