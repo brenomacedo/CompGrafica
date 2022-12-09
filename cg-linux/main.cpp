@@ -4,93 +4,27 @@
 #include "./include/CGI.h"
 
 int main (int, char**) {
-    Image* fundo = new Image("./assets/fundo.jpg");
-    Image* floorTexture = new Image("./assets/grama.jpg");
-    Image* floorTexture2 = new Image("./assets/grama.jpg");
 
-    PlanWithTexture* plan1 = new PlanWithTexture(
-        floorTexture2,
+    Image* fundoMar = new Image("./assets/mar.jpg");
+    Image* texturaAreia = new Image("./assets/areia.jpg");
+
+    // OBJETOS
+
+    PlanWithTexture* chao = new PlanWithTexture(
+        texturaAreia,
         new Vector(0, 0, 0),
         new Vector(0, 1, 0),
-        5.0
+        1
     );
 
-    // Plan* plan1 = new Plan(
-    //     new Vector(0, 0, 0),
-    //     new Vector(0, 1, 0),
-    //     new Vector(0.2, 0.7, 0.7),
-    //     5.0
-    // );
+    // ILUMINAÇÃO
 
-    // Sphere* sphere = new Sphere(
-    //     25, new Vector(0.9, 0, 0),
-    //     new Vector(0, 25, 0), 5.0
-    // );
-
-    // Cylinder* sphere = new Cylinder(
-    //     new Vector(0, 0, 0),
-    //     new Vector(0, 1, 0),
-    //     50, 25, new Vector(0.9, 0, 0),
-    //     5.0
-    // );
-
-    // Cone* sphere = new Cone(
-    //     new Vector(0, 0, 0),
-    //     new Vector(0, 1, 0),
-    //     50, 25, new Vector(0.9, 0, 0),
-    //     5.0
-    // );
-
-    Mesh* sphere = Cube::createWithTexture(
-        new Vector(0, 0, 0), 30,
-        floorTexture, 5.0
-    );
-    sphere->setWrapper(
-        new Cylinder(
-            new Vector(0, 0, 0),
-            new Vector(0, 1, 0),
-            50,
-            50
-        )
-    );
-    Sphere* sp = new Sphere(
-        5, new Vector(0.8, 0.8, 0.8), new Vector(0, 35, 0), 5.0
-    );
-
-    Link* objetoCompl = new Link("Obj Compl");
-    objetoCompl->addObject(sp);
-    objetoCompl->addObject(sphere);
-
-    // Mesh* sphere = Cup::createWithBorderInCenaryCenter(
-    //     new Vector(0.9, 0, 0), 5.0
-    // );
-    // sphere->setWrapper(
-    //     new Cylinder(
-    //         new Vector(5, 0, 5),
-    //         new Vector(0, 1, 0),
-    //         10,
-    //         40
-    //     )
-    // );
-    // sphere->applyReflectYZ();
-
-
-    Light* light = new PointLight(
-        new Vector (0.3, 0.3, 0.3),
-        new Vector(350, 350, -150)
-    );
-
-    Light* slight = new SpotLight(
-        new Vector(0.3, 0.3, 0.3),
-        new Vector(0, -1, 0),
-        new Vector(0, 100, 0),
-        M_PI / 4
-    );
-
-    Light* dlight = new DirectionalLight(
-        new Vector(0.3, 0.3, 0.3),
+    Light* sol = new DirectionalLight(
+        new Vector(0.5, 0.5, 0.5),
         new Vector(1, -1, 1)
     );
+
+    // CONFIGURAÇÃO DA CENA
 
     Sp<Scene> scene = new Scene (
         60.0, 60.0,
@@ -98,24 +32,17 @@ int main (int, char**) {
         150,
         new Color (100, 100, 100, 255)
     );
-
     scene->setEnvironmentLight (
         new Vector (0.3, 0.3, 0.3)
     );
-    
-    scene->addLightSource(light);
-    scene->addLightSource(dlight);
-    scene->addLightSource(slight);
-    scene->addObject(plan1);
-    scene->addObject(sphere);
-    scene->addObject(sp);
+    scene->setBackgroundImage(fundoMar);
 
-    scene->addLink(objetoCompl);
+    scene->addObject(chao);
+    scene->addLightSource(sol);
 
-    scene->setBackgroundImage(fundo);
     scene->lookAt(
         new Vector(400, 400, 400),
-        new Vector(0, 25, 0),
+        new Vector(0, 200, 0),
         new Vector(0, 500, 0)
     );
 

@@ -71,13 +71,13 @@ Color* PlanWithTexture::getColorToBePainted(
     int imagePixelPositionY;
 
     if (x < 0) {
-        imagePixelPositionX = this->texture->getImageWidth() - (abs(x) % this->texture->getImageWidth());
+        imagePixelPositionX = this->texture->getImageWidth() - (abs(x) % this->texture->getImageWidth()) - 1;
     } else {
         imagePixelPositionX = abs(x) % this->texture->getImageWidth();
     }
 
     if (z < 0) {
-        imagePixelPositionY = this->texture->getImageHeight() - (abs(z) % this->texture->getImageHeight());
+        imagePixelPositionY = this->texture->getImageHeight() - (abs(z) % this->texture->getImageHeight()) - 1;
     } else {
         imagePixelPositionY = abs(z) % this->texture->getImageHeight();
     }
