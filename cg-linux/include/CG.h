@@ -336,7 +336,7 @@ class Scene {
         void raycast();
         void update();
 
-        int buffer[400][400][3];
+        char* buffer = nullptr;
 
         Scene();
         Scene(

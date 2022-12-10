@@ -883,6 +883,13 @@ void Interface::changeCameraProperties() {
       this->scene->setCanvasHeight((windowHeight / 100) * 400);
       this->scene->setCanvasWidth((windowWidth / 100) * 400);
 
+      delete[] this->scene->buffer;
+      int newCanvasHeight;
+      newCanvasHeight = this->scene->getCanvasHeight();
+      int newCanvasWidth;
+      newCanvasWidth = this->scene->getCanvasWidth();
+      this->scene->buffer = new char[newCanvasHeight * newCanvasWidth * 3];
+
       SDL_DestroyRenderer(this->scene->renderer);
       SDL_DestroyWindow(this->scene->window);
 

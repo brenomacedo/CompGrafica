@@ -228,6 +228,9 @@ int raycastThread(void* threadData) {
 
             }
 
+            int a1 = 0*nCol*nLin + l*nCol + c;
+            int a2 = 1*nCol*nLin + l*nCol + c;
+            int a3 = 2*nCol*nLin + l*nCol + c;
             if(nearestResult->getHasIntersection()) {
                 Sp<Color> colorToPaint = scene->getObjects()[nearestObjectIndex]->getColorToBePainted(
                     nearestResult.pointer,
@@ -237,9 +240,9 @@ int raycastThread(void* threadData) {
                     scene->getEnvironmentLight()
                 );
 
-                scene->buffer[c][l][0] = colorToPaint->r;
-                scene->buffer[c][l][1] = colorToPaint->g;
-                scene->buffer[c][l][2] = colorToPaint->b;
+                scene->buffer[a1] = colorToPaint->r;
+                scene->buffer[a2] = colorToPaint->g;
+                scene->buffer[a3] = colorToPaint->b;
             } else if(sceneBackgroundImage != nullptr) {
                 // if there is no intersection, verify if there is an background image and paint
                 // with the color of equivalent pixel in the image
@@ -252,9 +255,9 @@ int raycastThread(void* threadData) {
                 // setPaintColor(scene->renderer, pixelToPaint.r, pixelToPaint.g, pixelToPaint.b, pixelToPaint.a);
                 // paintPixel(scene->renderer, c, l);
 
-                scene->buffer[c][l][0] = pixelToPaint.r;
-                scene->buffer[c][l][1] = pixelToPaint.g;
-                scene->buffer[c][l][2] = pixelToPaint.b;
+                scene->buffer[a1] = pixelToPaint.r;
+                scene->buffer[a2] = pixelToPaint.g;
+                scene->buffer[a3] = pixelToPaint.b;
             }
 
         }
@@ -311,10 +314,13 @@ void Scene::raycast() {
     SDL_WaitThread(t2, &status2);
     SDL_WaitThread(t3, &status3);
     SDL_WaitThread(t4, &status4);
-
+    
     for (int l = 0; l < nLin; l++) {
         for (int c = 0; c < nCol; c++) {
-            setPaintColor(this->renderer, this->buffer[c][l][0], this->buffer[c][l][1], this->buffer[c][l][2], 255);
+            int a1 = 0*nCol*nLin + l*nCol + c;
+            int a2 = 1*nCol*nLin + l*nCol + c;
+            int a3 = 2*nCol*nLin + l*nCol + c;
+            setPaintColor(this->renderer, this->buffer[a1], this->buffer[a2], this->buffer[a3], 255);
             paintPixel(this->renderer, c, l);
         }
     }
@@ -385,6 +391,9 @@ Scene::Scene(
     this->setWindowWidth(windowWidth);
     this->setCanvasHeight(canvasHeight);
     this->setCanvasWidth(canvasWidth);
+
+    this->buffer = new char[canvasWidth * canvasHeight * 3];
+
     this->setWindowDistance(windowDistance);
     this->lookAt(
         new Vector(0, 0, 0),
