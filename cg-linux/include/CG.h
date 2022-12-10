@@ -336,6 +336,8 @@ class Scene {
         void raycast();
         void update();
 
+        int buffer[400][400][3];
+
         Scene();
         Scene(
             double windowHeight,
@@ -347,4 +349,12 @@ class Scene {
         );
         ~Scene();
 
+};
+
+struct RaycastData {
+    double fromLin;
+    double toLin;
+    double fromCol;
+    double toCol;
+    Scene* scene;
 };

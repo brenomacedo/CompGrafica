@@ -176,29 +176,32 @@ void Scene::lookAt(
     }
 }
 
-void Scene::raycast() {
-    const double nLin = this->getCanvasHeight();
-    const double nCol = this->getCanvasWidth();
+int raycastThread(void* threadData) {
+    RaycastData* data = (RaycastData*) threadData;
+    Scene* scene = data->scene;
 
-    const double hJanela = this->getWindowHeight();
-    const double wJanela = this->getWindowWidth();
+    const double nLin = scene->getCanvasHeight();
+    const double nCol = scene->getCanvasWidth();
+
+    const double hJanela = scene->getWindowHeight();
+    const double wJanela = scene->getWindowWidth();
 
     const double dx = wJanela / nCol;
     const double dy = hJanela / nLin;
 
-    Image* sceneBackgroundImage = this->getBackgroundImage();
+    Image* sceneBackgroundImage = scene->getBackgroundImage();
 
-    int numberOfObjects = this->objects.size();
+    int numberOfObjects = scene->getObjects().size();
 
-    const double z = -this->getWindowDistance();
+    const double z = -scene->getWindowDistance();
 
-    for(int l = 0; l < nLin; l++) {
+    for(int l = data->fromLin; l < data->toLin; l++) {
         const double y = hJanela / 2.0 - dy / 2.0 - l * dy;
 
-        for(int c = 0; c < nCol; c++) {
+        for(int c = data->fromCol; c < data->toCol; c++) {
             const double x = -wJanela / 2.0 + dx / 2.0 + c * dx;
 
-            bool isProjectionPerspective = this->getProjectionType() == ProjectionType::PERSPECTIVE;
+            bool isProjectionPerspective = scene->getProjectionType() == ProjectionType::PERSPECTIVE;
             Vector* P0 = new Vector(
                 isProjectionPerspective ? Vector(0, 0, 0) : Vector(x, y, 0)
             );
@@ -212,7 +215,7 @@ void Scene::raycast() {
 
             for(int i = 0; i < numberOfObjects; i++) {
 
-                Sp<IntersectionResult> result = this->objects[i]->getIntersectionResult(line.pointer);
+                Sp<IntersectionResult> result = scene->getObjects()[i]->getIntersectionResult(line.pointer);
                 
                 if(result->getHasIntersection() &&
             (!nearestResult->getHasIntersection() || result->getDistanceFromP0() < nearestResult->getDistanceFromP0())) {
@@ -226,30 +229,93 @@ void Scene::raycast() {
             }
 
             if(nearestResult->getHasIntersection()) {
-                Sp<Color> colorToPaint = this->objects[nearestObjectIndex]->getColorToBePainted(
+                Sp<Color> colorToPaint = scene->getObjects()[nearestObjectIndex]->getColorToBePainted(
                     nearestResult.pointer,
-                    this->lights,
-                    this->objects,
+                    scene->getLights(),
+                    scene->getObjects(),
                     line.pointer,
-                    this->environmentLight
+                    scene->getEnvironmentLight()
                 );
 
-                setPaintColor(renderer, colorToPaint->r, colorToPaint->g, colorToPaint->b, colorToPaint->a);
-                paintPixel(renderer, c, l);
+                scene->buffer[c][l][0] = colorToPaint->r;
+                scene->buffer[c][l][1] = colorToPaint->g;
+                scene->buffer[c][l][2] = colorToPaint->b;
             } else if(sceneBackgroundImage != nullptr) {
                 // if there is no intersection, verify if there is an background image and paint
                 // with the color of equivalent pixel in the image
 
-                double x =(double(c) * double(sceneBackgroundImage->getImageWidth())) / this->getCanvasWidth();
-                double y =(double(l) * double(sceneBackgroundImage->getImageHeight())) / this->getCanvasHeight();
+                double x =(double(c) * double(sceneBackgroundImage->getImageWidth())) / scene->getCanvasWidth();
+                double y =(double(l) * double(sceneBackgroundImage->getImageHeight())) / scene->getCanvasHeight();
 
                 Pixel pixelToPaint = sceneBackgroundImage->getPixel(x, y);
 
-                setPaintColor(renderer, pixelToPaint.r, pixelToPaint.g, pixelToPaint.b, pixelToPaint.a);
-                paintPixel(renderer, c, l);
+                // setPaintColor(scene->renderer, pixelToPaint.r, pixelToPaint.g, pixelToPaint.b, pixelToPaint.a);
+                // paintPixel(scene->renderer, c, l);
 
+                scene->buffer[c][l][0] = pixelToPaint.r;
+                scene->buffer[c][l][1] = pixelToPaint.g;
+                scene->buffer[c][l][2] = pixelToPaint.b;
             }
 
+        }
+    }
+
+    return 0;
+}
+
+void Scene::raycast() {
+
+    const double nLin = this->getCanvasHeight();
+    const double nCol = this->getCanvasWidth();
+
+    RaycastData dataT1;
+    RaycastData dataT2;
+    RaycastData dataT3;
+    RaycastData dataT4;
+    
+    dataT1.scene = this;
+    dataT2.scene = this;
+    dataT3.scene = this;
+    dataT4.scene = this;
+
+    dataT1.fromLin = 0;
+    dataT1.toLin = nLin / 2;
+    dataT1.fromCol = 0;
+    dataT1.toCol = nCol / 2;
+
+    dataT2.fromLin = 0;
+    dataT2.toLin = nLin / 2;
+    dataT2.fromCol = nCol / 2;
+    dataT2.toCol = nCol;
+
+    dataT3.fromLin = nLin / 2;
+    dataT3.toLin = nLin;
+    dataT3.fromCol = 0;
+    dataT3.toCol = nCol / 2;
+
+    dataT4.fromLin = nLin / 2;
+    dataT4.toLin = nLin;
+    dataT4.fromCol = nCol / 2;
+    dataT4.toCol = nCol;
+
+    SDL_Thread* t1 = SDL_CreateThread(raycastThread, "t1", &dataT1);
+    SDL_Thread* t2 = SDL_CreateThread(raycastThread, "t2", &dataT2);
+    SDL_Thread* t3 = SDL_CreateThread(raycastThread, "t3", &dataT3);
+    SDL_Thread* t4 = SDL_CreateThread(raycastThread, "t4", &dataT4);
+
+    int status1;
+    int status2;
+    int status3;
+    int status4;
+    SDL_WaitThread(t1, &status1);
+    SDL_WaitThread(t2, &status2);
+    SDL_WaitThread(t3, &status3);
+    SDL_WaitThread(t4, &status4);
+
+    for (int l = 0; l < nLin; l++) {
+        for (int c = 0; c < nCol; c++) {
+            setPaintColor(this->renderer, this->buffer[c][l][0], this->buffer[c][l][1], this->buffer[c][l][2], 255);
+            paintPixel(this->renderer, c, l);
         }
     }
 
