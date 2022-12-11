@@ -33,7 +33,7 @@ int main (int, char**) {
     CylinderWithTextureOnTop* ilha = new CylinderWithTextureOnTop(
         texturaAreia,
         new Vector(0, -10, 0), new Vector(0, 1, 0), 10,
-        550, new Vector(0.8, 0.3, 0.1), 5.0
+        600, new Vector(0.8, 0.3, 0.1), 5.0
     );
     // ----------------------------------------
 
@@ -190,6 +190,206 @@ int main (int, char**) {
 
     // ----------------------------------------
 
+    // MESAS E CADEIRAS
+    // == mesa 1
+    Cylinder* baseMesa1 = new Cylinder(
+        new Vector(300, 0, 0),
+        new Vector(0, 1, 0),
+        60, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* topoMesa1 = new Cylinder(
+        new Vector(300, 60, 0),
+        new Vector(0, 1, 0),
+        5, 60, new Vector(0.8, 0.2, 0.2), 1
+    );
+    Cylinder* troncoGuardaSolMesa1 = new Cylinder(
+        new Vector(235, 0, -65),
+        new Vector(0, 1, 0),
+        120, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cone* guardaSolMesa1 = new Cone(
+        new Vector(235, 120, -65),
+        new Vector(0, 1, 0),
+        20, 80, new Vector(0.95, 0.7, 0.15), 1
+    );
+    Cylinder* bancoTronco1mesa1 = new Cylinder(
+        new Vector(230, 0, 0),
+        new Vector(0, 1, 0), 25, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* bancoTopo1mesa1 = new Cylinder(
+        new Vector(230, 25, 0),
+        new Vector(0, 1, 0), 5, 20, new Vector(0.3, 0.3, 0.9), 1
+    );
+    Cylinder* bancoTronco2mesa1 = new Cylinder(
+        new Vector(370, 0, 0),
+        new Vector(0, 1, 0), 25, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* bancoTopo2mesa1 = new Cylinder(
+        new Vector(370, 25, 0),
+        new Vector(0, 1, 0), 5, 20, new Vector(0.3, 0.3, 0.9), 1
+    );
+    Cylinder* bancoTronco3mesa1 = new Cylinder(
+        new Vector(300, 0, 70),
+        new Vector(0, 1, 0), 25, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* bancoTopo3mesa1 = new Cylinder(
+        new Vector(300, 25, 70),
+        new Vector(0, 1, 0), 5, 20, new Vector(0.3, 0.3, 0.9), 1
+    );
+    Cylinder* bancoTronco4mesa1 = new Cylinder(
+        new Vector(300, 0, -70),
+        new Vector(0, 1, 0), 25, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* bancoTopo4mesa1 = new Cylinder(
+        new Vector(300, 25, -70),
+        new Vector(0, 1, 0), 5, 20, new Vector(0.3, 0.3, 0.9), 1
+    );
+
+    Link* mesa1 = new Link("Mesa da esquerda");
+    mesa1->addObject(baseMesa1);
+    mesa1->addObject(topoMesa1);
+    mesa1->addObject(troncoGuardaSolMesa1);
+    mesa1->addObject(guardaSolMesa1);
+    mesa1->addObject(bancoTronco1mesa1);
+    mesa1->addObject(bancoTopo1mesa1);
+    mesa1->addObject(bancoTronco2mesa1);
+    mesa1->addObject(bancoTopo2mesa1);
+    mesa1->addObject(bancoTronco3mesa1);
+    mesa1->addObject(bancoTopo3mesa1);
+    mesa1->addObject(bancoTronco4mesa1);
+    mesa1->addObject(bancoTopo4mesa1);
+
+    mesa1->applyTranslate(-70, 0, 250, nullptr);
+    // ----------------------------------------
+
+    // == mesa 2
+    Cylinder* baseMesa2 = new Cylinder(
+        new Vector(300, 0, 0),
+        new Vector(0, 1, 0),
+        60, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* topoMesa2 = new Cylinder(
+        new Vector(300, 60, 0),
+        new Vector(0, 1, 0),
+        5, 60, new Vector(0.8, 0.2, 0.2), 1
+    );
+    Cylinder* troncoGuardaSolMesa2 = new Cylinder(
+        new Vector(235, 0, -65),
+        new Vector(0, 1, 0),
+        120, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cone* guardaSolMesa2 = new Cone(
+        new Vector(235, 120, -65),
+        new Vector(0, 1, 0),
+        20, 80, new Vector(0.95, 0.7, 0.15), 1
+    );
+    Cylinder* bancoTronco1mesa2 = new Cylinder(
+        new Vector(230, 0, 0),
+        new Vector(0, 1, 0), 25, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* bancoTopo1mesa2 = new Cylinder(
+        new Vector(230, 25, 0),
+        new Vector(0, 1, 0), 5, 20, new Vector(0.3, 0.3, 0.9), 1
+    );
+    Cylinder* bancoTronco2mesa2 = new Cylinder(
+        new Vector(370, 0, 0),
+        new Vector(0, 1, 0), 25, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* bancoTopo2mesa2 = new Cylinder(
+        new Vector(370, 25, 0),
+        new Vector(0, 1, 0), 5, 20, new Vector(0.3, 0.3, 0.9), 1
+    );
+    Cylinder* bancoTronco3mesa2 = new Cylinder(
+        new Vector(300, 0, 70),
+        new Vector(0, 1, 0), 25, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* bancoTopo3mesa2 = new Cylinder(
+        new Vector(300, 25, 70),
+        new Vector(0, 1, 0), 5, 20, new Vector(0.3, 0.3, 0.9), 1
+    );
+    Cylinder* bancoTronco4mesa2 = new Cylinder(
+        new Vector(300, 0, -70),
+        new Vector(0, 1, 0), 25, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* bancoTopo4mesa2 = new Cylinder(
+        new Vector(300, 25, -70),
+        new Vector(0, 1, 0), 5, 20, new Vector(0.3, 0.3, 0.9), 1
+    );
+    // ----------------------------------------
+    // == mesa 3
+    Cylinder* baseMesa3 = new Cylinder(
+        new Vector(300, 0, 0),
+        new Vector(0, 1, 0),
+        60, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* topoMesa3 = new Cylinder(
+        new Vector(300, 60, 0),
+        new Vector(0, 1, 0),
+        5, 60, new Vector(0.8, 0.2, 0.2), 1
+    );
+    Cylinder* troncoGuardaSolMesa3 = new Cylinder(
+        new Vector(235, 0, -65),
+        new Vector(0, 1, 0),
+        120, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cone* guardaSolMesa3 = new Cone(
+        new Vector(235, 120, -65),
+        new Vector(0, 1, 0),
+        20, 80, new Vector(0.95, 0.7, 0.15), 1
+    );
+    Cylinder* bancoTronco1mesa3 = new Cylinder(
+        new Vector(230, 0, 0),
+        new Vector(0, 1, 0), 25, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* bancoTopo1mesa3 = new Cylinder(
+        new Vector(230, 25, 0),
+        new Vector(0, 1, 0), 5, 20, new Vector(0.3, 0.3, 0.9), 1
+    );
+    Cylinder* bancoTronco2mesa3 = new Cylinder(
+        new Vector(370, 0, 0),
+        new Vector(0, 1, 0), 25, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* bancoTopo2mesa3 = new Cylinder(
+        new Vector(370, 25, 0),
+        new Vector(0, 1, 0), 5, 20, new Vector(0.3, 0.3, 0.9), 1
+    );
+    Cylinder* bancoTronco3mesa3 = new Cylinder(
+        new Vector(300, 0, 70),
+        new Vector(0, 1, 0), 25, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* bancoTopo3mesa3 = new Cylinder(
+        new Vector(300, 25, 70),
+        new Vector(0, 1, 0), 5, 20, new Vector(0.3, 0.3, 0.9), 1
+    );
+    Cylinder* bancoTronco4mesa3 = new Cylinder(
+        new Vector(300, 0, -70),
+        new Vector(0, 1, 0), 25, 5, new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* bancoTopo4mesa3 = new Cylinder(
+        new Vector(300, 25, -70),
+        new Vector(0, 1, 0), 5, 20, new Vector(0.3, 0.3, 0.9), 1
+    );
+
+    Link* mesa3 = new Link("Mesa da esquerda");
+    mesa3->addObject(baseMesa3);
+    mesa3->addObject(topoMesa3);
+    mesa3->addObject(troncoGuardaSolMesa3);
+    mesa3->addObject(guardaSolMesa3);
+    mesa3->addObject(bancoTronco1mesa3);
+    mesa3->addObject(bancoTopo1mesa3);
+    mesa3->addObject(bancoTronco2mesa3);
+    mesa3->addObject(bancoTopo2mesa3);
+    mesa3->addObject(bancoTronco3mesa3);
+    mesa3->addObject(bancoTopo3mesa3);
+    mesa3->addObject(bancoTronco4mesa3);
+    mesa3->addObject(bancoTopo4mesa3);
+
+    mesa3->applyTranslate(-70, 0, -250, nullptr);
+
+    // ARVORES
+
+    // ----------------------------------------
+
     // ILUMINAÇÃO
 
     Light* sol = new DirectionalLight(
@@ -248,14 +448,53 @@ int main (int, char**) {
     scene->addObject(corpoLampada);
     scene->addObject(cabecaLampada);
 
+    scene->addObject(baseMesa2);
+    scene->addObject(topoMesa2);
+    scene->addObject(bancoTronco1mesa2);
+    scene->addObject(bancoTopo1mesa2);
+    scene->addObject(bancoTronco2mesa2);
+    scene->addObject(bancoTopo2mesa2);
+    scene->addObject(bancoTronco3mesa2);
+    scene->addObject(bancoTopo3mesa2);
+    scene->addObject(bancoTronco4mesa2);
+    scene->addObject(bancoTopo4mesa2);
+    scene->addObject(troncoGuardaSolMesa2);
+    scene->addObject(guardaSolMesa2);
+
+    scene->addObject(baseMesa1);
+    scene->addObject(topoMesa1);
+    scene->addObject(bancoTronco1mesa1);
+    scene->addObject(bancoTopo1mesa1);
+    scene->addObject(bancoTronco2mesa1);
+    scene->addObject(bancoTopo2mesa1);
+    scene->addObject(bancoTronco3mesa1);
+    scene->addObject(bancoTopo3mesa1);
+    scene->addObject(bancoTronco4mesa1);
+    scene->addObject(bancoTopo4mesa1);
+    scene->addObject(troncoGuardaSolMesa1);
+    scene->addObject(guardaSolMesa1);
+
+    scene->addObject(baseMesa3);
+    scene->addObject(topoMesa3);
+    scene->addObject(bancoTronco1mesa3);
+    scene->addObject(bancoTopo1mesa3);
+    scene->addObject(bancoTronco2mesa3);
+    scene->addObject(bancoTopo2mesa3);
+    scene->addObject(bancoTronco3mesa3);
+    scene->addObject(bancoTopo3mesa3);
+    scene->addObject(bancoTronco4mesa3);
+    scene->addObject(bancoTopo4mesa3);
+    scene->addObject(troncoGuardaSolMesa3);
+    scene->addObject(guardaSolMesa3);
+
     scene->addLightSource(sol);
     scene->addLightSource(lampada);
 
     scene->setBackgroundImage(fundoCeu);
     scene->lookAt(
-        new Vector(500, 100, 0),
-        new Vector(0, 100, 0),
-        new Vector(500, 600, 0)
+        new Vector(1500, 1500, 1500),
+        new Vector(0, 0, 0),
+        new Vector(1500, 1600, 1500)
     );
 
     scene->render();

@@ -922,49 +922,63 @@ void Link::addObject(Object* object) {
 void Link::applyTranslate(double x, double y, double z, LookAt* lookAt) {
     for (Object* object : this->objects) {
         object->applyTranslate(x, y, z);
-        object->applyWorldToCanvasConversion(lookAt);
+        if (lookAt != nullptr) {
+            object->applyWorldToCanvasConversion(lookAt);
+        }
     }
 }
 
 void Link::applyReflectXY(LookAt* lookAt) {
     for (Object* object : this->objects) {
         object->applyReflectXY();
-        object->applyWorldToCanvasConversion(lookAt);
+        if (lookAt != nullptr) {
+            object->applyWorldToCanvasConversion(lookAt);
+        }
     }
 }
 
 void Link::applyReflectXZ(LookAt* lookAt) {
     for (Object* object : this->objects) {
         object->applyReflectXZ();
-        object->applyWorldToCanvasConversion(lookAt);
+        if (lookAt != nullptr) {
+            object->applyWorldToCanvasConversion(lookAt);
+        }
     }
 }
 
 void Link::applyReflectYZ(LookAt* lookAt) {
     for (Object* object : this->objects) {
         object->applyReflectYZ();
-        object->applyWorldToCanvasConversion(lookAt);
+        if (lookAt != nullptr) {
+            object->applyWorldToCanvasConversion(lookAt);
+        }
     }
 }
 
 void Link::applyRotateX(double angle, LookAt* lookAt) {
     for (Object* object : this->objects) {
         object->applyRotateX(angle);
-        object->applyWorldToCanvasConversion(lookAt);
+        if (lookAt != nullptr) {
+            object->applyWorldToCanvasConversion(lookAt);
+        }
     }
 }
 
 void Link::applyRotateY(double angle, LookAt* lookAt) {
     for (Object* object : this->objects) {
         object->applyRotateY(angle);
-        object->applyWorldToCanvasConversion(lookAt);
+        if (lookAt != nullptr) {
+            object->applyWorldToCanvasConversion(lookAt);
+        }
     }
 }
 
 void Link::applyRotateZ(double angle, LookAt* lookAt) {
     for (Object* object : this->objects) {
         object->applyRotateZ(angle);
-        object->applyWorldToCanvasConversion(lookAt);
+        if (lookAt != nullptr) {
+            object->applyWorldToCanvasConversion(lookAt);
+        }
     }
 }
 
