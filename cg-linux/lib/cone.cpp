@@ -137,13 +137,12 @@ IntersectionResult* Cone::getIntersectionResult (Line* line) {
 
         if (CbAT2ByDir > 0 && CbAT2.getMagnitude () < this->getHeight ()) {
             
-            if (interceptsBase && distanceP0ToT1 < distanceP0ToT2) {
+            if (t1 < 0 && t2 < 0) {
+                intersectionResult->setHasIntersection (false);
+                return intersectionResult;
+            }
 
-                // VERIFYING IF T IS POSITIVE
-                if (t1 < 0) {
-                    intersectionResult->setHasIntersection (false);
-                    return intersectionResult;
-                }
+            if (interceptsBase && distanceP0ToT1 < distanceP0ToT2) {
 
                 intersectionResult->setHasIntersection (true);
                 intersectionResult->setDistanceFromP0 (distanceP0ToT1);
@@ -152,12 +151,6 @@ IntersectionResult* Cone::getIntersectionResult (Line* line) {
 
                 return intersectionResult;
 
-            }
-
-            // VERIFYING IF T IS POSITIVE
-            if (t2 < 0) {
-                intersectionResult->setHasIntersection (false);
-                return intersectionResult;
             }
 
             intersectionResult->setHasIntersection (true);
@@ -231,25 +224,19 @@ IntersectionResult* Cone::getIntersectionResult (Line* line) {
         Vector CbAT3 = coneDirection * CbAT3ByDir;
 
         if (CbAT2ByDir > 0 && CbAT2.getMagnitude () <= this->getHeight () && CbAT3ByDir > 0 && CbAT3.getMagnitude () <= this->getHeight ()) {
-            if (distanceP0ToT2 < distanceP0ToT3) {
+            // VERIFYING IF T IS POSITIVE
+            if (t2 < 0 && t3 < 0) {
+                intersectionResult->setHasIntersection (false);
+                return intersectionResult;
+            }
 
-                // VERIFYING IF T IS POSITIVE
-                if (t2 < 0) {
-                    intersectionResult->setHasIntersection (false);
-                    return intersectionResult;
-                }
+            if (distanceP0ToT2 < distanceP0ToT3) {
 
                 intersectionResult->setHasIntersection (true);
                 intersectionResult->setDistanceFromP0 (distanceP0ToT2);
                 intersectionResult->setObjectRegion (ObjectRegion::CONE_SURFACE);
                 intersectionResult->setIntersectionPoint (new Vector (intersectionPointT2));
 
-                return intersectionResult;
-            }
-
-            // VERIFYING IF T IS POSITIVE
-            if (t3 < 0) {
-                intersectionResult->setHasIntersection (false);
                 return intersectionResult;
             }
 
@@ -262,14 +249,13 @@ IntersectionResult* Cone::getIntersectionResult (Line* line) {
         }
 
         if (CbAT2ByDir > 0 && CbAT2.getMagnitude () < this->getHeight ()) {
-            
-            if (interceptsBase && distanceP0ToT1 < distanceP0ToT2) {
+            // VERIFYING IF T IS POSITIVE
+            if (t1 < 0 && t2 < 0) {
+                intersectionResult->setHasIntersection (false);
+                return intersectionResult;
+            }
 
-                // VERIFYING IF T IS POSITIVE
-                if (t1 < 0) {
-                    intersectionResult->setHasIntersection (false);
-                    return intersectionResult;
-                }
+            if (interceptsBase && distanceP0ToT1 < distanceP0ToT2) {
 
                 intersectionResult->setHasIntersection (true);
                 intersectionResult->setDistanceFromP0 (distanceP0ToT1);
@@ -278,12 +264,6 @@ IntersectionResult* Cone::getIntersectionResult (Line* line) {
 
                 return intersectionResult;
 
-            }
-
-            // VERIFYING IF T IS POSITIVE
-            if (t2 < 0) {
-                intersectionResult->setHasIntersection (false);
-                return intersectionResult;
             }
 
             intersectionResult->setHasIntersection (true);
@@ -296,15 +276,13 @@ IntersectionResult* Cone::getIntersectionResult (Line* line) {
         }
 
         if (CbAT3ByDir > 0 && CbAT3.getMagnitude () < this->getHeight ()) {
-
+            // VERIFYING IF T IS POSITIVE
+            if (t1 < 0 && t3 < 0) {
+                intersectionResult->setHasIntersection (false);
+                return intersectionResult;
+            }
+            
             if (interceptsBase && distanceP0ToT1 < distanceP0ToT3) {
-
-                // VERIFYING IF T IS POSITIVE
-                if (t1 < 0) {
-                    intersectionResult->setHasIntersection (false);
-                    return intersectionResult;
-                }
-
                 intersectionResult->setHasIntersection (true);
                 intersectionResult->setDistanceFromP0 (distanceP0ToT1);
                 intersectionResult->setObjectRegion (ObjectRegion::CONE_BASE);
@@ -312,12 +290,6 @@ IntersectionResult* Cone::getIntersectionResult (Line* line) {
 
                 return intersectionResult;
 
-            }
-
-            // VERIFYING IF T IS POSITIVE
-            if (t3 < 0) {
-                intersectionResult->setHasIntersection (false);
-                return intersectionResult;
             }
 
             intersectionResult->setHasIntersection (true);
