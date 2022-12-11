@@ -517,6 +517,7 @@ void Cylinder::updateDirection() {
 void Cylinder::applyScale(double sx, double sy, double sz) {
     *this->initialBaseCenter = scale((*this->initialBaseCenter), sx, sy, sz);
     *this->initialTopCenter = scale((*this->initialTopCenter), sx, sy, sz);
+    this->setHeight ((*this->initialTopCenter - *this->initialBaseCenter).getMagnitude());
     this->updateDirection();
     this->setRadius(max(max(sx, sy), sz) * this->getRadius());
 }
