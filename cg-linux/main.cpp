@@ -173,7 +173,7 @@ int main (int, char**) {
     );
     bocaGarrafa->applyTranslate(-195, 99, 0);
 
-    Mesh* copo = Cup::createWithBorderInCenaryCenter(new Vector(0.8, 0.9, 0.9), 0.3);
+    Mesh* copo = Cup::createWithBorderInCenaryCenter(new Vector(0.8, 0.2, 0.9), 0.3);
     copo->setWrapper(
         new Cylinder(new Vector(5, 0, 5), new Vector(0, 1, 0), 10, 8)
     );
@@ -414,8 +414,108 @@ int main (int, char**) {
     poste2->applyReflectXY(nullptr);
 
     // ARVORES
+    Cylinder* troncoArvoreEsquerda = new Cylinder(
+        new Vector(-100, 0, 450),
+        new Vector(0, 1, 0),
+        80, 40, new Vector(0.2, 0.2, 0.2), 1
+    );
+    Cone* copa1ArvoreEsquerda = new Cone(
+        new Vector(-100, 80, 450),
+        new Vector(0, 1, 0),
+        160, 100, new Vector(0.2, 0.8, 0.3), 1
+    );
+    Cone* copa2ArvoreEsquerda = new Cone(
+        new Vector(-100, 140, 450),
+        new Vector(0, 1, 0),
+        160, 100, new Vector(0.2, 0.9, 0.5), 1
+    );
+    Cone* copa3ArvoreEsquerda = new Cone(
+        new Vector(-100, 200, 450),
+        new Vector(0, 1, 0),
+        160, 100, new Vector(0.2, 0.8, 0.3), 1
+    );
+
+    
+    Cylinder* troncoArvoreDireita = new Cylinder(
+        new Vector(-100, 0, -450),
+        new Vector(0, 1, 0),
+        80, 40, new Vector(0.2, 0.2, 0.2), 1
+    );
+    Cone* copa1ArvoreDireita = new Cone(
+        new Vector(-100, 80, -450),
+        new Vector(0, 1, 0),
+        160, 100, new Vector(0.2, 0.8, 0.3), 1
+    );
+    Cone* copa2ArvoreDireita = new Cone(
+        new Vector(-100, 140, -450),
+        new Vector(0, 1, 0),
+        160, 100, new Vector(0.2, 0.9, 0.5), 1
+    );
+    Cone* copa3ArvoreDireita = new Cone(
+        new Vector(-100, 200, -450),
+        new Vector(0, 1, 0),
+        160, 100, new Vector(0.2, 0.8, 0.3), 1
+    );
 
     // ----------------------------------------
+
+    // SANDMAN
+    Sphere* corpoSandman = new Sphere(
+        35, new Vector(0.941, 0.905, 0.780),
+        new Vector(200, 35, 450), 1
+    );
+    Sphere* barrigaSandman = new Sphere(
+        30, new Vector(0.941, 0.905, 0.780),
+        new Vector(200, 80, 450), 1
+    );
+    Sphere* cabecaSandman = new Sphere(
+        25, new Vector(0.941, 0.905, 0.780),
+        new Vector(200, 120, 450), 1
+    );
+    Cone* narizSandman = new Cone(
+        new Vector(220, 120, 450),
+        new Vector(1, 0, 0),
+        15, 5, new Vector(0.8, 0.5, 0.2)
+    );
+    Cylinder* oculosDireitoSandman = new Cylinder(
+        new Vector(220, 130, 440),
+        new Vector(1, 0, 0),
+        5, 8, new Vector(0.1, 0.1, 0.1)
+    );
+    Cylinder* oculosEsquerdoSandman = new Cylinder(
+        new Vector(220, 130, 460),
+        new Vector(1, 0, 0),
+        5, 8, new Vector(0.1, 0.1, 0.1)
+    );
+    Cylinder* oculosLigacaoSandman = new Cylinder(
+        new Vector(222, 130, 435),
+        new Vector(0, 0, 1),
+        30, 2, new Vector(0.1, 0.1, 0.1)
+    );
+    Cylinder* baseGorroSandman = new Cylinder(
+        new Vector(200, 140, 450),
+        new Vector(0, 1, 0),
+        8, 20, new Vector(1, 1, 1), 1
+    );
+    Cone* gorroSandman = new Cone(
+        new Vector(200, 148, 450),
+        new Vector(0, 1, 0),
+        35, 19, new Vector(1, 0, 0), 1
+    );
+    Sphere* pontaGorroSandman = new Sphere(
+        5, new Vector(1, 1, 1),
+        new Vector(200, 178, 450), 1
+    );
+    Cylinder* bracoEsquerdoSandman = new Cylinder(
+        new Vector(200, 80, 475),
+        new Vector(0, 1, 1), 40, 5,
+        new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cylinder* bracoDireitoSandman = new Cylinder(
+        new Vector(200, 80, 425),
+        new Vector(0, 1, -1), 40, 5,
+        new Vector(0.3, 0.3, 0.3), 1
+    );
 
     // ILUMINAÇÃO
 
@@ -528,6 +628,29 @@ int main (int, char**) {
     scene->addObject(troncoPoste2);
     scene->addObject(conePoste2);
 
+    scene->addObject(troncoArvoreEsquerda);
+    scene->addObject(copa1ArvoreEsquerda);
+    scene->addObject(copa2ArvoreEsquerda);
+    scene->addObject(copa3ArvoreEsquerda);
+
+    scene->addObject(troncoArvoreDireita);
+    scene->addObject(copa1ArvoreDireita);
+    scene->addObject(copa2ArvoreDireita);
+    scene->addObject(copa3ArvoreDireita);
+
+    scene->addObject(corpoSandman);
+    scene->addObject(barrigaSandman);
+    scene->addObject(cabecaSandman);
+    scene->addObject(narizSandman);
+    scene->addObject(oculosDireitoSandman);
+    scene->addObject(oculosEsquerdoSandman);
+    scene->addObject(oculosLigacaoSandman);
+    scene->addObject(baseGorroSandman);
+    scene->addObject(gorroSandman);
+    scene->addObject(pontaGorroSandman);
+    scene->addObject(bracoEsquerdoSandman);
+    scene->addObject(bracoDireitoSandman);
+
     scene->addLightSource(sol);
     scene->addLightSource(lampada);
     scene->addLightSource(luzPoste1);
@@ -535,9 +658,9 @@ int main (int, char**) {
 
     scene->setBackgroundImage(fundoCeu);
     scene->lookAt(
-        new Vector(1500, 1500, 1500),
-        new Vector(0, 0, 0),
-        new Vector(1500, 1600, 1500)
+        new Vector(800, 800, 800),
+        new Vector(200, 80, 450),
+        new Vector(800, 1600, 800)
     );
 
     scene->render();
