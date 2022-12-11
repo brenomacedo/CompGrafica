@@ -210,7 +210,7 @@ int main (int, char**) {
     Cone* guardaSolMesa1 = new Cone(
         new Vector(235, 120, -65),
         new Vector(0, 1, 0),
-        20, 80, new Vector(0.95, 0.7, 0.15), 1
+        20, 80, new Vector(0.15, 0.95, 0.7), 1
     );
     Cylinder* bancoTronco1mesa1 = new Cylinder(
         new Vector(230, 0, 0),
@@ -335,7 +335,7 @@ int main (int, char**) {
     Cone* guardaSolMesa3 = new Cone(
         new Vector(235, 120, -65),
         new Vector(0, 1, 0),
-        20, 80, new Vector(0.95, 0.7, 0.15), 1
+        20, 80, new Vector(0.9, 0.9, 0.9), 1
     );
     Cylinder* bancoTronco1mesa3 = new Cylinder(
         new Vector(230, 0, 0),
@@ -370,7 +370,7 @@ int main (int, char**) {
         new Vector(0, 1, 0), 5, 20, new Vector(0.3, 0.3, 0.9), 1
     );
 
-    Link* mesa3 = new Link("Mesa da esquerda");
+    Link* mesa3 = new Link("Mesa da direita");
     mesa3->addObject(baseMesa3);
     mesa3->addObject(topoMesa3);
     mesa3->addObject(troncoGuardaSolMesa3);
@@ -386,14 +386,49 @@ int main (int, char**) {
 
     mesa3->applyTranslate(-70, 0, -250, nullptr);
 
+    // POSTES
+    Cylinder* troncoPoste1 = new Cylinder(
+        new Vector(375, 0, 200),
+        new Vector(0, 1, 0), 150, 5,
+        new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cone* conePoste1 = new Cone(
+        new Vector(375, 150, 200),
+        new Vector(0, 1, 0), 15, 8,
+        new Vector(0.96, 0.72, 0.25), 1
+    );
+
+    Cylinder* troncoPoste2 = new Cylinder(
+        new Vector(375, 0, 200),
+        new Vector(0, 1, 0), 150, 5,
+        new Vector(0.3, 0.3, 0.3), 1
+    );
+    Cone* conePoste2 = new Cone(
+        new Vector(375, 150, 200),
+        new Vector(0, 1, 0), 15, 8,
+        new Vector(0.96, 0.72, 0.25), 1
+    );
+    Link* poste2 = new Link("Poste da direita");
+    poste2->addObject(troncoPoste2);
+    poste2->addObject(conePoste2);
+    poste2->applyReflectXY(nullptr);
+
     // ARVORES
 
     // ----------------------------------------
 
     // ILUMINAÇÃO
 
+    Light* luzPoste1 = new PointLight(
+        new Vector(0.3, 0.3, 0.3),
+        new Vector(375, 166, 200)
+    );
+    Light* luzPoste2 = new PointLight(
+        new Vector(0.3, 0.3, 0.3),
+        new Vector(375, 166, -200)
+    );
     Light* sol = new DirectionalLight(
-        new Vector(0.5, 0.5, 0.5),
+        new Vector(0.3, 0.3, 0.3),
         new Vector(1, -1, 1)
     );
     Light* lampada = new SpotLight(
@@ -487,8 +522,16 @@ int main (int, char**) {
     scene->addObject(troncoGuardaSolMesa3);
     scene->addObject(guardaSolMesa3);
 
+    scene->addObject(troncoPoste1);
+    scene->addObject(conePoste1);
+    
+    scene->addObject(troncoPoste2);
+    scene->addObject(conePoste2);
+
     scene->addLightSource(sol);
     scene->addLightSource(lampada);
+    scene->addLightSource(luzPoste1);
+    scene->addLightSource(luzPoste2);
 
     scene->setBackgroundImage(fundoCeu);
     scene->lookAt(
