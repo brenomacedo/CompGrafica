@@ -92,6 +92,10 @@ int main (int, char**) {
     balcaoTopo->setWrapper(new Cylinder(new Vector(35, 0, 105), new Vector(0, 1, 0), 5, 111));
     balcaoTopo->applyTranslate(-210, 68, -146);
 
+    Link* linkBalcao = new Link("balcao"); // --
+    linkBalcao->addObject(balcao);
+    linkBalcao->addObject(balcaoTopo);
+
     Cylinder* bancoTronco = new Cylinder(
         new Vector(-100, 3, -100),
         new Vector(0, 1, 0), 30, 5, new Vector(0.3, 0.3, 0.3), 1
@@ -100,6 +104,10 @@ int main (int, char**) {
         new Vector(-100, 33, -100),
         new Vector(0, 1, 0), 5, 20, new Vector(0.9, 0.3, 0.3), 1
     );
+
+    Link* bancoVermelho = new Link("banco vermelho"); // --
+    bancoVermelho->addObject(bancoTronco);
+    bancoVermelho->addObject(bancoTopo);
 
     Cylinder* bancoTronco2 = new Cylinder(
         new Vector(-100, 3, -100),
@@ -112,6 +120,10 @@ int main (int, char**) {
     bancoTronco2->applyTranslate(0, 0, 60);
     bancoTopo2->applyTranslate(0, 0, 60);
 
+    Link* bancoVerde = new Link("banco verde"); // --
+    bancoVerde->addObject(bancoTronco2);
+    bancoVerde->addObject(bancoTopo2);
+
     Cylinder* bancoTronco3 = new Cylinder(
         new Vector(-100, 3, -100),
         new Vector(0, 1, 0), 30, 5, new Vector(0.3, 0.3, 0.3), 1
@@ -122,6 +134,10 @@ int main (int, char**) {
     );
     bancoTronco3->applyTranslate(0, 0, 120);
     bancoTopo3->applyTranslate(0, 0, 120);
+
+    Link* bancoAzul = new Link("banco azul"); // --
+    bancoAzul->addObject(bancoTronco3);
+    bancoAzul->addObject(bancoTopo3);
 
     Mesh* fogao = Cube::createUnitaryWithBorderInCenaryCenter(
         new Vector(0.7, 0.7, 0.7), 1.8
@@ -153,6 +169,13 @@ int main (int, char**) {
     );
     bocaFogao4->applyTranslate(-306, 68, -106);
 
+    Link* linkFogao = new Link("Fogao"); // --
+    linkFogao->addObject(fogao);
+    linkFogao->addObject(bocaFogao1);
+    linkFogao->addObject(bocaFogao2);
+    linkFogao->addObject(bocaFogao3);
+    linkFogao->addObject(bocaFogao4);
+
     MeshWithTexture* bancada = Cube::createUnitaryWithBorderInCenaryCenterWithTexture(marmorebranco2, 1.5);
     bancada->applyScale(70, 15, 222);
     bancada->setWrapper(new Cylinder(new Vector(35, 0, 111), new Vector(0, 1, 0), 15, 117));
@@ -172,6 +195,11 @@ int main (int, char**) {
         new Vector(0.2, 0.2, 0.8), 0.3
     );
     bocaGarrafa->applyTranslate(-195, 99, 0);
+
+    Link* linkGarrafa = new Link("Garrafa azul"); // --
+    linkGarrafa->addObject(corpoGarrafa);
+    linkGarrafa->addObject(topoGarrafa);
+    linkGarrafa->addObject(bocaGarrafa);
 
     Mesh* copo = Cup::createWithBorderInCenaryCenter(new Vector(0.8, 0.2, 0.9), 0.3);
     copo->setWrapper(
@@ -315,6 +343,21 @@ int main (int, char**) {
         new Vector(300, 25, -70),
         new Vector(0, 1, 0), 5, 20, new Vector(0.3, 0.3, 0.9), 1
     );
+
+    Link* mesa2 = new Link("Mesa do meio");
+    mesa2->addObject(baseMesa2);
+    mesa2->addObject(topoMesa2);
+    mesa2->addObject(troncoGuardaSolMesa2);
+    mesa2->addObject(guardaSolMesa2);
+    mesa2->addObject(bancoTronco1mesa2);
+    mesa2->addObject(bancoTopo1mesa2);
+    mesa2->addObject(bancoTronco2mesa2);
+    mesa2->addObject(bancoTopo2mesa2);
+    mesa2->addObject(bancoTronco3mesa2);
+    mesa2->addObject(bancoTopo3mesa2);
+    mesa2->addObject(bancoTronco4mesa2);
+    mesa2->addObject(bancoTopo4mesa2);
+
     // ----------------------------------------
     // == mesa 3
     Cylinder* baseMesa3 = new Cylinder(
@@ -398,6 +441,10 @@ int main (int, char**) {
         new Vector(0.96, 0.72, 0.25), 1
     );
 
+    Link* linkPoste1 = new Link("Poste da esquerda");
+    linkPoste1->addObject(troncoPoste1);
+    linkPoste1->addObject(conePoste1);
+
     Cylinder* troncoPoste2 = new Cylinder(
         new Vector(375, 0, 200),
         new Vector(0, 1, 0), 150, 5,
@@ -408,10 +455,10 @@ int main (int, char**) {
         new Vector(0, 1, 0), 15, 8,
         new Vector(0.96, 0.72, 0.25), 1
     );
-    Link* poste2 = new Link("Poste da direita");
-    poste2->addObject(troncoPoste2);
-    poste2->addObject(conePoste2);
-    poste2->applyReflectXY(nullptr);
+    Link* linkPoste2 = new Link("Poste da direita");
+    linkPoste2->addObject(troncoPoste2);
+    linkPoste2->addObject(conePoste2);
+    linkPoste2->applyReflectXY(nullptr);
 
     // ARVORES
     Cylinder* troncoArvoreEsquerda = new Cylinder(
@@ -435,6 +482,11 @@ int main (int, char**) {
         160, 100, new Vector(0.2, 0.8, 0.3), 1
     );
 
+    Link* arvoreEsquerda = new Link("Arvore esquerda");
+    arvoreEsquerda->addObject(troncoArvoreEsquerda);
+    arvoreEsquerda->addObject(copa1ArvoreEsquerda);
+    arvoreEsquerda->addObject(copa2ArvoreEsquerda);
+    arvoreEsquerda->addObject(copa3ArvoreEsquerda);
     
     Cylinder* troncoArvoreDireita = new Cylinder(
         new Vector(-100, 0, -450),
@@ -456,6 +508,12 @@ int main (int, char**) {
         new Vector(0, 1, 0),
         160, 100, new Vector(0.2, 0.8, 0.3), 1
     );
+
+    Link* arvoreDireita = new Link("Arvore direita");
+    arvoreDireita->addObject(troncoArvoreDireita);
+    arvoreDireita->addObject(copa1ArvoreDireita);
+    arvoreDireita->addObject(copa2ArvoreDireita);
+    arvoreDireita->addObject(copa3ArvoreDireita);
 
     // ----------------------------------------
 
@@ -516,6 +574,20 @@ int main (int, char**) {
         new Vector(0, 1, -1), 40, 5,
         new Vector(0.3, 0.3, 0.3), 1
     );
+
+    Link* linkSandman = new Link("Sandman");
+    linkSandman->addObject(corpoSandman);
+    linkSandman->addObject(barrigaSandman);
+    linkSandman->addObject(cabecaSandman);
+    linkSandman->addObject(narizSandman);
+    linkSandman->addObject(oculosDireitoSandman);
+    linkSandman->addObject(oculosEsquerdoSandman);
+    linkSandman->addObject(oculosLigacaoSandman);
+    linkSandman->addObject(baseGorroSandman);
+    linkSandman->addObject(gorroSandman);
+    linkSandman->addObject(pontaGorroSandman);
+    linkSandman->addObject(bracoEsquerdoSandman);
+    linkSandman->addObject(bracoDireitoSandman);
 
     // ILUMINAÇÃO
 
@@ -655,6 +727,21 @@ int main (int, char**) {
     scene->addLightSource(lampada);
     scene->addLightSource(luzPoste1);
     scene->addLightSource(luzPoste2);
+
+    scene->addLink(linkBalcao);
+    scene->addLink(linkFogao);
+    scene->addLink(linkGarrafa);
+    scene->addLink(linkPoste1);
+    scene->addLink(linkPoste2);
+    scene->addLink(mesa1);
+    scene->addLink(mesa2);
+    scene->addLink(mesa3);
+    scene->addLink(bancoAzul);
+    scene->addLink(bancoVerde);
+    scene->addLink(bancoVermelho);
+    scene->addLink(arvoreDireita);
+    scene->addLink(arvoreEsquerda);
+    scene->addLink(linkSandman);
 
     scene->setBackgroundImage(fundoCeu);
     scene->lookAt(
