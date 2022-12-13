@@ -15,7 +15,8 @@ Color* MeshWithTexture::getColorToBePainted(
     LightsArray lightsArray,
     ObjectsArray objectsArray,
     Line* line,
-    Vector* environmentLight
+    Vector* environmentLight,
+    bool isEnvironmentLightActive
 ) { 
     MeshIntersectionResult* meshIntersectionResult = (MeshIntersectionResult*) intersectionResult;
     Vector planNormal = *meshIntersectionResult->getNormal();
@@ -29,6 +30,7 @@ Color* MeshWithTexture::getColorToBePainted(
             objectsArray,
             line,
             environmentLight,
+            isEnvironmentLightActive,
             meshIntersectionResult->getNormal(),
             this->getKd(),
             this->getKa(),
@@ -101,7 +103,7 @@ Color* MeshWithTexture::getColorToBePainted(
         this->getShininess()
     );
 
-    if (environmentLight != nullptr) {
+    if (environmentLight != nullptr && isEnvironmentLightActive) {
         resultColorRate = resultColorRate + ((*environmentLight) * (*pixelReflectivity));
     }
 

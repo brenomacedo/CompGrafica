@@ -237,7 +237,8 @@ int raycastThread(void* threadData) {
                     scene->getLights(),
                     scene->getObjects(),
                     line.pointer,
-                    scene->getEnvironmentLight()
+                    scene->getEnvironmentLight(),
+                    scene->isEnvironmentLightActive()
                 );
 
                 scene->buffer[a1] = colorToPaint->r;
@@ -375,6 +376,14 @@ ObjectsArray Scene::getObjects() {
 
 LinksArray Scene::getLinks() {
     return this->links;
+}
+
+bool Scene::isEnvironmentLightActive() {
+    return this->environmentLightActive;
+}
+
+void Scene::setIsEnvironmentLightActive(bool environmentLightActive) {
+    this->environmentLightActive = environmentLightActive;
 }
 
 Scene::Scene() {}
@@ -800,6 +809,7 @@ Color* Object::calculateColorToBePainted(
     ObjectsArray objectsArray,
     Line* line,
     Vector* environmentLight,
+    bool isEnvironmentLightActive,
     Vector* normal,
     Vector* kd,
     Vector* ka,
@@ -818,8 +828,8 @@ Color* Object::calculateColorToBePainted(
         shininess
     );
 
-    if(environmentLight != nullptr) {
-        resultColorRate = resultColorRate +((*environmentLight) *(*ka));
+    if(environmentLight != nullptr && isEnvironmentLightActive) {
+        resultColorRate = resultColorRate + ((*environmentLight)*(*ka));
     }
 
     return new Color(

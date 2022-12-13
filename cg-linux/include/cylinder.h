@@ -29,7 +29,8 @@ class Cylinder : public Object {
             LightsArray lightsArray,
             ObjectsArray objectsArray,
             Line* line,
-            Vector* environmentLight
+            Vector* environmentLight,
+            bool isEnvironmentLightActive
         );
         void applyWorldToCanvasConversion(LookAt* lookAt);
 

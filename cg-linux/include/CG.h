@@ -172,6 +172,7 @@ class Object {
             ObjectsArray objectsArray,
             Line* line,
             Vector* environmentLight,
+            bool isEnvironmentLightActive,
             Vector* normal,
             Vector* kd,
             Vector* ka,
@@ -213,7 +214,8 @@ class Object {
             LightsArray lightsArray,
             ObjectsArray objectsArray,
             Line* line,
-            Vector* environmentLight
+            Vector* environmentLight,
+            bool isEnvironmentLightActive
         ) = 0;
         virtual void applyWorldToCanvasConversion(LookAt* lookat) = 0;
 
@@ -292,6 +294,8 @@ class Scene {
         
         Interface* interface = nullptr;
 
+        bool environmentLightActive = true;
+
     public:
         SDL_Window* window = nullptr;
         SDL_Renderer* renderer = nullptr;
@@ -330,6 +334,9 @@ class Scene {
         LightsArray getLights();
         ObjectsArray getObjects();
         LinksArray getLinks();
+
+        bool isEnvironmentLightActive();
+        void setIsEnvironmentLightActive(bool environmentLightActive);
 
         // open window and render the scene
         void render();

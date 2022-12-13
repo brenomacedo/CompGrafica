@@ -173,7 +173,8 @@ Color* Sphere::getColorToBePainted (
     LightsArray lightsArray,
     ObjectsArray objectsArray,
     Line* line,
-    Vector* environmentLight
+    Vector* environmentLight,
+    bool isEnvironmentLightActive
 ) {
 
     Vector* intersectionPoint = intersectionResult->getIntersectionPoint();
@@ -185,6 +186,7 @@ Color* Sphere::getColorToBePainted (
         objectsArray,
         line,
         environmentLight,
+        isEnvironmentLightActive,
         normal.pointer,
         this->getKd(),
         this->getKa(),

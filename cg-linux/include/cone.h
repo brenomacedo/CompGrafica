@@ -40,7 +40,8 @@ class Cone : public Object {
             LightsArray lightsArray,
             ObjectsArray objectsArray,
             Line* line,
-            Vector* environmentLight
+            Vector* environmentLight,
+            bool isEnvironmentLightActive
         );
 
         void applyScale(double sx, double sy, double sz);

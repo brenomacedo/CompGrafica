@@ -113,7 +113,8 @@ class Mesh : public Object {
             LightsArray lightsArray,
             ObjectsArray objectsArray,
             Line* line,
-            Vector* environmentLight
+            Vector* environmentLight,
+            bool isEnvironmentLightActive
         );
 
         Mesh();

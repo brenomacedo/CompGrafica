@@ -314,7 +314,8 @@ Color* Cone::getColorToBePainted (
     LightsArray lightsArray,
     ObjectsArray objectsArray,
     Line* line,
-    Vector* environmentLight
+    Vector* environmentLight,
+    bool isEnvironmentLightActive
 ) {
 
     if (intersectionResult->getObjectRegion () == ObjectRegion::CONE_BASE) {
@@ -327,6 +328,7 @@ Color* Cone::getColorToBePainted (
             objectsArray,
             line,
             environmentLight,
+            isEnvironmentLightActive,
             normal.pointer,
             this->getKd(),
             this->getKa(),
@@ -357,6 +359,7 @@ Color* Cone::getColorToBePainted (
         objectsArray,
         line,
         environmentLight,
+        isEnvironmentLightActive,
         normal.pointer,
         this->getKd (),
         this->getKa (),

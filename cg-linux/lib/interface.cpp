@@ -925,11 +925,39 @@ void Interface::modifyLightFonts() {
 
     i++;
   }
+  cout << "[" << i << "] Luz Ambiente com intensidade: " << *scene->getEnvironmentLight() << " [" << this->printStatus(scene->isEnvironmentLightActive()) << "]" << endl;
+
   cout << "========================" << endl << endl;
 
   int luzId;
   cout << "Digite o id da luz que voce quer modificar: ";
   cin >> luzId;
+
+  if (luzId == i) {
+    cout << "1 - Mudar intensidade" << endl;
+    cout << "2 - Ligar/Desligar" << endl;
+    cout << "Digite a opcao: ";
+    int opt;
+    cin >> opt;
+
+    switch (opt) {
+      case 1:
+        double r, g, b;
+        cout << "Digite, separado por espacos, a nova intensidade (0 a 1): ";
+        cin >> r >> g >> b;
+
+        *scene->getEnvironmentLight() = Vector(r, g, b);
+        break;
+
+      case 2:
+        scene->setIsEnvironmentLightActive(
+          !scene->isEnvironmentLightActive()
+        );
+        break;
+    }
+
+    return;
+  }
 
   Light* lightToModify = this->scene->getLights()[luzId];
 

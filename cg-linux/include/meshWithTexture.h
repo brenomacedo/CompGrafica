@@ -22,7 +22,8 @@ class MeshWithTexture : public Mesh {
             LightsArray lightsArray,
             ObjectsArray objectsArray,
             Line* line,
-            Vector* environmentLight
+            Vector* environmentLight,
+            bool isEnvironmentLightActive
         );
 
         MeshWithTexture();

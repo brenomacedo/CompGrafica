@@ -131,7 +131,8 @@ Color* Plan::getColorToBePainted (
     LightsArray lightsArray,
     ObjectsArray objectsArray,
     Line* line,
-    Vector* environmentLight
+    Vector* environmentLight,
+    bool isEnvironmentLightActive
 ) {
 
     return this->calculateColorToBePainted (
@@ -140,6 +141,7 @@ Color* Plan::getColorToBePainted (
         objectsArray,
         line,
         environmentLight,
+        isEnvironmentLightActive,
         this->getNormal (),
         this->getKd (),
         this->getKa (),

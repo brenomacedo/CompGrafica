@@ -21,7 +21,8 @@ class PlanWithTexture : public Plan {
             LightsArray lightsArray,
             ObjectsArray objectsArray,
             Line* line,
-            Vector* environmentLight
+            Vector* environmentLight,
+            bool isEnvironmentLightActive
         );
 
         PlanWithTexture();

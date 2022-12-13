@@ -15,7 +15,8 @@ Color* CylinderWithTextureOnTop::getColorToBePainted(
     LightsArray lightsArray,
     ObjectsArray objectsArray,
     Line* line,
-    Vector* environmentLight
+    Vector* environmentLight,
+    bool isEnvironmentLightActive
 ) {
 
     if (intersectionResult->getObjectRegion() == ObjectRegion::CYLINDER_TOP) {
@@ -27,6 +28,7 @@ Color* CylinderWithTextureOnTop::getColorToBePainted(
                 objectsArray,
                 line,
                 environmentLight,
+                isEnvironmentLightActive,
                 this->getDirection (),
                 this->getKd (),
                 this->getKa (),
@@ -103,7 +105,7 @@ Color* CylinderWithTextureOnTop::getColorToBePainted(
             this->getShininess()
         );
 
-        if (environmentLight != nullptr) {
+        if (environmentLight != nullptr && isEnvironmentLightActive) {
             resultColorRate = resultColorRate + ((*environmentLight) * (*pixelReflectivity));
         }
 
@@ -125,6 +127,7 @@ Color* CylinderWithTextureOnTop::getColorToBePainted(
                 objectsArray,
                 line,
                 environmentLight,
+                isEnvironmentLightActive,
                 normal.pointer,
                 this->getKd (),
                 this->getKa (),
@@ -201,7 +204,7 @@ Color* CylinderWithTextureOnTop::getColorToBePainted(
             this->getShininess()
         );
 
-        if (environmentLight != nullptr) {
+        if (environmentLight != nullptr && isEnvironmentLightActive) {
             resultColorRate = resultColorRate + ((*environmentLight) * (*pixelReflectivity));
         }
 
@@ -255,6 +258,7 @@ Color* CylinderWithTextureOnTop::getColorToBePainted(
             objectsArray,
             line,
             environmentLight,
+            isEnvironmentLightActive,
             normal.pointer,
             this->getKd (),
             this->getKa (),

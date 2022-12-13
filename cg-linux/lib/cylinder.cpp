@@ -419,7 +419,8 @@ Color* Cylinder::getColorToBePainted (
     LightsArray lightsArray,
     ObjectsArray objectsArray,
     Line* line,
-    Vector* environmentLight
+    Vector* environmentLight,
+    bool isEnvironmentLightActive
 ) {
 
     if (intersectionResult->getObjectRegion() == ObjectRegion::CYLINDER_TOP) {
@@ -430,6 +431,7 @@ Color* Cylinder::getColorToBePainted (
             objectsArray,
             line,
             environmentLight,
+            isEnvironmentLightActive,
             this->getDirection (),
             this->getKd (),
             this->getKa (),
@@ -447,6 +449,7 @@ Color* Cylinder::getColorToBePainted (
             objectsArray,
             line,
             environmentLight,
+            isEnvironmentLightActive,
             normal.pointer,
             this->getKd (),
             this->getKa (),
@@ -497,6 +500,7 @@ Color* Cylinder::getColorToBePainted (
             objectsArray,
             line,
             environmentLight,
+            isEnvironmentLightActive,
             normal.pointer,
             this->getKd (),
             this->getKa (),

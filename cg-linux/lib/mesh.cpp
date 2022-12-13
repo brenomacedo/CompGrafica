@@ -394,7 +394,8 @@ Color* Mesh::getColorToBePainted (
     LightsArray lightsArray,
     ObjectsArray objectsArray,
     Line* line,
-    Vector* environmentLight
+    Vector* environmentLight,
+    bool isEnvironmentLightActive
 ) {
     MeshIntersectionResult* meshIntersectionResult = (MeshIntersectionResult*) intersectionResult;
 
@@ -404,6 +405,7 @@ Color* Mesh::getColorToBePainted (
         objectsArray,
         line,
         environmentLight,
+        isEnvironmentLightActive,
         meshIntersectionResult->getNormal(),
         this->getKd(),
         this->getKa(),

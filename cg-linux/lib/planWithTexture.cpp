@@ -15,7 +15,8 @@ Color* PlanWithTexture::getColorToBePainted(
     LightsArray lightsArray,
     ObjectsArray objectsArray,
     Line* line,
-    Vector* environmentLight
+    Vector* environmentLight,
+    bool isEnvironmentLightActive
 ) {
 
     if (!this->isActive()) {
@@ -25,6 +26,7 @@ Color* PlanWithTexture::getColorToBePainted(
             objectsArray,
             line,
             environmentLight,
+            isEnvironmentLightActive,
             this->getNormal(),
             this->getKd(),
             this->getKa(),
@@ -101,7 +103,7 @@ Color* PlanWithTexture::getColorToBePainted(
         this->getShininess()
     );
 
-    if (environmentLight != nullptr) {
+    if (environmentLight != nullptr && isEnvironmentLightActive) {
         resultColorRate = resultColorRate + ((*environmentLight) * (*pixelReflectivity));
     }
 
