@@ -613,7 +613,7 @@ int main (int, char**) {
     Sp<Scene> scene = new Scene (
         60.0, 60.0,
         400, 400,
-        150,
+        50,
         new Color (100, 100, 100, 255)
     );
     scene->setEnvironmentLight (
@@ -745,9 +745,9 @@ int main (int, char**) {
 
     scene->setBackgroundImage(fundoCeu);
     scene->lookAt(
-        new Vector(800, 800, 800),
-        new Vector(200, 80, 450),
-        new Vector(800, 1600, 800)
+        new Vector(1500, 1500, 1500),
+        new Vector(0, 0, 0),
+        new Vector(1500, 1600, 1500)
     );
 
     scene->render();
