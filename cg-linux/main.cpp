@@ -745,9 +745,9 @@ int main (int, char**) {
 
     scene->setBackgroundImage(fundoCeu);
     scene->lookAt(
-        new Vector(1500, 1500, 1500),
+        new Vector(600, 600, 600),
         new Vector(0, 0, 0),
-        new Vector(1500, 1600, 1500)
+        new Vector(600, 1600, 600)
     );
 
     scene->render();
