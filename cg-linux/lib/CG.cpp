@@ -213,6 +213,7 @@ int raycastThread(void* threadData) {
             int nearestObjectIndex = 0;
             Sp<IntersectionResult> nearestResult = new IntersectionResult(false, nullptr, 0, ObjectRegion::UNKNOWN);
 
+            // search the nearest object to the observer
             for(int i = 0; i < numberOfObjects; i++) {
 
                 Sp<IntersectionResult> result = scene->getObjects()[i]->getIntersectionResult(line.pointer);
@@ -231,6 +232,8 @@ int raycastThread(void* threadData) {
             int a1 = 0*nCol*nLin + l*nCol + c;
             int a2 = 1*nCol*nLin + l*nCol + c;
             int a3 = 2*nCol*nLin + l*nCol + c;
+
+            // if the nearest object is intercepted, paint the screen with this color
             if(nearestResult->getHasIntersection()) {
                 Sp<Color> colorToPaint = scene->getObjects()[nearestObjectIndex]->getColorToBePainted(
                     nearestResult.pointer,
@@ -245,16 +248,10 @@ int raycastThread(void* threadData) {
                 scene->buffer[a2] = colorToPaint->g;
                 scene->buffer[a3] = colorToPaint->b;
             } else if(sceneBackgroundImage != nullptr) {
-                // if there is no intersection, verify if there is an background image and paint
-                // with the color of equivalent pixel in the image
-
                 double x =(double(c) * double(sceneBackgroundImage->getImageWidth())) / scene->getCanvasWidth();
                 double y =(double(l) * double(sceneBackgroundImage->getImageHeight())) / scene->getCanvasHeight();
 
                 Pixel pixelToPaint = sceneBackgroundImage->getPixel(x, y);
-
-                // setPaintColor(scene->renderer, pixelToPaint.r, pixelToPaint.g, pixelToPaint.b, pixelToPaint.a);
-                // paintPixel(scene->renderer, c, l);
 
                 scene->buffer[a1] = pixelToPaint.r;
                 scene->buffer[a2] = pixelToPaint.g;
