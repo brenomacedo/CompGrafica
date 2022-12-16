@@ -32,7 +32,6 @@ void initializeSDLAndWindow (
     // );
     // SDL_RenderSetScale(renderer, 4, 4);
 
-    SDL_CreateWindowAndRenderer (
-        width, height, 0, window, renderer
-    );
+    *window = SDL_CreateWindow("Computação Gráfica", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
+    *renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED);
 }
